@@ -47,8 +47,8 @@ rook_w_png=pygame.transform.scale(rook_w_png,pawn_res)
 game_window=pygame.display.set_mode(res)
 pygame.display.set_caption("Chess")
 
-font_size=int(game_window.get_size()[0]/35)
-font=pygame.font.Font(None, font_size)
+font_size=int(game_window.get_size()[0]/45)
+font=font=pygame.font.SysFont("arial", font_size)
 
 class ch_board(object):
     def __init__(self, graph, pos, board_resolution):
@@ -379,7 +379,7 @@ class button(object):
         self.graph=graph
         self.undertext=undertext
         self.font_size=int(self.size[0]/2)
-        self.font=pygame.font.Font(None, self.font_size)
+        self.font=font=pygame.font.SysFont("arial", self.font_size)
         self.rect=pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
         if self.graph!="" and type(self.graph)!=pygame.Surface:
             self.graph.transform.scale(self.graph,self.size)
@@ -407,7 +407,6 @@ class notification(object):
         self.text=text
         self.font_size=font_size
         self.frame_color=frame_color
-        self.font=pygame.font.Font(None, self.font_size)
         self.rect=pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
     def draw(self, win):
         txt=font.render(self.text, True, (0, 0, 0))
