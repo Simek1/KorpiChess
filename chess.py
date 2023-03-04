@@ -716,7 +716,7 @@ while running==True:
                             tr.transform("bishop", bishop_w_png)
                             transform=False
                         elif queen_w_button.rect.collidepoint(event.pos):
-                            tr.transform("queen", queenk_w_png)
+                            tr.transform("queen", queen_w_png)
                             transform=False
                     else:
                         if rook_b_button.rect.collidepoint(event.pos):
@@ -729,7 +729,7 @@ while running==True:
                             tr.transform("bishop", bishop_b_png)
                             transform=False
                         elif queen_b_button.rect.collidepoint(event.pos):
-                            tr.transform("queen", queenk_b_png)
+                            tr.transform("queen", queen_b_png)
                             transform=False
             if transform==False:
                 en=is_check()
