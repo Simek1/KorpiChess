@@ -86,7 +86,31 @@ class ch_board(object):
 			table.append([x, x+self.area])
 			x += self.area
 		return(table)
-
+	def add_positions(self):
+		x=0
+		add=True
+		positions=[]
+		for row in self.pawns_matrix:
+			y=0
+			for column in row:
+				if column==0:
+					'''
+					if y>0 and y<7:
+						if board.pawns_matrix[x][y-1]!=0
+					if x>0 and x<7:
+					'''
+					positions.append([x,y])
+				y+=1
+			x+=1
+		return positions
+	def append_figure(self, pawn, pos, w_pawns, b_pawns):
+		pawn.pos=pos
+		if pawn.color=="w":
+			w_pawns.append(pawn)
+			self.pawns_matrix[x][y]="w"
+		else:
+			b_pawns.append(pawn)
+			self.pawns_matrix[x][y]="b"
 	def draw(self, win):
 		win.blit(self.graph, self.pos)
 
@@ -346,6 +370,7 @@ class pawn(object):
 		if self.old_pos != self.pos:
 			board.pawns_matrix[self.old_pos[1]][self.old_pos[0]] = 0
 		self.old_pos = self.pos
+
 
 
 class move_rect(object):
@@ -771,65 +796,159 @@ while running == True:
 	en = []
 	check_txt = ""
 	adding = False
+	figure=0
 
 	deciding = True
 	first_frame = True
 	black_watch.pause_timer()
 	while playing:
-		while adding:  # Kiedy pionek zmieniany jest na inną figurę
-			add_w.draw(game_window)
-			if turn == "white":
-				add_rook_w.draw(game_window)
-				add_knight_w.draw(game_window)
-				add_bishop_w.draw(game_window)
-				add_queen_w.draw(game_window)
-				add_pawn_w.draw(game_window)
-			else:
-				add_rook_b.draw(game_window)
-				add_knight_b.draw(game_window)
-				add_bishop_b.draw(game_window)
-				add_queen_b.draw(game_window)
-				add_pawn_b.draw(game_window)
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					playing = False
-					deciding = False
-					running = False
-					adding == False
-					pygame.quit()
-				elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-					if turn == "white":
-						if add_rook_w.rect.collidepoint(event.pos):
-							adding = False
-							count_w["rook"]-=1
-						elif add_knight_w.rect.collidepoint(event.pos):
-							adding = False
-							count_w["knight"]-=1
-						elif add_bishop_w.rect.collidepoint(event.pos):
-							adding = False
-							count_w["bishop"]-=1
-						elif add_queen_w.rect.collidepoint(event.pos):
-							adding = False
-							count_w["queen"]-=1
-						elif add_pawn_w.rect.collidepoint(event.pos):
-							adding=False
-							count_w["pawn"]-=1
+		while adding:  # Dodawanie figury na szachownice
+			if figure==0:
+				add_w.draw(game_window)
+				if turn == "white":
+					if count_w["king"]==0:
+						add_rook_w.undertext="Wieża("+str(count_w["rook"])+")"
+						add_rook_w.draw(game_window)
+						add_knight_w.undertext="Rycerz("+str(count_w["knight"])+")"
+						add_knight_w.draw(game_window)
+						add_bishop_w.undertext="Goniec("+str(count_w["bishop"])+")"
+						add_bishop_w.draw(game_window)
+						add_queen_w.undertext="Królowa("+str(count_w["queen"])+")"
+						add_queen_w.draw(game_window)
+						add_pawn_w.undertext="Pionek("+str(count_w["pawn"])+")"
+						add_pawn_w.draw(game_window)
 					else:
-						if add_rook_b.rect.collidepoint(event.pos):
-							adding = False
-							count_b["rook"]-=1
-						elif add_knight_b.rect.collidepoint(event.pos):
-							adding = False
-							count_b["knight"]-=1
-						elif add_bishop_b.rect.collidepoint(event.pos):
-							adding = False
-							count_b["bishop"]-=1
-						elif add_queen_b.rect.collidepoint(event.pos):
-							adding = False
-							count_b["queen"]-=1
-						elif add_pawn_b.rect.collidepoint(event.pos):
-							adding=False
-							count_b["pawn"]-=1
+						add_king_w.draw(game_window)
+				else:
+					if count_b["king"]==0:
+						add_rook_b.undertext="Wieża("+str(count_b["rook"])+")"
+						add_rook_b.draw(game_window)
+						add_knight_b.undertext="Rycerz("+str(count_b["knight"])+")"
+						add_knight_b.draw(game_window)
+						add_bishop_b.undertext="Goniec("+str(count_b["bishop"])+")"
+						add_bishop_b.draw(game_window)
+						add_queen_b.undertext="Królowa("+str(count_b["queen"])+")"
+						add_queen_b.draw(game_window)
+						add_pawn_b.undertext="Pionek("+str(count_b["pawn"])+")"
+						add_pawn_b.draw(game_window)
+					else:
+						add_king_b.draw(game_window)
+				for event in pygame.event.get():
+					if event.type == pygame.QUIT:
+						playing = False
+						deciding = False
+						running = False
+						adding == False
+						pygame.quit()
+					elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+						temp=0
+						if turn == "white":
+							if count_w["king"]==0:
+								if add_rook_w.rect.collidepoint(event.pos):
+									figure="rook"
+								elif add_knight_w.rect.collidepoint(event.pos):
+									figure="knight"
+								elif add_bishop_w.rect.collidepoint(event.pos):
+									figure="bishop"
+								elif add_queen_w.rect.collidepoint(event.pos):
+									figure="queen"
+								elif add_pawn_w.rect.collidepoint(event.pos):
+									figure="pawn"
+							else:
+								if add_king_w.rect.collidepoint(event.pos):
+									figure="king"
+						else:
+							if count_b["king"]==0:
+								if add_rook_b.rect.collidepoint(event.pos):
+									figure="rook"
+								elif add_knight_b.rect.collidepoint(event.pos):
+									figure="knight"
+								elif add_bishop_b.rect.collidepoint(event.pos):
+									figure="bishop"
+								elif add_queen_b.rect.collidepoint(event.pos):
+									figure="queen"
+								elif add_pawn_b.rect.collidepoint(event.pos):
+									figure="pawn"
+							else:
+								if add_king_b.rect.collidepoint(event.pos):
+									figure="king"
+			else:
+				if temp==0:
+					if turn=="white":
+						if figure=="king":
+							temp=pawn(king_w_png, (-1,-1), pawn_res, "king", "w")
+						if figure=="rook":
+							temp=pawn(rook_w_png, (-1,-1), pawn_res, "rook", "w")
+						if figure=="knight":
+							temp=pawn(knight_w_png, (-1,-1), pawn_res, "knight", "w")
+						if figure=="bishop":
+							temp=pawn(bishop_w_png, (-1,-1), pawn_res, "bishop", "w")
+						if figure=="queen":
+							temp=pawn(queen_w_png, (-1,-1), pawn_res, "queen", "w")
+						if figure=="pawn":
+							temp=pawn(pawn_w_png, (-1,-1), pawn_res, "pawn", "w")
+					if turn=="black":
+						if figure=="king":
+							temp=pawn(king_b_png, (-1,-1), pawn_res, "king", "b")
+						if figure=="rook":
+							temp=pawn(rook_b_png, (-1,-1), pawn_res, "rook", "b")
+						if figure=="knight":
+							temp=pawn(knight_b_png, (-1,-1), pawn_res, "knight", "b")
+						if figure=="bishop":
+							temp=pawn(bishop_b_png, (-1,-1), pawn_res, "bishop", "b")
+						if figure=="queen":
+							temp=pawn(queen_b_png, (-1,-1), pawn_res, "queen", "b")
+						if figure=="pawn":
+							temp=pawn(pawn_b_png, (-1,-1), pawn_res, "pawn", "b")
+				else:
+					possible_pos=board.add_positions()
+					position_rects=[move_rect(x, board.area) for x in possible_pos]
+					for event in pygame.event.get():
+						if event.type == pygame.QUIT:
+							playing = False
+							deciding = False
+							running = False
+							adding == False
+							pygame.quit()
+						if event.type == pygame.MOUSEBUTTONUP:
+							mouse_pos = pygame.mouse.get_pos()
+							x=-1
+							y=-1
+							i=0
+							for area in board.pos_areas():
+								if area[0] < mouse_pos[0] and area[1] > mouse_pos[0]:
+									x = i
+								if area[0] < mouse_pos[1] and area[1] > mouse_pos[1]:
+									y = i
+								i += 1
+							print(x,y)
+							if x!=-1 and y!=1 and [x,y] in possible_pos:
+								board.append_figure(temp, [x,y], white_pawns, black_pawns)
+								adding=0
+								if temp.color=="w":
+									count_w[temp.type]-=1
+								else:
+									count_b[temp.type]-=1
+								print(count_b, count_w)
+								end_turn()
+							figure=0
+							temp=0
+					game_window.fill(bg_color)
+					board.draw(game_window)
+					for white_pawn in white_pawns:
+						white_pawn.draw(game_window, board)
+					for black_pawn in black_pawns:
+						black_pawn.draw(game_window, board)
+					white_watch.update(game_window, board)
+					black_watch.update(game_window, board)
+					for x in position_rects:
+						x.draw_moves(game_window, board)
+					if temp!=0:
+						mouse_pos = pygame.mouse.get_pos()
+						temp.mouse_dragging(game_window, mouse_pos)
+					pygame.display.update()
+
+				
 			if adding == False:
 				en = is_check()
 				if en != []:  # blokowanie ruchow gdy jest szach
