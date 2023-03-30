@@ -107,10 +107,10 @@ class ch_board(object):
 		pawn.pos=pos
 		if pawn.color=="w":
 			w_pawns.append(pawn)
-			self.pawns_matrix[x][y]="w"
+			self.pawns_matrix[y][x]="w"
 		else:
 			b_pawns.append(pawn)
-			self.pawns_matrix[x][y]="b"
+			self.pawns_matrix[y][x]="b"
 	def draw(self, win):
 		win.blit(self.graph, self.pos)
 
@@ -701,8 +701,7 @@ again_button = button((res[0]/4-res[0]/20, res[1]/4-res[1]/20),
 quit_button = button(((res[0]/4-res[0]/20)*3, res[1]/4-res[1]/20),
 					 [res[0]/10, res[1]/10], (139, 139, 139), "Wyjdź z gry")
 
-end_game_w = notification(
-	[20, 20], [res[0]-40, res[1]/2-20], (100, 215, 220), "Koniec gry", font_size*2)
+end_game_w = notification([20, 20], [res[0]-40, res[1]/2-20], (100, 215, 220), "Koniec gry", font_size*2)
 
 # tworzenie okna zmiany pionka
 transform_w = notification([20, 20], [res[0]-40, res[1]/2-20], (185,
@@ -762,18 +761,12 @@ count_w = {"pawn": 8,
 		   "king": 1}
 
 
-add_rook_w = button([add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2, add_w.pos[1]+add_w.size[1] /
-					2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Wieża(2)", graph=rook_w_png)
-add_knight_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*2, add_w.pos[1] +
-					  add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Koń(2)", graph=knight_w_png)
-add_bishop_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*3, add_w.pos[1]+add_w.size[1] /
-					  2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Goniec(2)", graph=bishop_w_png)
-add_queen_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*4, add_w.pos[1]+add_w.size[1] /
-					 2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Królowa(1)", graph=queen_w_png)
-add_pawn_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*5, add_w.pos[1]+add_w.size[1] /
-					2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Pionek(8)", graph=pawn_w_png)
-add_king_w = button([(add_w.pos[0]+add_w.size[0]/2-pawn_res[0]/2), add_w.pos[1] +
-					add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Król", graph=king_w_png)
+add_rook_w = button([add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Wieża(2)", graph=rook_w_png)
+add_knight_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*2, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Koń(2)", graph=knight_w_png)
+add_bishop_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*3, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Goniec(2)", graph=bishop_w_png)
+add_queen_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*4, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Królowa(1)", graph=queen_w_png)
+add_pawn_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*5, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Pionek(8)", graph=pawn_w_png)
+add_king_w = button([(add_w.pos[0]+add_w.size[0]/2-pawn_res[0]/2), add_w.pos[1] + add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Król", graph=king_w_png)
 
 add_button = button([board.res[0]+15, (board.res[1]/6)*5],
 					[20, 50], (205, 202, 203), text="Dodaj figurę")
@@ -786,6 +779,7 @@ while running == True:
 	white_watch = stopwatch("w")
 	black_watch = stopwatch("b")
 
+	transform= False
 	check = False
 	playing = True
 	click = 0
@@ -846,93 +840,76 @@ while running == True:
 							if count_w["king"]==0:
 								if add_rook_w.rect.collidepoint(event.pos):
 									figure="rook"
+									temp=pawn(rook_w_png, (-1,-1), pawn_res, "rook", "w")
 								elif add_knight_w.rect.collidepoint(event.pos):
 									figure="knight"
+									temp=pawn(knight_w_png, (-1,-1), pawn_res, "knight", "w")
 								elif add_bishop_w.rect.collidepoint(event.pos):
 									figure="bishop"
+									temp=pawn(bishop_w_png, (-1,-1), pawn_res, "bishop", "w")
 								elif add_queen_w.rect.collidepoint(event.pos):
 									figure="queen"
+									temp=pawn(queen_w_png, (-1,-1), pawn_res, "queen", "w")
 								elif add_pawn_w.rect.collidepoint(event.pos):
 									figure="pawn"
+									temp=pawn(pawn_w_png, (-1,-1), pawn_res, "pawn", "w")
 							else:
 								if add_king_w.rect.collidepoint(event.pos):
 									figure="king"
+									temp=pawn(king_w_png, (-1,-1), pawn_res, "king", "w")
 						else:
 							if count_b["king"]==0:
 								if add_rook_b.rect.collidepoint(event.pos):
 									figure="rook"
+									temp=pawn(rook_b_png, (-1,-1), pawn_res, "rook", "b")
 								elif add_knight_b.rect.collidepoint(event.pos):
 									figure="knight"
+									temp=pawn(knight_b_png, (-1,-1), pawn_res, "knight", "b")
 								elif add_bishop_b.rect.collidepoint(event.pos):
 									figure="bishop"
+									temp=pawn(bishop_b_png, (-1,-1), pawn_res, "bishop", "b")
 								elif add_queen_b.rect.collidepoint(event.pos):
 									figure="queen"
+									temp=pawn(queen_b_png, (-1,-1), pawn_res, "queen", "b")
 								elif add_pawn_b.rect.collidepoint(event.pos):
 									figure="pawn"
+									temp=pawn(pawn_b_png, (-1,-1), pawn_res, "pawn", "b")								
 							else:
 								if add_king_b.rect.collidepoint(event.pos):
 									figure="king"
+									temp=pawn(king_b_png, (-1,-1), pawn_res, "king", "b")
+
 			else:
-				if temp==0:
-					if turn=="white":
-						if figure=="king":
-							temp=pawn(king_w_png, (-1,-1), pawn_res, "king", "w")
-						if figure=="rook":
-							temp=pawn(rook_w_png, (-1,-1), pawn_res, "rook", "w")
-						if figure=="knight":
-							temp=pawn(knight_w_png, (-1,-1), pawn_res, "knight", "w")
-						if figure=="bishop":
-							temp=pawn(bishop_w_png, (-1,-1), pawn_res, "bishop", "w")
-						if figure=="queen":
-							temp=pawn(queen_w_png, (-1,-1), pawn_res, "queen", "w")
-						if figure=="pawn":
-							temp=pawn(pawn_w_png, (-1,-1), pawn_res, "pawn", "w")
-					if turn=="black":
-						if figure=="king":
-							temp=pawn(king_b_png, (-1,-1), pawn_res, "king", "b")
-						if figure=="rook":
-							temp=pawn(rook_b_png, (-1,-1), pawn_res, "rook", "b")
-						if figure=="knight":
-							temp=pawn(knight_b_png, (-1,-1), pawn_res, "knight", "b")
-						if figure=="bishop":
-							temp=pawn(bishop_b_png, (-1,-1), pawn_res, "bishop", "b")
-						if figure=="queen":
-							temp=pawn(queen_b_png, (-1,-1), pawn_res, "queen", "b")
-						if figure=="pawn":
-							temp=pawn(pawn_b_png, (-1,-1), pawn_res, "pawn", "b")
-				else:
-					possible_pos=board.add_positions()
-					position_rects=[move_rect(x, board.area) for x in possible_pos]
-					for event in pygame.event.get():
-						if event.type == pygame.QUIT:
-							playing = False
-							deciding = False
-							running = False
-							adding == False
-							pygame.quit()
-						if event.type == pygame.MOUSEBUTTONUP:
-							mouse_pos = pygame.mouse.get_pos()
-							x=-1
-							y=-1
-							i=0
-							for area in board.pos_areas():
-								if area[0] < mouse_pos[0] and area[1] > mouse_pos[0]:
-									x = i
-								if area[0] < mouse_pos[1] and area[1] > mouse_pos[1]:
-									y = i
-								i += 1
-							print(x,y)
-							if x!=-1 and y!=1 and [x,y] in possible_pos:
-								board.append_figure(temp, [x,y], white_pawns, black_pawns)
-								adding=0
-								if temp.color=="w":
-									count_w[temp.type]-=1
-								else:
-									count_b[temp.type]-=1
-								print(count_b, count_w)
-								end_turn()
-							figure=0
-							temp=0
+				possible_pos=board.add_positions()
+				position_rects=[move_rect(x, board.area) for x in possible_pos]
+				for event in pygame.event.get():
+					if event.type == pygame.QUIT:
+						playing = False
+						deciding = False
+						running = False
+						adding == False
+						pygame.quit()
+					if event.type == pygame.MOUSEBUTTONUP:
+						mouse_pos = pygame.mouse.get_pos()
+						x=-1
+						y=-1
+						i=0
+						for area in board.pos_areas():
+							if area[0] < mouse_pos[0] and area[1] > mouse_pos[0]:
+								x = i
+							if area[0] < mouse_pos[1] and area[1] > mouse_pos[1]:
+								y = i
+							i += 1
+						if x!=-1 and y!=1 and [x,y] in possible_pos:
+							board.append_figure(temp, (x,y), white_pawns, black_pawns)
+							adding=0
+							if temp.color=="w":
+								count_w[temp.type]-=1
+							else:
+								count_b[temp.type]-=1
+							end_turn()
+						figure=0
+						temp=0
 					game_window.fill(bg_color)
 					board.draw(game_window)
 					for white_pawn in white_pawns:
