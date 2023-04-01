@@ -711,11 +711,44 @@ def is_mat(enemies):
 	if mat:
 		check_txt = "Szach-Mat!"
 
+def add_defence(count_w, count_b, board, turn, enemies): #Sprawdzenie czy mozna wybronic mata dodaniem nowego pionka
+	add_mv=[]
+	if turn=="white":
+		count=0
+		for x in count_w:
+			if count_w[x]!=0:
+				count=1
+				break
+		if count==0: #nie mozna postawic nowych pionkow
+			pass
+		else:
+			for enemy in enemies:
+				for mv in enemy.mv:
+					board.pawns_matrix[mv[1]][mv[0]] = "w"
+					possiblity = is_check()
+					board.pawns_matrix[mv[1]][mv[0]] = 0
+					if possiblity == []:
+						add_mv.append(mv)
+	else:
+		count=0
+		for x in count_w:
+			if count_w[x]!=0:
+				count=1
+				break
+		if count==0: #nie mozna postawic nowych pionkow
+			pass
+		else:
+			for enemy in enemies:
+				for mv in enemy.mv:
+					board.pawns_matrix[mv[1]][mv[0]] = "b"
+					possiblity = is_check()
+					print(mv, possiblity)
+					board.pawns_matrix[mv[1]][mv[0]] = 0
+					if possiblity == []:
+						add_mv.append(mv)
+	return add_mv
+	
 
-def add_figure():
-	choosing = True
-	while choosing:
-		pass
 
 board=ch_board(board_png,(0,0), res_b)
 
@@ -795,6 +828,7 @@ while running == True:
 	en = []
 	check_txt = ""
 	adding = False
+	check_add=[]
 	figure=0
 
 	deciding = True
@@ -887,6 +921,9 @@ while running == True:
 			else: #Postawienie wybranej figury na szachownicty
 				possible_pos=board.add_positions(white_pawns, black_pawns, turn)
 				position_rects=[move_rect(x, board.area) for x in possible_pos]
+				if check_add!=[]:
+					possible_pos=check_add
+					position_rects=[move_rect(x, board.area) for x in possible_pos]
 				for event in pygame.event.get():
 					if event.type == pygame.QUIT:
 						playing = False
@@ -912,6 +949,8 @@ while running == True:
 								count_w[temp.type]-=1
 							else:
 								count_b[temp.type]-=1
+							check_add=[]
+							en=[]
 							end_turn()
 						figure=0
 						temp=0
@@ -992,6 +1031,12 @@ while running == True:
 			if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 				if add_button.rect.collidepoint(event.pos):
 					adding=True
+					if en!=[]:
+						print(":)")
+						check_add=add_defence(count_w, count_b, board, turn, en)
+						print(check_add)
+						if check_txt=="Szach_Mat!" and check_add!=[]:
+							check_txt=""
 			if click != 0 and pygame.mouse.get_pressed()[0] == False:
 				click = 0
 				if hold == 1:  # jesli trzymalem figure
