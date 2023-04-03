@@ -86,12 +86,14 @@ class ch_board(object):
 			table.append([x, x+self.area])
 			x += self.area
 		return(table)
-	def add_positions(self, white_pawns, black_pawns, turn):
+	def add_positions(self, white_pawns, black_pawns, turn, pawn):
 		positions=[]
 		en_king=[]
+		king_pos=[-1,-1]
 		if turn=="white":
 			for x in black_pawns:
 				if x.type=="king":
+					king_pos=x.pos
 					if x.pos[0]>0:
 						en_king.append([x.pos[1]-1, x.pos[0]])
 					if x.pos[1]>0:
@@ -112,6 +114,7 @@ class ch_board(object):
 		else:
 			for x in white_pawns:
 				if x.type=="king":
+					king_pos=x.pos
 					if x.pos[0]>0:
 						en_king.append([x.pos[1]-1, x.pos[0]])
 					if x.pos[1]>0:
@@ -137,6 +140,21 @@ class ch_board(object):
 					positions.append([y,x])
 				y+=1
 			x+=1
+		pos_temp=positions.copy()
+		for x in pos_temp:
+			pawn.pos=x
+			self.pawns_matrix[x[1]][x[0]]=pawn.color
+			print(king_pos, pawn.possible_moves(game_window,self)[1])
+			if list(king_pos) in pawn.possible_moves(game_window,self)[1]:
+				positions.remove(x)
+			self.pawns_matrix[x[1]][x[0]]=0
+			pawn.pos=(-1,-1)
+		if pawn.type=="pawn":
+			pos_temp=positions.copy()
+			for x in pos_temp:
+				if x[1]==0 or x[1]==7:
+					positions.remove(x)
+			
 		return positions
 	def append_figure(self, pawn, pos, w_pawns, b_pawns):
 		pawn.pos=pos
@@ -927,7 +945,7 @@ while running == True:
 							check_add=[]
 
 			else: #Postawienie wybranej figury na szachownicty
-				possible_pos=board.add_positions(white_pawns, black_pawns, turn)
+				possible_pos=board.add_positions(white_pawns, black_pawns, turn, temp)
 				position_rects=[move_rect(x, board.area) for x in possible_pos]
 				if check_txt!="":
 					possible_pos=check_add
