@@ -93,41 +93,41 @@ class ch_board(object):
 			for x in black_pawns:
 				if x.type=="king":
 					if x.pos[0]>0:
-						en_king.append([x.pos[0]-1, x.pos[1]])
+						en_king.append([x.pos[1]-1, x.pos[0]])
 					if x.pos[1]>0:
-						en_king.append([x.pos[0], x.pos[1]-1])
+						en_king.append([x.pos[1], x.pos[0]-1])
 					if x.pos[0]<7:
-						en_king.append([x.pos[0]+1, x.pos[1]])
+						en_king.append([x.pos[1]+1, x.pos[0]])
 					if x.pos[1]<7:
-						en_king.append([x.pos[0], x.pos[1]+1])
+						en_king.append([x.pos[1], x.pos[0]+1])
 					if x.pos[0]>0 and x.pos[1]>0:
-						en_king.append([x.pos[0]-1, x.pos[1]-1])
+						en_king.append([x.pos[1]-1, x.pos[0]-1])
 					if x.pos[0]<7 and x.pos[1]<7:
-						en_king.append([x.pos[0]+1, x.pos[1]+1])
+						en_king.append([x.pos[1]+1, x.pos[0]+1])
 					if x.pos[0]>0 and x.pos[1]<7:
-						en_king.append([x.pos[0]-1, x.pos[1]+1])
+						en_king.append([x.pos[1]-1, x.pos[0]+1])
 					if x.pos[0]<7 and x.pos[1]>0:
-						en_king.append([x.pos[0]+1, x.pos[1]-1])
+						en_king.append([x.pos[1]+1, x.pos[0]-1])
 					break
 		else:
 			for x in white_pawns:
 				if x.type=="king":
 					if x.pos[0]>0:
-						en_king.append([x.pos[0]-1, x.pos[1]])
+						en_king.append([x.pos[1]-1, x.pos[0]])
 					if x.pos[1]>0:
-						en_king.append([x.pos[0], x.pos[1]-1])
+						en_king.append([x.pos[1], x.pos[0]-1])
 					if x.pos[0]<7:
-						en_king.append([x.pos[0]+1, x.pos[1]])
+						en_king.append([x.pos[1]+1, x.pos[0]])
 					if x.pos[1]<7:
-						en_king.append([x.pos[0], x.pos[1]+1])
+						en_king.append([x.pos[1], x.pos[0]+1])
 					if x.pos[0]>0 and x.pos[1]>0:
-						en_king.append([x.pos[0]-1, x.pos[1]-1])
+						en_king.append([x.pos[1]-1, x.pos[0]-1])
 					if x.pos[0]<7 and x.pos[1]<7:
-						en_king.append([x.pos[0]+1, x.pos[1]+1])
+						en_king.append([x.pos[1]+1, x.pos[0]+1])
 					if x.pos[0]>0 and x.pos[1]<7:
-						en_king.append([x.pos[0]-1, x.pos[1]+1])
+						en_king.append([x.pos[1]-1, x.pos[0]+1])
 					if x.pos[0]<7 and x.pos[1]>0:
-						en_king.append([x.pos[0]+1, x.pos[1]-1])
+						en_king.append([x.pos[1]+1, x.pos[0]-1])
 					break
 		x=0
 		for row in self.pawns_matrix:
@@ -668,11 +668,11 @@ def is_mat(enemies):
 					# sprawdzenie czy krol moze zniszczyc przeciwnika
 					if list(enemy.pos) in pawn.att:
 						for att in pawn.att:
-							popped_pawn=black_pawns.pop(black_pawns.index(enemy))
+							popped_pawn=white_pawns.pop(white_pawns.index(enemy))
 							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="w"
 							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]=0
 							possiblity=is_check()
-							black_pawns.append(popped_pawn)
+							white_pawns.append(popped_pawn)
 							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="b"
 							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]="w"
 							if possiblity==[]:
@@ -691,12 +691,12 @@ def is_mat(enemies):
 
 					# sprawdzenie czy pionek moze znisczyc przeciwnika
 					if list(enemy.pos) in pawn.att:
-						for att in pawn.att:
-							popped_pawn=black_pawns.pop(black_pawns.index(enemy))
+						for att in pawn.att: #poprawic ta czesc w oryginalnym trybie
+							popped_pawn=white_pawns.pop(white_pawns.index(enemy))
 							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="w"
 							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]=0
 							possiblity=is_check()
-							black_pawns.append(popped_pawn)
+							white_pawns.append(popped_pawn)
 							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="b"
 							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]="w"
 							if possiblity==[]:
@@ -711,8 +711,12 @@ def is_mat(enemies):
 	if mat:
 		check_txt = "Szach-Mat!"
 
-def add_defence(count_w, count_b, board, turn, enemies): #Sprawdzenie czy mozna wybronic mata dodaniem nowego pionka
+def add_defence(count_w, count_b, board, turn, enemies, turn_pawns): #Sprawdzenie czy mozna wybronic mata dodaniem nowego pionka
 	add_mv=[]
+	for x in turn_pawns:
+		if x.type=="king":
+			king=x
+			break
 	if turn=="white":
 		count=0
 		for x in count_w:
@@ -724,11 +728,12 @@ def add_defence(count_w, count_b, board, turn, enemies): #Sprawdzenie czy mozna 
 		else:
 			for enemy in enemies:
 				for mv in enemy.mv:
-					board.pawns_matrix[mv[1]][mv[0]] = "w"
-					possiblity = is_check()
-					board.pawns_matrix[mv[1]][mv[0]] = 0
-					if possiblity == []:
-						add_mv.append(mv)
+					if tuple(mv)!=king.pos:
+						board.pawns_matrix[mv[1]][mv[0]] = "w"
+						possiblity = is_check()
+						board.pawns_matrix[mv[1]][mv[0]] = 0
+						if possiblity == []:
+							add_mv.append(mv)
 	else:
 		count=0
 		for x in count_w:
@@ -740,12 +745,12 @@ def add_defence(count_w, count_b, board, turn, enemies): #Sprawdzenie czy mozna 
 		else:
 			for enemy in enemies:
 				for mv in enemy.mv:
-					board.pawns_matrix[mv[1]][mv[0]] = "b"
-					possiblity = is_check()
-					print(mv, possiblity)
-					board.pawns_matrix[mv[1]][mv[0]] = 0
-					if possiblity == []:
-						add_mv.append(mv)
+					if tuple(mv)!=king.pos:
+						board.pawns_matrix[mv[1]][mv[0]] = "b"
+						possiblity = is_check()
+						board.pawns_matrix[mv[1]][mv[0]] = 0
+						if possiblity == []:
+							add_mv.append(mv)
 	return add_mv
 	
 
@@ -917,11 +922,14 @@ while running == True:
 								if add_king_b.rect.collidepoint(event.pos):
 									figure="king"
 									temp=pawn(king_b_png, (-1,-1), pawn_res, "king", "b")
+						if not add_w.rect.collidepoint(event.pos) and temp==0:
+							adding=0
+							check_add=[]
 
 			else: #Postawienie wybranej figury na szachownicty
 				possible_pos=board.add_positions(white_pawns, black_pawns, turn)
 				position_rects=[move_rect(x, board.area) for x in possible_pos]
-				if check_add!=[]:
+				if check_txt!="":
 					possible_pos=check_add
 					position_rects=[move_rect(x, board.area) for x in possible_pos]
 				for event in pygame.event.get():
@@ -949,9 +957,10 @@ while running == True:
 								count_w[temp.type]-=1
 							else:
 								count_b[temp.type]-=1
-							check_add=[]
 							en=[]
+							check_add=[]
 							end_turn()
+							check_txt=""
 						figure=0
 						temp=0
 					game_window.fill(bg_color)
@@ -1032,9 +1041,7 @@ while running == True:
 				if add_button.rect.collidepoint(event.pos):
 					adding=True
 					if en!=[]:
-						print(":)")
-						check_add=add_defence(count_w, count_b, board, turn, en)
-						print(check_add)
+						check_add=add_defence(count_w, count_b, board, turn, en, turn_pawns)
 						if check_txt=="Szach_Mat!" and check_add!=[]:
 							check_txt=""
 			if click != 0 and pygame.mouse.get_pressed()[0] == False:
