@@ -144,7 +144,6 @@ class ch_board(object):
 		for x in pos_temp:
 			pawn.pos=x
 			self.pawns_matrix[x[1]][x[0]]=pawn.color
-			print(king_pos, pawn.possible_moves(game_window,self)[1])
 			if list(king_pos) in pawn.possible_moves(game_window,self)[1]:
 				positions.remove(x)
 			self.pawns_matrix[x[1]][x[0]]=0
@@ -180,6 +179,7 @@ class pawn(object):
 		self.mv = []
 
 	def possible_moves(self, win, board):
+		global w_destroyed, b_destroyed
 		possible_attack = []
 		possible_positions = []
 		if self.type == "king":
@@ -376,35 +376,37 @@ class pawn(object):
 					break
 		if self.type == "pawn":
 			if self.color == "w":
-				if self.pos[1] == 6:
-					if board.pawns_matrix[self.pos[1]-2][self.pos[0]] == 0 and board.pawns_matrix[self.pos[1]-1][self.pos[0]] == 0:
-						possible_positions.append([self.pos[0], self.pos[1]-2])
 				if self.pos[1]-1 > -1:
 					if board.pawns_matrix[self.pos[1]-1][self.pos[0]] == 0:
-						possible_positions.append([self.pos[0], self.pos[1]-1])
+						if self.pos[1]-1==0:
+							for dst in b_destroyed:
+								if b_destroyed[dst]!=0 and dst!="pawn":
+									possible_positions.append([self.pos[0], self.pos[1]-1])
+									break
+						else:
+							possible_positions.append([self.pos[0], self.pos[1]-1])
 					if self.pos[0]-1 > -1:
 						if board.pawns_matrix[self.pos[1]-1][self.pos[0]-1] != 0 and board.pawns_matrix[self.pos[1]-1][self.pos[0]-1] != self.color:
-							possible_attack.append(
-								[self.pos[0]-1, self.pos[1]-1])
+							possible_attack.append([self.pos[0]-1, self.pos[1]-1])
 					if self.pos[0]+1 < 8:
 						if board.pawns_matrix[self.pos[1]-1][self.pos[0]+1] != 0 and board.pawns_matrix[self.pos[1]-1][self.pos[0]+1] != self.color:
-							possible_attack.append(
-								[self.pos[0]+1, self.pos[1]-1])
+							possible_attack.append([self.pos[0]+1, self.pos[1]-1])
 			if self.color == "b":
-				if self.pos[1] == 1:
-					if board.pawns_matrix[self.pos[1]+2][self.pos[0]] == 0 and board.pawns_matrix[self.pos[1]+1][self.pos[0]] == 0:
-						possible_positions.append([self.pos[0], self.pos[1]+2])
 				if self.pos[1]+1 < 8:
 					if board.pawns_matrix[self.pos[1]+1][self.pos[0]] == 0:
-						possible_positions.append([self.pos[0], self.pos[1]+1])
+						if self.pos[1]+1==7:
+							for dst in w_destroyed:
+								if w_destroyed[dst]!=0 and dst!="pawn":
+									possible_positions.append([self.pos[0], self.pos[1]+1])
+									break
+						else:
+							possible_positions.append([self.pos[0], self.pos[1]+1])
 					if self.pos[0]-1 > -1:
 						if board.pawns_matrix[self.pos[1]+1][self.pos[0]-1] != 0 and board.pawns_matrix[self.pos[1]+1][self.pos[0]-1] != self.color:
-							possible_attack.append(
-								[self.pos[0]-1, self.pos[1]+1])
+							possible_attack.append([self.pos[0]-1, self.pos[1]+1])
 					if self.pos[0]+1 < 8:
 						if board.pawns_matrix[self.pos[1]+1][self.pos[0]+1] != 0 and board.pawns_matrix[self.pos[1]+1][self.pos[0]+1] != self.color:
-							possible_attack.append(
-								[self.pos[0]+1, self.pos[1]+1])
+							possible_attack.append([self.pos[0]+1, self.pos[1]+1])
 
 		return(possible_positions, possible_attack)
 
@@ -555,17 +557,19 @@ def end_turn():
 
 
 def destroy_enemy(pos):
-	global turn, white_pawns, black_pawns
+	global turn, white_pawns, black_pawns, w_destroyed, b_destroyed
 	i = 0
 	if turn == "white":
 		for pawn in black_pawns:
 			if pawn.pos == pos:
+				b_destroyed[pawn.type]+=1
 				del(black_pawns[i])
 				break
 			i += 1
 	else:
 		for pawn in white_pawns:
 			if pawn.pos == pos:
+				w_destroyed[pawn.type]+=1
 				del(white_pawns[i])
 				break
 			i += 1
@@ -711,12 +715,12 @@ def is_mat(enemies):
 					if list(enemy.pos) in pawn.att:
 						for att in pawn.att: #poprawic ta czesc w oryginalnym trybie
 							popped_pawn=white_pawns.pop(white_pawns.index(enemy))
-							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="w"
+							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="b"
 							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]=0
 							possiblity=is_check()
 							white_pawns.append(popped_pawn)
-							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="b"
-							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]="w"
+							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="w"
+							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]="b"
 							if possiblity==[]:
 								new_att.append(att)
 			pawn.mv = new_mv
@@ -799,12 +803,7 @@ queen_w_button = button([(transform_w.pos[0]+transform_w.size[0]/5-pawn_res[0]/2
 
 add_w = notification([20, 20], [res[0]-40, res[1]/2-20],(185, 182, 183), "Wybierz figurę", font_size*2)
 
-count_b = {"pawn": 8,
-		   "rook": 2,
-		   "knight": 2,
-		   "bishop": 2,
-		   "queen": 1,
-		   "king": 1}
+
 
 add_rook_b = button([add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Wieża(2)", graph=rook_b_png)
 add_knight_b = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*2, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Koń(2)", graph=knight_b_png)
@@ -814,12 +813,7 @@ add_pawn_b = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*5, add_w.pos[1
 add_king_b = button([(add_w.pos[0]+add_w.size[0]/2-pawn_res[0]/2), add_w.pos[1] + add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Król", graph=king_b_png)
 
 
-count_w = {"pawn": 8,
-		   "rook": 2,
-		   "knight": 2,
-		   "bishop": 2,
-		   "queen": 1,
-		   "king": 1}
+
 
 
 add_rook_w = button([add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Wieża(2)", graph=rook_w_png)
@@ -835,10 +829,35 @@ add_button = button([board.res[0]+15, (board.res[1]/6)*5],
 
 running = True
 while running == True:
+	board.pawns_matrix=[[0 for x in range(0, 8)] for x in range(0, 8)]
 	black_pawns = []
 	white_pawns = []
+	count_b = {"pawn": 8,
+			   "rook": 2,
+			   "knight": 2,
+			   "bishop": 2,
+			   "queen": 1,
+			   "king": 1}
+	count_w = {"pawn": 8,
+			   "rook": 2,
+			   "knight": 2,
+			   "bishop": 2,
+			   "queen": 1,
+			   "king": 1}
 	white_watch = stopwatch("w")
 	black_watch = stopwatch("b")
+	w_destroyed={"pawn": 0,
+			   "rook": 0,
+			   "knight": 0,
+			   "bishop": 0,
+			   "queen": 0,
+			   "king": 0}
+	b_destroyed={"pawn": 0,
+			   "rook": 0,
+			   "knight": 0,
+			   "bishop": 0,
+			   "queen": 0,
+			   "king": 0}
 
 	transform= False
 	check = False
@@ -858,6 +877,78 @@ while running == True:
 	first_frame = True
 	black_watch.pause_timer()
 	while playing:
+		while transform: #Kiedy pionek zmieniany jest na inną figurę
+			transform_w.draw(game_window)
+			if tr.color=="w":
+				rook_w_button.undertext="Wieża("+str(b_destroyed["rook"])+")"
+				rook_w_button.draw(game_window)
+				knight_w_button.undertext="Rycerz("+str(b_destroyed["knight"])+")"
+				knight_w_button.draw(game_window)
+				bishop_w_button.undertext="Goniec("+str(b_destroyed["bishop"])+")"
+				bishop_w_button.draw(game_window)
+				queen_w_button.undertext="Królowa("+str(b_destroyed["queen"])+")"
+				queen_w_button.draw(game_window)
+			else:
+				rook_b_button.undertext="Wieża("+str(w_destroyed["rook"])+")"
+				rook_b_button.draw(game_window)
+				knight_b_button.undertext="Rycerz("+str(w_destroyed["knight"])+")"
+				knight_b_button.draw(game_window)
+				bishop_b_button.undertext="Goniec("+str(w_destroyed["bishop"])+")"
+				bishop_b_button.draw(game_window)
+				queen_b_button.undertext="Królowa("+str(w_destroyed["queen"])+")"
+				queen_b_button.draw(game_window)
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					playing=False
+					deciding=False
+					running=False
+					transform==False
+					pygame.quit()
+				elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+					if tr.color=="w":
+						if rook_w_button.rect.collidepoint(event.pos) and b_destroyed["rook"]>0:
+							b_destroyed["rook"]-=1
+							tr.transform("rook", rook_w_png)
+							transform=False
+						elif knight_w_button.rect.collidepoint(event.pos) and b_destroyed["knight"]>0:
+							b_destroyed["knight"]-=1
+							tr.transform("knight", knight_w_png)
+							transform=False
+						elif bishop_w_button.rect.collidepoint(event.pos) and b_destroyed["bishop"]>0:
+							b_destroyed["bishop"]-=1
+							tr.transform("bishop", bishop_w_png)
+							transform=False
+						elif queen_w_button.rect.collidepoint(event.pos) and b_destroyed["queen"]>0:
+							b_destroyed["queen"]-=1
+							tr.transform("queen", queen_w_png)
+							transform=False
+					else:
+						if rook_b_button.rect.collidepoint(event.pos) and w_destroyed["rook"]>0:
+							w_destroyed["rook"]-=1
+							tr.transform("rook", rook_b_png)
+							transform=False
+						elif knight_b_button.rect.collidepoint(event.pos) and w_destroyed["knight"]>0:
+							w_destroyed["knight"]-=1
+							tr.transform("knight", knight_b_png)
+							transform=False
+						elif bishop_b_button.rect.collidepoint(event.pos) and w_destroyed["bishop"]>0:
+							w_destroyed["bishop"]-=1
+							tr.transform("bishop", bishop_b_png)
+							transform=False
+						elif queen_b_button.rect.collidepoint(event.pos) and w_destroyed["queen"]>0:
+							w_destroyed["queen"]-=1
+							tr.transform("queen", queen_b_png)
+							transform=False
+			if transform==False:
+				en=is_check()
+				if en!=[]: #blokowanie ruchow gdy jest szach
+					#aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
+					for white_pawn in white_pawns:
+						white_pawn.draw(game_window, board)
+					for black_pawn in black_pawns:
+						black_pawn.draw(game_window, board)
+					is_mat(en)
+			pygame.display.update()
 		while adding:  # Dodawanie figury na szachownice
 			if figure==0:
 				add_w.draw(game_window)
@@ -1008,7 +1099,7 @@ while running == True:
 					is_mat(en)
 			pygame.display.update()
 		# if black_watch.remaining_time==0 or white_watch.remaining_time==0 or check_txt=="Szach-Mat!" or ("king" not in [p.type for p in white_pawns]) or ("king" not in [p.type for p in black_pawns]):
-		if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Szach-Mat!":
+		if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
 			playing = False
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
