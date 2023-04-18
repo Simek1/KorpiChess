@@ -1,7 +1,7 @@
 import pygame
 import pygame_menu
 from pygame_menu import themes
-from king_chess import *
+from kings_chess import *
 
 def play_local():
 	global game_window, res
