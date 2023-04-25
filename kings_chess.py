@@ -493,8 +493,7 @@ class notification(object):
 		self.font_size=font_size
 		self.font = pygame.font.SysFont("arial", self.font_size)
 		self.frame_color = frame_color
-		self.rect = pygame.Rect(
-			self.pos[0], self.pos[1], self.size[0], self.size[1])
+		self.rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
 
 	def draw(self, win):
 		txt = self.font.render(self.text, True, (0, 0, 0))
@@ -503,8 +502,7 @@ class notification(object):
 			self.frame_color = (0, 0, 0)
 		pygame.draw.rect(win, self.color, self.rect)
 		pygame.draw.rect(win, self.frame_color, self.rect, 5)
-		win.blit(txt, (int(self.pos[0]+self.size[0]/2-txt_rect.width/2),
-				 int(self.pos[1]+self.size[1]/5-txt_rect.height/2)))
+		win.blit(txt, (int(self.pos[0]+self.size[0]/2-txt_rect.width/2), int(self.pos[1]+self.size[1]/5-txt_rect.height/2)))
 
 
 '''
