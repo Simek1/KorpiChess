@@ -2,6 +2,7 @@ import pygame
 import pygame_menu
 from pygame_menu import themes
 from kings_chess import *
+from online_lobby import *
 
 def play_local():
 	global game_window, res
@@ -9,7 +10,9 @@ def play_local():
 	
 def play_online():
 	global game_window, res
-	pass
+	online_menu(game_window, res, "Simek")
+	
+
 
 
 pygame.init()
