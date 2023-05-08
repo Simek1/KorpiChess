@@ -469,8 +469,7 @@ class button(object):
 		txt_rect = txt.get_rect()
 		if self.size[0] < txt_rect.width:
 			self.size[0] = txt_rect.width+20
-			self.rect = pygame.Rect(
-				self.pos[0], self.pos[1], self.size[0], self.size[1])
+			self.rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
 		if self.graph == "":
 			pygame.draw.rect(win, self.color, self.rect)
 		else:
