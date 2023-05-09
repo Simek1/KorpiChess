@@ -3,7 +3,8 @@ import sys
 import copy
 import time
 from pygame.locals import *
-
+from server import *
+from client import *
 #pygame.init()
 
 #res = (800, 600)

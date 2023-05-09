@@ -1,6 +1,9 @@
 import pygame
 import pygame_menu
+import socket
 from kings_chess import *
+from requests import get
+
 
 class input_box(object):
 	def __init__(self, size, pos, font_size, limit, text="", uppertext=""):
@@ -34,11 +37,18 @@ def online_menu(win, res, nick):
 	eg_render=font.render(longest_ip, True, (0, 0, 0))
 	eg_render=eg_render.get_rect()
 	ip_box_size=(eg_render.width, eg_render.height)
+	externalip=exip = get('https://api.ipify.org').content.decode('utf8')
+	localip=socket.gethostbyname(socket.gethostname())
+	ex_ip_txt=font.render("IP zewnętrzne: "+externalip, True, (0,0,0))
+	local_ip_txt=font.render("Lokalne IP: "+str(localip), True, (0,0,0))
+	ex_ip_pos=((res[0]/4)*3-ex_ip_txt.get_rect().width/2, res[1]/10*7)
+	local_ip_pos=((res[0]/4)*3-local_ip_txt.get_rect().width/2, res[1]/10*8)
 	join_ip_box=input_box(ip_box_size, ((res[0]/4)-(ip_box_size[0]/2),(res[1]/10)*3), font_size, 15,"", "IP serwera")
 	join_port_box=input_box(ip_box_size, ((res[0]/4)-(ip_box_size[0]/2),(res[1]/10)*4), font_size, 8,"", "Port serwera")
 	create_ip_box=input_box(ip_box_size, ((res[0]/4)*3-(ip_box_size[0]/2),(res[1]/10)*3), font_size, 15,"0.0.0.0", "IP serwera")
 	create_port_box=input_box(ip_box_size, ((res[0]/4)*3-(ip_box_size[0]/2),(res[1]/10)*4), font_size, 8,"", "Port serwera")
-	boxes=[join_ip_box, join_port_box, create_ip_box, create_port_box]
+	nick_box=input_box(ip_box_size, ((res[0]/4)*2-ip_box_size[0]/2, res[1]/10), font_size, 15, nick, "Nick: ")
+	boxes=[join_ip_box, join_port_box, create_ip_box, create_port_box, nick_box]
 	left_column=pygame.Rect(res[0]/40, 0, (res[0]/2)-((res[0]/40)*2), res[1])
 	right_column=pygame.Rect(res[0]/40+res[0]/2, 0, (res[0]/2)-((res[0]/40)*2), res[1])
 	title_font=pygame.font.SysFont("arial", int(res[0]/30))
@@ -52,9 +62,11 @@ def online_menu(win, res, nick):
 	join_button=button(((res[0]/4)-(len("Dołącz")*((res[1]/10)/7)), (res[1]/10)*6), [button_size, button_size], (189,189,189), text="Dołącz")
 	create_button=button(((res[0]/4)*3-(len("Stwórz")*((res[1]/10)/7)), (res[1]/10)*6), [button_size, button_size], (189,189,189), text="Stwórz")
 	buttons=[join_button, create_button]
-	playing=1
+	menuing=1
+	hosting=0
+	connected=0
 	
-	while playing:
+	while menuing:
 		win.fill((90,200,210))
 		pygame.draw.rect(win,(90,180,180), left_column)
 		pygame.draw.rect(win,(90,180,180), right_column)
@@ -62,7 +74,7 @@ def online_menu(win, res, nick):
 		win.blit(txt_create, ((res[0]/4)*3-txt_create_size/2, (res[1]/10)*2))
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
-				playing=0
+				menuing=0
 				break
 			elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 				for box in boxes:
@@ -70,6 +82,17 @@ def online_menu(win, res, nick):
 						box.status=1
 					else:
 						box.status=0
+				if join_button.rect.collidepoint(event.pos):
+					print("join")
+				if create_button.rect.collidepoint(event.pos):
+					try:
+						start_server(create_port_box.text, create_ip_box.text)
+						hosting=1
+						menuing=0
+					except Exception as e:
+						hosting=0
+						menuing=1
+						print(e)
 			elif event.type == pygame.KEYDOWN:
 				print(event.key)
 				for box in boxes:
@@ -82,5 +105,14 @@ def online_menu(win, res, nick):
 			box.draw(win)
 		for b in buttons:
 			b.draw(win)
+		win.blit(ex_ip_txt, ex_ip_pos)
+		win.blit(local_ip_txt, local_ip_pos)
+		pygame.display.update()
+	while hosting==1:
+		win.fill((185, 182, 183))
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				hosting=0
+				break
 		pygame.display.update()
 	
