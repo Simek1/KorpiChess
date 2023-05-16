@@ -255,8 +255,9 @@ def online_menu(win, res, nick):
 	while hosting==1: #wersja lobby dla hosta
 		if nicks!=old_nicks:
 			txt_nicks=[]
-			old_nicks=nicks
+			old_nicks=nicks.copy()
 			i=3
+			print(nicks, "nicks")
 			for x in nicks:
 				nic=font.render(nicks[x], True, (0,0,0))
 				nic_width=nic.get_rect().width
@@ -267,6 +268,7 @@ def online_menu(win, res, nick):
 		if new_msg!=[]:
 			chat.update_chat(new_msg)
 			new_msg.clear()
+			print(nicks)
 		if len(nicks)<2:
 			start_button.status=0
 		else:
@@ -307,6 +309,9 @@ def online_menu(win, res, nick):
 		win.blit(waiting_txt, waiting_txt_pos)
 		if new_msg!=[]:
 			chat.update_chat(new_msg)
+			for x in new_msg:
+				if x=="<SERVER>: Server został wyłączony.":
+					connected=0
 			new_msg.clear()
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
