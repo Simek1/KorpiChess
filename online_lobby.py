@@ -230,7 +230,7 @@ def online_menu(win, res, nick):
 						connect_to_server(create_port_box.text, localip, nick_box.text)
 						txt_players=title_font.render("Gracze:", True, (0,0,0))
 						txt_players_width=txt_players.get_rect().width/2
-						chat=chat_box((res[1]-100, res[1]/5*3), (res[0]-res[1]+100, res[1]/5*2), font_size)
+						chat=chat_box((res[1]-res[1]/6, res[1]/5*3), (res[0]-res[1]+res[1]/6, res[1]/5*2), font_size)
 						new_msg=[]
 						downloadThread=threading.Thread(target=download_msg, args=(new_msg,))
 						downloadThread.start()
