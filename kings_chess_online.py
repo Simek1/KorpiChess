@@ -383,15 +383,27 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 			playing = False
 		if msgs!=[]: #dorobic filtrowanie wiadomoscie ze wzgledu na \ i sprawdzic czy ta lista bedzie sie akutalizowac, jesli nie to sprobowac zrobic z niej zmienna globalna
 			chat.update_chat(msgs)
+			for x in msgs:
+				if "\chat" not in x:
+					if "\move" in x:
+						apos=x.split()[2]
+						mve=x.split()[3]
+					if "\attack" in x:
+						apos=x.split()[2]
+						mve=x.split()[3]
+					if "\transform" in x:
+						apos=x.split()[2]
+						mve=x.split()[3]
+						fig=x.split[4]
+					if "\time" in x:
+						pass
 			msgs.clear()
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
 		board.draw(game_window)
 		add_button.draw(game_window)
-		game_window.blit(font.render(
-			turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
-		game_window.blit(font.render(check_txt, True, (0, 0, 0)),
-						 (board.res[0]+15, board.res[1]/2))
+		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
+		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15, board.res[1]/2))
 		white_watch.update(game_window, board)
 		black_watch.update(game_window, board)
 
@@ -449,6 +461,7 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 							y = i
 						i += 1
 					if [x, y] in hw.att:
+						#send(f"\attack {hw.pos} {[x, y]}")
 						hw.pos = (x, y)
 						destroy_enemy((x, y), turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						check = False
@@ -478,6 +491,7 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 									black_pawn.draw(game_window, board)
 								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					elif [x, y] in hw.mv:
+						old_pos=hw.pos
 						hw.pos = (x, y)
 						check = False
 						if turn == "white":
@@ -497,6 +511,7 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 							transform = True
 							tr = hw
 						if transform == False:
+							send(f"\move {old_pos} {[x, y]}")
 							en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 							if en != []:  # blokowanie ruchow gdy jest szach
 								# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
