@@ -179,35 +179,43 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 							b_destroyed["rook"]-=1
 							tr.transform("rook", rook_w_png)
 							transform=False
+							send('\transform{t_type} {old_pos} {tr.pos} "rook"')
 						elif knight_w_button.rect.collidepoint(event.pos) and b_destroyed["knight"]>0:
 							b_destroyed["knight"]-=1
 							tr.transform("knight", knight_w_png)
 							transform=False
+							send('\transform{t_type} {old_pos} {tr.pos} "knight"')
 						elif bishop_w_button.rect.collidepoint(event.pos) and b_destroyed["bishop"]>0:
 							b_destroyed["bishop"]-=1
 							tr.transform("bishop", bishop_w_png)
 							transform=False
+							send('\transform{t_type} {old_pos} {tr.pos} "bishop"')
 						elif queen_w_button.rect.collidepoint(event.pos) and b_destroyed["queen"]>0:
 							b_destroyed["queen"]-=1
 							tr.transform("queen", queen_w_png)
 							transform=False
+							send('\transform{t_type} {old_pos} {tr.pos} "queen"')
 					else:
 						if rook_b_button.rect.collidepoint(event.pos) and w_destroyed["rook"]>0:
 							w_destroyed["rook"]-=1
 							tr.transform("rook", rook_b_png)
 							transform=False
+							send('\transform{t_type} {old_pos} {tr.pos} "rook"')
 						elif knight_b_button.rect.collidepoint(event.pos) and w_destroyed["knight"]>0:
 							w_destroyed["knight"]-=1
 							tr.transform("knight", knight_b_png)
 							transform=False
+							send('\transform{t_type} {old_pos} {tr.pos} "knight"')
 						elif bishop_b_button.rect.collidepoint(event.pos) and w_destroyed["bishop"]>0:
 							w_destroyed["bishop"]-=1
 							tr.transform("bishop", bishop_b_png)
 							transform=False
+							send('\transform{t_type} {old_pos} {tr.pos} "bishop"')
 						elif queen_b_button.rect.collidepoint(event.pos) and w_destroyed["queen"]>0:
 							w_destroyed["queen"]-=1
 							tr.transform("queen", queen_b_png)
 							transform=False
+							send('\transform{t_type} {old_pos} {tr.pos} "queen"')
 			if transform==False:
 				en=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 				if en!=[]: #blokowanie ruchow gdy jest szach
@@ -383,7 +391,7 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 			playing = False
 		if msgs!=[]: #dorobic filtrowanie wiadomoscie ze wzgledu na \ i sprawdzic czy ta lista bedzie sie akutalizowac, jesli nie to sprobowac zrobic z niej zmienna globalna
 			chat.update_chat(msgs)
-			for x in msgs:
+			for x in msgs: #dorobic dzialania typu transformacja i sprawdzanie szacha
 				if "\chat" not in x:
 					if "\move" in x:
 						apos=x.split()[2]
@@ -391,7 +399,11 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 					if "\attack" in x:
 						apos=x.split()[2]
 						mve=x.split()[3]
-					if "\transform" in x:
+					if "\transformattack" in x:
+						apos=x.split()[2]
+						mve=x.split()[3]
+						fig=x.split[4]
+					if "\transformmove" in x:
 						apos=x.split()[2]
 						mve=x.split()[3]
 						fig=x.split[4]
@@ -461,7 +473,7 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 							y = i
 						i += 1
 					if [x, y] in hw.att:
-						#send(f"\attack {hw.pos} {[x, y]}")
+						old_pos=hw.pos
 						hw.pos = (x, y)
 						destroy_enemy((x, y), turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						check = False
@@ -481,7 +493,9 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 						if hw.type == "pawn" and ((hw.color == "w" and hw.pos[1] == 0) or (hw.color == "b" and hw.pos[1] == 7)):
 							transform = True
 							tr = hw
+							t_type="attack"
 						if transform == False:
+							send(f"\attack {old_pos} {[x, y]}")
 							en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 							if en != []:  # blokowanie ruchow gdy jest szach
 								# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
@@ -510,6 +524,7 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 						if hw.type == "pawn" and ((hw.color == "w" and hw.pos[1] == 0) or (hw.color == "b" and hw.pos[1] == 7)):
 							transform = True
 							tr = hw
+							t_type="move"
 						if transform == False:
 							send(f"\move {old_pos} {[x, y]}")
 							en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
