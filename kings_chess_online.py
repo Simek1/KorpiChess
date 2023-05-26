@@ -338,6 +338,7 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 							i += 1
 						if x!=-1 and y!=-1 and [x,y] in possible_pos:
 							board.append_figure(temp, (x,y), white_pawns, black_pawns)
+							send(f"\add {(x,y)} {temp.type}")
 							adding=0
 							if temp.color=="w":
 								count_w[temp.type]-=1
@@ -391,22 +392,176 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 			playing = False
 		if msgs!=[]: #dorobic filtrowanie wiadomoscie ze wzgledu na \ i sprawdzic czy ta lista bedzie sie akutalizowac, jesli nie to sprobowac zrobic z niej zmienna globalna
 			chat.update_chat(msgs)
-			for x in msgs: #dorobic dzialania typu transformacja i sprawdzanie szacha
+			for x in msgs: #dorobic dzialania typu transformacja i sprawdzanie szacha uwzględnienie aby nie wykonywało się to dla osoby która wysłąła wiadomosc
 				if "\chat" not in x:
 					if "\move" in x:
-						apos=x.split()[2]
-						mve=x.split()[3]
+						apos=eval(x.split()[2])
+						mve=eval(x.split()[3])
+						if player_color=="white":
+							for f in black_pawns:
+								if f.pos==apos:
+									f.pos=mve
+									break
+							turn = "white"
+							turn_pawns = white_pawns
+							turn_txt = "Tura białych"
+							white_watch.resume()
+							black_watch.pause_timer()							
+						else:
+							for f in white_pawns:
+								if f.pos==apos:
+									f.pos=mve
+									break
+							turn = "black"
+							turn_pawns = black_pawns
+							turn_txt = "Tura czarnych"
+							black_watch.resume()
+							white_watch.pause_timer()
+						en = is_check(op_, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+						if en != []:  # blokowanie ruchow gdy jest szach
+							# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
+							for white_pawn in white_pawns:
+								white_pawn.draw(game_window, board)
+							for black_pawn in black_pawns:
+								black_pawn.draw(game_window, board)
+							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+						#endturn
 					if "\attack" in x:
 						apos=x.split()[2]
 						mve=x.split()[3]
+						destroy_enemy(mve, player_color, white_pawns, black_pawns, w_destroyed, b_destroyed)
+						if player_color=="white":
+							for f in black_pawns:
+								if f.pos==apos:
+									f.pos=mve
+									break
+							turn = "white"
+							turn_pawns = white_pawns
+							turn_txt = "Tura białych"
+							white_watch.resume()
+							black_watch.pause_timer()
+						else:
+							for f in white_pawns:
+								if f.pos==apos:
+									f.pos=mve
+									break
+							turn = "black"
+							turn_pawns = black_pawns
+							turn_txt = "Tura czarnych"
+							black_watch.resume()
+							white_watch.pause_timer()
+						en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+						if en != []:  # blokowanie ruchow gdy jest szach
+							# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
+							for white_pawn in white_pawns:
+								white_pawn.draw(game_window, board)
+							for black_pawn in black_pawns:
+								black_pawn.draw(game_window, board)
+							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					if "\transformattack" in x:
 						apos=x.split()[2]
 						mve=x.split()[3]
 						fig=x.split[4]
+						destroy_enemy(mve, player_color, white_pawns, black_pawns, w_destroyed, b_destroyed)
+						if player_color=="white":
+							for f in black_pawns:
+								if f.pos==apos:
+									f.pos=mve
+									break
+							turn = "white"
+							turn_pawns = white_pawns
+							turn_txt = "Tura białych"
+							white_watch.resume()
+							black_watch.pause_timer()
+						else:
+							for f in white_pawns:
+								if f.pos==apos:
+									f.pos=mve
+									break
+							turn = "black"
+							turn_pawns = black_pawns
+							turn_txt = "Tura czarnych"
+							black_watch.resume()
+							white_watch.pause_timer()
+						if player_color=="white":
+							if fig=="queen":
+								f.transform("queen", queen_b_png)
+							if fig=="knight":
+								f.transform("knight", knight_b_png)
+							if fig=="rook":
+								f.transform("rook", rook_b_png)
+							if fig=="bishop":
+								f.transform("bishop", bishop_b_png)
+						else:
+							if fig=="queen":
+								f.transform("queen", queen_w_png)
+							if fig=="knight":
+								f.transform("knight", knight_w_png)
+							if fig=="rook":
+								f.transform("rook", rook_w_png)
+							if fig=="bishop":
+								f.transform("bishop", bishop_w_png)
+						en=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+						if en!=[]: #blokowanie ruchow gdy jest szach
+							#aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
+							for white_pawn in white_pawns:
+								white_pawn.draw(game_window, board)
+							for black_pawn in black_pawns:
+								black_pawn.draw(game_window, board)
+							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					if "\transformmove" in x:
 						apos=x.split()[2]
 						mve=x.split()[3]
 						fig=x.split[4]
+						if player_color=="white":
+							for f in black_pawns:
+								if f.pos==apos:
+									f.pos=mve
+									break
+							turn = "white"
+							turn_pawns = white_pawns
+							turn_txt = "Tura białych"
+							white_watch.resume()
+							black_watch.pause_timer()
+						else:
+							for f in white_pawns:
+								if f.pos==apos:
+									f.pos=mve
+									break
+							turn = "black"
+							turn_pawns = black_pawns
+							turn_txt = "Tura czarnych"
+							black_watch.resume()
+							white_watch.pause_timer()
+						if player_color=="white":
+							if fig=="queen":
+								f.transform("queen", queen_b_png)
+							if fig=="knight":
+								f.transform("knight", knight_b_png)
+							if fig=="rook":
+								f.transform("rook", rook_b_png)
+							if fig=="bishop":
+								f.transform("bishop", bishop_b_png)
+						else:
+							if fig=="queen":
+								f.transform("queen", queen_w_png)
+							if fig=="knight":
+								f.transform("knight", knight_w_png)
+							if fig=="rook":
+								f.transform("rook", rook_w_png)
+							if fig=="bishop":
+								f.transform("bishop", bishop_w_png)
+						en=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+						if en!=[]: #blokowanie ruchow gdy jest szach
+							#aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
+							for white_pawn in white_pawns:
+								white_pawn.draw(game_window, board)
+							for black_pawn in black_pawns:
+								black_pawn.draw(game_window, board)
+							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+					if "\add" in x:
+						apos=x.split()[2]
+						fig=x.split[3]
 					if "\time" in x:
 						pass
 			msgs.clear()
@@ -496,14 +651,6 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 							t_type="attack"
 						if transform == False:
 							send(f"\attack {old_pos} {[x, y]}")
-							en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
-							if en != []:  # blokowanie ruchow gdy jest szach
-								# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
-								for white_pawn in white_pawns:
-									white_pawn.draw(game_window, board)
-								for black_pawn in black_pawns:
-									black_pawn.draw(game_window, board)
-								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					elif [x, y] in hw.mv:
 						old_pos=hw.pos
 						hw.pos = (x, y)
@@ -527,14 +674,7 @@ def kings_chess_online(game_window, res, player_color, msgs, chat_history):
 							t_type="move"
 						if transform == False:
 							send(f"\move {old_pos} {[x, y]}")
-							en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
-							if en != []:  # blokowanie ruchow gdy jest szach
-								# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
-								for white_pawn in white_pawns:
-									white_pawn.draw(game_window, board)
-								for black_pawn in black_pawns:
-									black_pawn.draw(game_window, board)
-								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+							
 				hold = 0
 				hw = 0
 		# kiedy trzymam figure
