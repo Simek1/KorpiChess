@@ -268,7 +268,6 @@ def online_menu(win, res, nick):
 		if new_msg!=[]:
 			chat.update_chat(new_msg)
 			new_msg.clear()
-			print(nicks)
 		if len(nicks)<2:
 			start_button.status=0
 		else:
