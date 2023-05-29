@@ -3,6 +3,7 @@ import pygame_menu
 from pygame_menu import themes
 from kings_chess import *
 from online_lobby import *
+from kings_chess_online import *
 
 def play_local():
 	global game_window, res
