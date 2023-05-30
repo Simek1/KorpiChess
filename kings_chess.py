@@ -524,6 +524,7 @@ def end_turn(turn, turn_pawns, white_pawns, black_pawns, turn_txt, white_watch, 
 def destroy_enemy(pos, turn, white_pawns, black_pawns, w_destroyed, b_destroyed):
 	i = 0
 	if turn == "white":
+		print("white", "destroy")
 		for pawn in black_pawns:
 			if pawn.pos == pos:
 				b_destroyed[pawn.type]+=1
@@ -531,6 +532,7 @@ def destroy_enemy(pos, turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
 				break
 			i += 1
 	else:
+		print("black", destroy)
 		for pawn in white_pawns:
 			if pawn.pos == pos:
 				w_destroyed[pawn.type]+=1

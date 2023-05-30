@@ -166,7 +166,6 @@ class color_rects(object):
 		pygame.draw.rect(win, color, self.rect)		
 
 def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_history):
-	print(player_color, player_name)
 	res_b = (res[1]-res[1]/6, res[1]-res[1]/6)
 	bg_color = (185, 182, 183)
 	
@@ -251,7 +250,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	add_pawn_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*5, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Pionek(8)", graph=pawn_w_png)
 	add_king_w = button([(add_w.pos[0]+add_w.size[0]/2-pawn_res[0]/2), add_w.pos[1] + add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Król", graph=king_w_png)
 	
-	add_button = button([board.res[1]-board.res[1]/6, (board.res[1]/6)*5],  [20, 50], (205, 202, 203), text="Dodaj figurę")
+	add_button = button([board.res[1]-(board.res[1]/6)*2, (board.res[1]/6)*6],  [20, 50], (205, 202, 203), text="Dodaj figurę")
 	
 	chat=chat_box((res[1]-res[1]/6, res[1]/5*3), (res[0]-res[1]+res[1]/6, res[1]/5*2), font_size)
 	chat.converted_msgs=chat_history
@@ -299,6 +298,10 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	adding = False
 	check_add=[]
 	figure=0
+	if player_color=="white":
+		opponent_color="black"
+	else:
+		opponent_color="white"
 
 	deciding = True
 	first_frame = True
@@ -430,7 +433,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						running = False
 						adding == False
 						pygame.quit()
-					elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and turn==player_color: #Sprawdzenie która figura została wybrana
+					elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: #Sprawdzenie która figura została wybrana
 						temp=0
 						if turn == "white":
 							if count_w["king"]==0:
@@ -565,8 +568,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 			for x in msgs: #dorobic dzialania typu transformacja i sprawdzanie szacha uwzględnienie aby nie wykonywało się to dla osoby która wysłąła wiadomosc
 				if "@chat" not in x and player_name not in x:
 					if "@move" in x:
-						apos=eval(x.split()[2])
-						mve=eval(x.split()[3])
+						x=x.split()
+						apos=eval(x[2]+x[3])
+						mve=eval(x[4]+x[5])
 						if player_color=="white":
 							for f in black_pawns:
 								if f.pos==apos:
@@ -587,7 +591,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn_txt = "Tura czarnych"
 							black_watch.resume()
 							white_watch.pause_timer()
-						en = is_check(op_, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+						en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 						if en != []:  # blokowanie ruchow gdy jest szach
 							# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
 							for white_pawn in white_pawns:
@@ -597,9 +601,11 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 						#endturn
 					if "@attack" in x:
-						apos=eval(x.split()[2]+x.split()[3])
-						mve=eval(x.split()[4]+x.split()[5])
-						destroy_enemy(mve, player_color, white_pawns, black_pawns, w_destroyed, b_destroyed)
+						x=x.split()
+						apos=eval(x[2]+x[3])
+						mve=eval(x[4]+x[5])
+						print(mve, opponent_color, player_color)
+						destroy_enemy(mve, opponent_color, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						if player_color=="white":
 							for f in black_pawns:
 								if f.pos==apos:
@@ -629,10 +635,10 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								black_pawn.draw(game_window, board)
 							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					if "@transformattack" in x:
-						apos=eval(x.split()[2]+x.split()[3])
-						mve=eval(x.split()[4]+x.split()[5])
-						fig=x.split()[6]
-						destroy_enemy(mve, player_color, white_pawns, black_pawns, w_destroyed, b_destroyed)
+						apos=eval(x[2]+x[3])
+						mve=eval(x[4]+x[5])
+						fig=x[6]
+						destroy_enemy(mve, opponent_color, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						if player_color=="white":
 							for f in black_pawns:
 								if f.pos==apos:
@@ -680,9 +686,10 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								black_pawn.draw(game_window, board)
 							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					if "@transformmove" in x:
-						apos=eval(x.split()[2]+x.split()[3])
-						mve=eval(x.split()[4]+x.split()[5])
-						fig=x.split()[6]
+						x=x.split()
+						apos=eval(x[2]+x[3])
+						mve=eval(x[4]+x[5])
+						fig=x[6]
 						if player_color=="white":
 							for f in black_pawns:
 								if f.pos==apos:
@@ -730,8 +737,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								black_pawn.draw(game_window, board)
 							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					if "@add" in x:
-						apos=eval(x.split()[2]+x.split()[3])
-						fig=x.split[4]
+						x=x.split()
+						apos=eval(x[2]+x[3])
+						fig=x[4]
 						if player_color=="white":
 							if fig=="pawn":
 								afig=pawn(pawn_b_png, apos, pawn_res, "pawn", "b")
@@ -795,7 +803,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 				deciding = False
 				running = False
 			# wybranie trzymanej figury
-			if pygame.mouse.get_pressed()[0]:
+			if pygame.mouse.get_pressed()[0]  and turn==player_color:
 				if click == 0:
 					mouse_pos = list(pygame.mouse.get_pos())
 					x = -1
@@ -818,7 +826,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								break
 				click += 1
 			# kiedy puszczam figure
-			if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+			if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1  and turn==player_color:
 				if add_button.rect.collidepoint(event.pos):
 					adding=True
 					if en!=[]:
@@ -1061,7 +1069,8 @@ def online_menu(win, res, nick):
 						else:
 							pl_color="black"
 							op_color="white"
-						send("@gamestart {op_color}")
+						print(nick_box.text, pl_color, ":)h")
+						send(f"@gamestart {op_color}")
 						kings_chess_online(win, res, nick_box.text, pl_color, new_msg, chat.converted_msgs)
 					else:
 						send("@chat Potrzeba 2 graczy aby wystartować")
@@ -1096,8 +1105,9 @@ def online_menu(win, res, nick):
 			for x in new_msg:
 				if x=="<SERVER>: Server został wyłączony.":
 					connected=0
-				if "@gamestart" in x and "\chat" not in x:
+				if "@gamestart" in x and "@chat" not in x:
 					pl_color=x.split()[2]
+					print(nick_box.text, pl_color, ":)")
 					kings_chess_online(win, res, nick_box.text, pl_color, new_msg, chat.converted_msgs)
 			new_msg.clear()
 		for event in pygame.event.get():
