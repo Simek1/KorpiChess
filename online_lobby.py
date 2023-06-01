@@ -383,7 +383,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							w_destroyed["queen"]-=1
 							tr.transform("queen", queen_b_png)
 							transform=False
-							send('@transform{t_type} {old_pos} {tr.pos} "queen"')
+							send(f'@transform{t_type} {old_pos} {tr.pos} "queen"')
 							send(f"@time {black_watch.remaining_time}")  
 			if transform==False:
 				en=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
@@ -869,7 +869,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							tr = hw
 							t_type="attack"
 						if transform == False:
-							send(f"@attack {old_pos} {[x, y]}")
+							send(f"@attack {old_pos} {(x, y)}")
 							if player_color=="white":
 								send(f"@time {white_watch.remaining_time}")
 							else:
@@ -896,7 +896,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							tr = hw
 							t_type="move"
 						if transform == False:
-							send(f"@move {old_pos} {[x, y]}")
+							send(f"@move {old_pos} {(x, y)}")
 							if player_color=="white":
 								send(f"@time {white_watch.remaining_time}")
 							else:

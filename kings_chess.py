@@ -532,7 +532,7 @@ def destroy_enemy(pos, turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
 				break
 			i += 1
 	else:
-		print("black", destroy)
+		print("black", "destroy")
 		for pawn in white_pawns:
 			if pawn.pos == pos:
 				w_destroyed[pawn.type]+=1
