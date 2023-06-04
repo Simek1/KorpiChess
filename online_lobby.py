@@ -27,7 +27,12 @@ class input_box(object):
 		else:
 			color=(self.color[0]+30,self.color[1]+30,self.color[2]+30)
 		pygame.draw.rect(win, color, self.rect)
-		win.blit(txt, (self.pos[0], self.pos[1]))
+		temp_txt=txt
+		i=1
+		while temp_txt.get_rect().width>self.size[0]:
+			temp_txt=self.font.render(self.text[i:], True, (0, 0, 0))
+			i+=1
+		win.blit(temp_txt, (self.pos[0], self.pos[1]))
 		if self.uppertext!="":
 			txt=self.font.render(self.uppertext, True, (0, 0, 0))
 			width=txt.get_rect().width
@@ -254,6 +259,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	
 	chat=chat_box((res[1]-res[1]/6, res[1]/5*3), (res[0]-res[1]+res[1]/6, res[1]/5*2), font_size)
 	chat.converted_msgs=chat_history
+	numpad_keys=[1073741922, 1073741913, 1073741914, 1073741915, 1073741916, 1073741917, 1073741918, 1073741919, 1073741920, 1073741921]
 	#te elementy muszą zostać zrestartowane w każdej grze
 	board.pawns_matrix=[[0 for x in range(0, 8)] for x in range(0, 8)]
 	black_pawns = []
@@ -333,57 +339,57 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					deciding=False
 					running=False
 					transform==False
-					pygame.quit()
+					send("@stopgame")
 				elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 					if tr.color=="w":
 						if rook_w_button.rect.collidepoint(event.pos) and b_destroyed["rook"]>0:
 							b_destroyed["rook"]-=1
 							tr.transform("rook", rook_w_png)
 							transform=False
-							send(f'@transform{t_type} {old_pos} {tr.pos} "rook"')
+							send(f'@transform{t_type} {old_pos} {tr.pos} rook')
 							send(f"@time {white_watch.remaining_time}")
 						elif knight_w_button.rect.collidepoint(event.pos) and b_destroyed["knight"]>0:
 							b_destroyed["knight"]-=1
 							tr.transform("knight", knight_w_png)
 							transform=False
-							send(f'@transform{t_type} {old_pos} {tr.pos} "knight"')
+							send(f'@transform{t_type} {old_pos} {tr.pos} knight')
 							send(f"@time {white_watch.remaining_time}")
 						elif bishop_w_button.rect.collidepoint(event.pos) and b_destroyed["bishop"]>0:
 							b_destroyed["bishop"]-=1
 							tr.transform("bishop", bishop_w_png)
 							transform=False
-							send(f'@transform{t_type} {old_pos} {tr.pos} "bishop"')
+							send(f'@transform{t_type} {old_pos} {tr.pos} bishop')
 							send(f"@time {white_watch.remaining_time}")
 						elif queen_w_button.rect.collidepoint(event.pos) and b_destroyed["queen"]>0:
 							b_destroyed["queen"]-=1
 							tr.transform("queen", queen_w_png)
 							transform=False
-							send(f'@transform{t_type} {old_pos} {tr.pos} "queen"')
+							send(f'@transform{t_type} {old_pos} {tr.pos} queen')
 							send(f"@time {white_watch.remaining_time}")
 					else:
 						if rook_b_button.rect.collidepoint(event.pos) and w_destroyed["rook"]>0:
 							w_destroyed["rook"]-=1
 							tr.transform("rook", rook_b_png)
 							transform=False
-							send(f'@transform{t_type} {old_pos} {tr.pos} "rook"')
+							send(f'@transform{t_type} {old_pos} {tr.pos} rook')
 							send(f"@time {black_watch.remaining_time}")  
 						elif knight_b_button.rect.collidepoint(event.pos) and w_destroyed["knight"]>0:
 							w_destroyed["knight"]-=1
 							tr.transform("knight", knight_b_png)
 							transform=False
-							send(f'@transform{t_type} {old_pos} {tr.pos} "knight"')
+							send(f'@transform{t_type} {old_pos} {tr.pos} knight')
 							send(f"@time {black_watch.remaining_time}")  
 						elif bishop_b_button.rect.collidepoint(event.pos) and w_destroyed["bishop"]>0:
 							w_destroyed["bishop"]-=1
 							tr.transform("bishop", bishop_b_png)
 							transform=False
-							send(f'@transform{t_type} {old_pos} {tr.pos} "bishop"')
+							send(f'@transform{t_type} {old_pos} {tr.pos} bishop')
 							send(f"@time {black_watch.remaining_time}")  
 						elif queen_b_button.rect.collidepoint(event.pos) and w_destroyed["queen"]>0:
 							w_destroyed["queen"]-=1
 							tr.transform("queen", queen_b_png)
 							transform=False
-							send(f'@transform{t_type} {old_pos} {tr.pos} "queen"')
+							send(f'@transform{t_type} {old_pos} {tr.pos} queen')
 							send(f"@time {black_watch.remaining_time}")  
 			if transform==False:
 				en=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
@@ -432,7 +438,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						deciding = False
 						running = False
 						adding == False
-						pygame.quit()
+						send("@stopgame")
 					elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: #Sprawdzenie która figura została wybrana
 						temp=0
 						if turn == "white":
@@ -493,7 +499,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						deciding = False
 						running = False
 						adding == False
-						pygame.quit()
+						send("@stopgame")
 					if event.type == pygame.MOUSEBUTTONUP:
 						mouse_pos = pygame.mouse.get_pos()
 						x=-1
@@ -566,7 +572,10 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 		if msgs!=[]: #dorobic filtrowanie wiadomoscie ze wzgledu na \ i sprawdzic czy ta lista bedzie sie akutalizowac, jesli nie to sprobowac zrobic z niej zmienna globalna
 			chat.update_chat(msgs)
 			for x in msgs: #dorobic dzialania typu transformacja i sprawdzanie szacha uwzględnienie aby nie wykonywało się to dla osoby która wysłąła wiadomosc
-				if "@chat" not in x and player_name not in x:
+				if x=="<SERVER>: Server został wyłączony.":
+					playing=False
+					connected=False
+				if "@chat" not in x and "<"+player_name+">" not in x:
 					if "@move" in x:
 						x=x.split()
 						apos=eval(x[2]+x[3])
@@ -604,7 +613,6 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						x=x.split()
 						apos=eval(x[2]+x[3])
 						mve=eval(x[4]+x[5])
-						print(mve, opponent_color, player_color)
 						destroy_enemy(mve, opponent_color, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						if player_color=="white":
 							for f in black_pawns:
@@ -635,6 +643,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								black_pawn.draw(game_window, board)
 							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					if "@transformattack" in x:
+						x=x.split()
 						apos=eval(x[2]+x[3])
 						mve=eval(x[4]+x[5])
 						fig=x[6]
@@ -687,6 +696,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					if "@transformmove" in x:
 						x=x.split()
+						print(x)
 						apos=eval(x[2]+x[3])
 						mve=eval(x[4]+x[5])
 						fig=x[6]
@@ -783,6 +793,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							black_watch.remaining_time=rm_time
 						else:
 							white_watch_remaining_time=rm_time
+					if "<SERVER>" in x and "wyłączył grę" in x:
+						playing=0
 			msgs.clear()
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
@@ -802,6 +814,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 				playing = False
 				deciding = False
 				running = False
+				send("@stopgame")
 			# wybranie trzymanej figury
 			if pygame.mouse.get_pressed()[0]  and turn==player_color:
 				if click == 0:
@@ -833,6 +846,19 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						check_add=add_defence(count_w, count_b, board, turn, en, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						if check_txt=="Szach_Mat!" and check_add!=[]:
 							check_txt=""
+			if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: #osobny warunek dla chatu zeby mozna bylo pisac nawet jak nie ma twojej tury
+				if chat.chat_input.rect.collidepoint(event.pos):
+					chat.chat_input.status=1
+				else:
+					chat.chat_input.status=0
+			if event.type == pygame.KEYDOWN:
+				if chat.chat_input.status==1:
+					if event.key==13:
+						if len(chat.chat_input.text)>0:
+							send("@chat "+chat.chat_input.text)
+							chat.chat_input.text=""
+					else:
+						chat.chat_input.write(event.key, numpad_keys)
 			if click != 0 and pygame.mouse.get_pressed()[0] == False:
 				click = 0
 				if hold == 1:  # jesli trzymalem figure
@@ -1033,14 +1059,12 @@ def online_menu(win, res, nick):
 			txt_nicks=[]
 			old_nicks=nicks.copy()
 			i=3
-			print(nicks, "nicks")
 			for x in nicks:
 				nic=font.render(nicks[x], True, (0,0,0))
 				nic_width=nic.get_rect().width
 				nic_pos=(res[0]/4-nic_width/2, res[1]/10*i)
 				txt_nicks.append((nic, nic_pos))
 				i+=1
-				print(txt_nicks)
 		if new_msg!=[]:
 			chat.update_chat(new_msg)
 			new_msg.clear()
@@ -1105,6 +1129,14 @@ def online_menu(win, res, nick):
 			for x in new_msg:
 				if x=="<SERVER>: Server został wyłączony.":
 					connected=0
+				if "@nick" in x:
+					print(x, "x newnick")
+					new_nick=""
+					x=x.split()[1:]
+					for w in x:
+						new_nick=new_nick+w+" "
+					nick_box.text=new_nick[:-1]
+					print(new_nick, "gotowy nick")
 				if "@gamestart" in x and "@chat" not in x:
 					pl_color=x.split()[2]
 					print(nick_box.text, pl_color, ":)")

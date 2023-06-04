@@ -59,18 +59,38 @@ def connection(con, addres):
 					del(addreses[delindex])
 					del(nicks[addres])
 					con.close()
-				msg=f'<{nick}>: '+msg
-				print(f"{nick}: {msg}")
-				msg=msg.encode('utf-8')
-				msg_length=str(len(msg)).encode("utf-8")
-				msg_length+= b' '*(64-len(msg_length))
-				for x in users:
-					x.send(msg_length)
-					x.send(msg)
+				if "@stopgame" in msg:
+					msg=f"<SERVER> {nick} wyłączył grę"
+					msg=msg.encode('utf-8')
+					msg_length=str(len(msg)).encode("utf-8")
+					msg_length+= b' '*(64-len(msg_length))
+					for x in users:
+						x.send(msg_length)
+						x.send(msg)
+				else:					
+					msg=f'<{nick}>: '+msg
+					print(f"{nick}: {msg}")
+					msg=msg.encode('utf-8')
+					msg_length=str(len(msg)).encode("utf-8")
+					msg_length+= b' '*(64-len(msg_length))
+					for x in users:
+						x.send(msg_length)
+						x.send(msg)
 			else:
 				msg=con.recv(int(bytes_of_msg)).decode('utf-8')
-				nicks[addres]=msg
-				nick_seted=1			   
+				if msg in nicks.values():
+					msg=msg+"2"
+					nicks[addres]=msg
+					nick_seted=1
+					new_msg="@nick "+msg
+					new_msg=new_msg.encode('utf-8')
+					msg_length=str(len(new_msg)).encode("utf-8")
+					msg_length+= b' '*(64-len(msg_length))
+					users[1].send(msg_length)
+					users[1].send(new_msg)
+				else:
+					nicks[addres]=msg
+					nick_seted=1			   
 				notification=f"<SERVER>: {msg} połączył się."
 				notification=notification.encode('utf-8')
 				not_length=str(len(notification)).encode("utf-8")

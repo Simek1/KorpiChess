@@ -1117,10 +1117,8 @@ def kings_chess(game_window, res):
 		game_window.fill(bg_color)
 		board.draw(game_window)
 		add_button.draw(game_window)
-		game_window.blit(font.render(
-			turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
-		game_window.blit(font.render(check_txt, True, (0, 0, 0)),
-						 (board.res[0]+15, board.res[1]/2))
+		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
+		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15, board.res[1]/2))
 		white_watch.update(game_window, board)
 		black_watch.update(game_window, board)
 
