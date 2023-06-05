@@ -16,6 +16,14 @@ class input_box(object):
 		self.rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
 		self.uppertext=uppertext
 		self.status=0
+		self.upper=0
+		self.special=0
+		self.sh_alph={"q":"Q","w":"W","e":"E","r":"R","t":"T","y":"Y","u":"U","i":"I","o":"O","p":"P","[":"{","]":"}","\\":"|",
+			 "`":"~","1":"!","2":"@","3":"#","4":"$","5":"%","6":"^","7":"&","8":"*","9":"(","0":")","-":"_","=":"+",
+			 "a":"A","s":"S","d":"D","f":"F","g":"G","h":"H","j":"J","k":"K","l":"L",";":":","'":"\"",
+			 "z":"Z","x":"X","c":"C","v":"V","b":"B","n":"N","m":"M",",":"<",".":">","/":"?", 
+			 "ą":"Ą", "ę":"Ę", "ł":"Ł", "ó":"Ó","ż":"Ż","ź":"Ź","ć":"Ć","ń":"Ń","ś":"Ś"}
+		self.alt_alph={"a":"ą", "e":"ę", "l":"ł", "o":"ó","z":"ż","x":"ź", "c":"ć", "n":"ń", "s":"ś"}
 		if color=="":
 			self.color=(189,189,189)
 		else:
@@ -45,7 +53,14 @@ class input_box(object):
 				if letter in numpad_keys:
 					self.text+=str(numpad_keys.index(letter))
 				else:
-					self.text+=chr(letter)
+					letter=chr(letter)
+					if self.special==1:
+						if letter in self.alt_alph:
+							letter=self.alt_alph[letter]
+					if self.upper==1:
+						if letter in self.sh_alph:
+							letter=self.sh_alph[letter]
+					self.text+=letter
 		except Exception as e:
 				print(e)
 		
@@ -851,6 +866,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					chat.chat_input.status=1
 				else:
 					chat.chat_input.status=0
+					chat.chat_input.upper=0
+					chat.chat_input.special=0
 			if event.type == pygame.KEYDOWN:
 				if chat.chat_input.status==1:
 					if event.key==13:
@@ -858,7 +875,17 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							send("@chat "+chat.chat_input.text)
 							chat.chat_input.text=""
 					else:
+						if event.key in (1073742048, 1073742054, 1073742050):
+							chat.chat_input.special=1
+						if event.key in (1073742053, 1073742049):
+							chat.chat_input.upper=1
 						chat.chat_input.write(event.key, numpad_keys)
+			if event.type ==pygame.KEYUP:
+				if chat.chat_input.status==1:
+					if event.key in (1073742048, 1073742054, 1073742050):
+						chat.chat_input.special=0
+					if event.key in (1073742053, 1073742049):
+						chat.chat_input.upper=0
 			if click != 0 and pygame.mouse.get_pressed()[0] == False:
 				click = 0
 				if hold == 1:  # jesli trzymalem figure
@@ -1005,6 +1032,8 @@ def online_menu(win, res, nick):
 						box.status=1
 					else:
 						box.status=0
+						box.upper=0
+						box.special=0
 				if join_button.rect.collidepoint(event.pos):
 					try:
 						connected=1
@@ -1045,8 +1074,19 @@ def online_menu(win, res, nick):
 				print(event.key)
 				for box in boxes:
 					if box.status==1:
+						if event.key in (1073742048, 1073742054, 1073742050):
+							box.special=1
+						if event.key in (1073742053, 1073742049):
+							box.upper=1
 						box.write(event.key, numpad_keys)
 						break
+			elif event.type ==pygame.KEYUP:
+				for box in boxes:
+					if box.status==1:
+						if event.key in (1073742048, 1073742054, 1073742050):
+							box.special=0
+						if event.key in (1073742053, 1073742049):
+							box.upper=0
 		for box in boxes:
 			box.draw(win)
 		for b in buttons:
@@ -1085,6 +1125,8 @@ def online_menu(win, res, nick):
 					chat.chat_input.status=1
 				else:
 					chat.chat_input.status=0
+					chat.chat_input.special=0
+					chat.chat_input.upper=0
 				if start_button.rect.collidepoint(event.pos):
 					if start_button.status==1:
 						if white_rect.status==0:
@@ -1112,7 +1154,17 @@ def online_menu(win, res, nick):
 							send("@chat "+chat.chat_input.text)
 							chat.chat_input.text=""
 					else:
+						if event.key in (1073742048, 1073742054, 1073742050):
+							chat.chat_input.special=1
+						if event.key in (1073742053, 1073742049):
+							chat.chat_input.upper=1
 						chat.chat_input.write(event.key, numpad_keys)
+			elif event.type ==pygame.KEYUP:
+				if chat.chat_input.status==1:
+					if event.key in (1073742048, 1073742054, 1073742050):
+						chat.chat_input.special=0
+					if event.key in (1073742053, 1073742049):
+						chat.chat_input.upper=0
 		for x in txt_nicks:
 			win.blit(x[0],x[1])
 		chat.draw(win)
@@ -1159,7 +1211,17 @@ def online_menu(win, res, nick):
 							send("@chat "+chat.chat_input.text)
 							chat.chat_input.text=""
 					else:
+						if event.key in (1073742048, 1073742054, 1073742050):
+							chat.chat_input.special=1
+						if event.key in (1073742053, 1073742049):
+							chat.chat_input.upper=1
 						chat.chat_input.write(event.key, numpad_keys)
+			elif event.type ==pygame.KEYUP:
+				if chat.chat_input.status==1:
+					if event.key in (1073742048, 1073742054, 1073742050):
+						chat.chat_input.special=0
+					if event.key in (1073742053, 1073742049):
+						chat.chat_input.upper=0
 		chat.draw(win)
 		pygame.display.update()
 
