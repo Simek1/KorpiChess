@@ -186,7 +186,7 @@ class color_rects(object):
 		pygame.draw.rect(win, color, self.rect)		
 
 def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_history):
-	res_b = (res[1]-res[1]/6, res[1]-res[1]/6)
+	res_b = (res[1]-res[1]/5, res[1]-res[1]/5)
 	bg_color = (185, 182, 183)
 	
 	font_size = int(game_window.get_size()[0]/45)
@@ -312,7 +312,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	click = 0
 	hold = 0
 	turn = "white"
-	turn_txt = "Tura białych"
+	turn_txt = "Ruch białych"
 	turn_pawns = white_pawns
 	en = []
 	check_txt = ""
@@ -333,7 +333,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 			if tr.color=="w":
 				rook_w_button.undertext="Wieża("+str(b_destroyed["rook"])+")"
 				rook_w_button.draw(game_window)
-				knight_w_button.undertext="Rycerz("+str(b_destroyed["knight"])+")"
+				knight_w_button.undertext="Skoczek("+str(b_destroyed["knight"])+")"
 				knight_w_button.draw(game_window)
 				bishop_w_button.undertext="Goniec("+str(b_destroyed["bishop"])+")"
 				bishop_w_button.draw(game_window)
@@ -342,7 +342,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 			else:
 				rook_b_button.undertext="Wieża("+str(w_destroyed["rook"])+")"
 				rook_b_button.draw(game_window)
-				knight_b_button.undertext="Rycerz("+str(w_destroyed["knight"])+")"
+				knight_b_button.undertext="Skoczek("+str(w_destroyed["knight"])+")"
 				knight_b_button.draw(game_window)
 				bishop_b_button.undertext="Goniec("+str(w_destroyed["bishop"])+")"
 				bishop_b_button.draw(game_window)
@@ -423,7 +423,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					if count_w["king"]==0:
 						add_rook_w.undertext="Wieża("+str(count_w["rook"])+")"
 						add_rook_w.draw(game_window)
-						add_knight_w.undertext="Rycerz("+str(count_w["knight"])+")"
+						add_knight_w.undertext="Skoczek("+str(count_w["knight"])+")"
 						add_knight_w.draw(game_window)
 						add_bishop_w.undertext="Goniec("+str(count_w["bishop"])+")"
 						add_bishop_w.draw(game_window)
@@ -437,7 +437,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					if count_b["king"]==0:
 						add_rook_b.undertext="Wieża("+str(count_b["rook"])+")"
 						add_rook_b.draw(game_window)
-						add_knight_b.undertext="Rycerz("+str(count_b["knight"])+")"
+						add_knight_b.undertext="Skoczek("+str(count_b["knight"])+")"
 						add_knight_b.draw(game_window)
 						add_bishop_b.undertext="Goniec("+str(count_b["bishop"])+")"
 						add_bishop_b.draw(game_window)
@@ -543,13 +543,13 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							if turn == "white":
 								turn = "black"
 								turn_pawns = black_pawns
-								turn_txt = "Tura czarnych"
+								turn_txt = "Ruch czarnych"
 								black_watch.resume()
 								white_watch.pause_timer()
 							else:
 								turn = "white"
 								turn_pawns = white_pawns
-								turn_txt = "Tura białych"
+								turn_txt = "Ruch białych"
 								white_watch.resume()
 								black_watch.pause_timer()
 							check_txt=""
@@ -602,7 +602,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 									break
 							turn = "white"
 							turn_pawns = white_pawns
-							turn_txt = "Tura białych"
+							turn_txt = "Ruch białych"
 							white_watch.resume()
 							black_watch.pause_timer()							
 						else:
@@ -612,7 +612,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 									break
 							turn = "black"
 							turn_pawns = black_pawns
-							turn_txt = "Tura czarnych"
+							turn_txt = "Ruch czarnych"
 							black_watch.resume()
 							white_watch.pause_timer()
 						en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
@@ -636,7 +636,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 									break
 							turn = "white"
 							turn_pawns = white_pawns
-							turn_txt = "Tura białych"
+							turn_txt = "Ruch białych"
 							white_watch.resume()
 							black_watch.pause_timer()
 						else:
@@ -646,7 +646,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 									break
 							turn = "black"
 							turn_pawns = black_pawns
-							turn_txt = "Tura czarnych"
+							turn_txt = "Ruch czarnych"
 							black_watch.resume()
 							white_watch.pause_timer()
 						en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
@@ -670,7 +670,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 									break
 							turn = "white"
 							turn_pawns = white_pawns
-							turn_txt = "Tura białych"
+							turn_txt = "Ruch białych"
 							white_watch.resume()
 							black_watch.pause_timer()
 						else:
@@ -680,7 +680,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 									break
 							turn = "black"
 							turn_pawns = black_pawns
-							turn_txt = "Tura czarnych"
+							turn_txt = "Ruch czarnych"
 							black_watch.resume()
 							white_watch.pause_timer()
 						if player_color=="white":
@@ -722,7 +722,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 									break
 							turn = "white"
 							turn_pawns = white_pawns
-							turn_txt = "Tura białych"
+							turn_txt = "Ruch białych"
 							white_watch.resume()
 							black_watch.pause_timer()
 						else:
@@ -732,7 +732,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 									break
 							turn = "black"
 							turn_pawns = black_pawns
-							turn_txt = "Tura czarnych"
+							turn_txt = "Ruch czarnych"
 							black_watch.resume()
 							white_watch.pause_timer()
 						if player_color=="white":
@@ -780,7 +780,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								afig=pawn(knight_b_png, apos, pawn_res, "knight", "b")
 							turn = "white"
 							turn_pawns = white_pawns
-							turn_txt = "Tura białych"
+							turn_txt = "Ruch białych"
 							white_watch.resume()
 							black_watch.pause_timer()
 						else:
@@ -798,7 +798,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								afig=pawn(knight_w_png, apos, pawn_res, "knight", "w")
 							turn = "black"
 							turn_pawns = black_pawns
-							turn_txt = "Tura czarnych"
+							turn_txt = "Ruch czarnych"
 							black_watch.resume()
 							white_watch.pause_timer()
 						board.append_figure(afig, apos, white_pawns, black_pawns)
@@ -907,13 +907,13 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						if turn == "white":
 							turn = "black"
 							turn_pawns = black_pawns
-							turn_txt = "Tura czarnych"
+							turn_txt = "Ruch czarnych"
 							black_watch.resume()
 							white_watch.pause_timer()
 						else:
 							turn = "white"
 							turn_pawns = white_pawns
-							turn_txt = "Tura białych"
+							turn_txt = "Ruch białych"
 							white_watch.resume()
 							black_watch.pause_timer()
 						check_txt = ""
@@ -934,13 +934,13 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						if turn == "white":
 							turn = "black"
 							turn_pawns = black_pawns
-							turn_txt = "Tura czarnych"
+							turn_txt = "Ruch czarnych"
 							black_watch.resume()
 							white_watch.pause_timer()
 						else:
 							turn = "white"
 							turn_pawns = white_pawns
-							turn_txt = "Tura białych"
+							turn_txt = "Ruch białych"
 							white_watch.resume()
 							black_watch.pause_timer()
 						check_txt = ""

@@ -450,7 +450,7 @@ class stopwatch(object):
 
 
 class button(object):
-	def __init__(self, pos, size, color, text="", undertext="", graph=""):
+	def __init__(self, pos, size, color, text="", undertext="", graph="", figure=""):
 		self.pos = pos
 		self.size = size
 		self.color = color
@@ -464,6 +464,7 @@ class button(object):
 			self.pos[0], self.pos[1], self.size[0], self.size[1])
 		if self.graph != "" and type(self.graph) != pygame.Surface:
 			self.graph.transform.scale(self.graph, self.size)
+		self.figure=figure
 
 	def draw(self, win):
 		txt = self.font.render(self.text, True, (0, 0, 0))
@@ -567,6 +568,7 @@ def is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 
 
 def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed):
+	res_b = (res[1]-res[1]/5, res[1]-res[1]/5)
 	check_txt = "Szach!"
 	if turn == "white":
 		for pawn in white_pawns:
@@ -741,7 +743,7 @@ def add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window,
 	return add_mv
 	
 def kings_chess(game_window, res):
-	res_b = (res[1], res[1])
+	res_b = (res[1]-res[1]/5, res[1]-res[1]/5)
 	bg_color = (185, 182, 183)
 	
 	font_size = int(game_window.get_size()[0]/45)
@@ -807,26 +809,49 @@ def kings_chess(game_window, res):
 	
 	
 	
-	add_rook_b = button([add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Wieża(2)", graph=rook_b_png)
-	add_knight_b = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*2, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Koń(2)", graph=knight_b_png)
-	add_bishop_b = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*3, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Goniec(2)", graph=bishop_b_png)
-	add_queen_b = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*4, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Królowa(1)", graph=queen_b_png)
-	add_pawn_b = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*5, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Pionek(8)", graph=pawn_b_png)
-	add_king_b = button([(add_w.pos[0]+add_w.size[0]/2-pawn_res[0]/2), add_w.pos[1] + add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Król", graph=king_b_png)
+	add_rook1_b = button([0,res_b[1]], pawn_res, (0, 0, 0), graph=rook_b_png, figure="rook")
+	add_knight1_b = button([res_b[0]/8, res_b[1]], pawn_res, (0, 0, 0), graph=knight_b_png, figure="knight")
+	add_bishop1_b = button([res_b[0]/8*2, res_b[1]], pawn_res, (0, 0, 0), graph=bishop_b_png, figure="bishop")
+	add_queen_b = button([res_b[0]/8*3, res_b[1]], pawn_res, (0, 0, 0), graph=queen_b_png, figure="queen")
+	add_king_b = button([res_b[0]/8*4, res_b[1]], pawn_res, (0, 0, 0), graph=king_b_png, figure="king")
+	add_bishop2_b = button([res_b[0]/8*5, res_b[1]], pawn_res, (0, 0, 0), graph=bishop_b_png, figure="bishop")
+	add_knight2_b = button([res_b[0]/8*6, res_b[1]], pawn_res, (0, 0, 0), graph=knight_b_png, figure="knight")
+	add_rook2_b = button([res_b[0]/8*7, res_b[1]], pawn_res, (0, 0, 0), graph=rook_b_png, figure="rook")
+	add_pawn1_b = button([0,res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+	add_pawn2_b = button([res_b[0]/8, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+	add_pawn3_b = button([res_b[0]/8*2, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+	add_pawn4_b = button([res_b[0]/8*3, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+	add_pawn5_b = button([res_b[0]/8*4, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+	add_pawn6_b = button([res_b[0]/8*5, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+	add_pawn7_b = button([res_b[0]/8*6, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+	add_pawn8_b = button([res_b[0]/8*7, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+
+
+	black_add_buttons=[add_rook1_b, add_knight1_b, add_bishop1_b, add_queen_b, add_king_b, add_bishop2_b, add_knight2_b, add_rook2_b,
+					add_pawn1_b, add_pawn2_b, add_pawn3_b, add_pawn4_b, add_pawn5_b, add_pawn6_b, add_pawn7_b, add_pawn8_b]
 	
 	
 	
-	
-	
-	add_rook_w = button([add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Wieża(2)", graph=rook_w_png)
-	add_knight_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*2, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Koń(2)", graph=knight_w_png)
-	add_bishop_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*3, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Goniec(2)", graph=bishop_w_png)
-	add_queen_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*4, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Królowa(1)", graph=queen_w_png)
-	add_pawn_w = button([(add_w.pos[0]+add_w.size[0]/6-pawn_res[0]/2)*5, add_w.pos[1]+add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Pionek(8)", graph=pawn_w_png)
-	add_king_w = button([(add_w.pos[0]+add_w.size[0]/2-pawn_res[0]/2), add_w.pos[1] + add_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Król", graph=king_w_png)
-	
-	add_button = button([board.res[0]+15, (board.res[1]/6)*5],
-						[20, 50], (205, 202, 203), text="Dodaj figurę")
+	add_rook1_w = button([0,res_b[1]], pawn_res, (0, 0, 0), graph=rook_w_png, figure="rook")
+	add_knight1_w = button([res_b[0]/8, res_b[1]], pawn_res, (0, 0, 0), graph=knight_w_png, figure="knight")
+	add_bishop1_w = button([res_b[0]/8*2, res_b[1]], pawn_res, (0, 0, 0), graph=bishop_w_png, figure="bishop")
+	add_queen_w = button([res_b[0]/8*3, res_b[1]], pawn_res, (0, 0, 0), graph=queen_w_png, figure="queen")
+	add_king_w = button([res_b[0]/8*4, res_b[1]], pawn_res, (0, 0, 0), graph=king_w_png, figure="king")
+	add_bishop2_w = button([res_b[0]/8*5, res_b[1]], pawn_res, (0, 0, 0), graph=bishop_w_png, figure="bishop")
+	add_knight2_w = button([res_b[0]/8*6, res_b[1]], pawn_res, (0, 0, 0), graph=knight_w_png, figure="knight")
+	add_rook2_w = button([res_b[0]/8*7, res_b[1]], pawn_res, (0, 0, 0), graph=rook_w_png, figure="rook")
+	add_pawn1_w = button([0,res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+	add_pawn2_w = button([res_b[0]/8, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+	add_pawn3_w = button([res_b[0]/8*2, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+	add_pawn4_w = button([res_b[0]/8*3, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+	add_pawn5_w = button([res_b[0]/8*4, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+	add_pawn6_w = button([res_b[0]/8*5, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+	add_pawn7_w = button([res_b[0]/8*6, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+	add_pawn8_w = button([res_b[0]/8*7, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+
+
+	white_add_buttons=[add_rook1_w, add_knight1_w, add_bishop1_w, add_queen_w, add_king_w, add_bishop2_w, add_knight2_w, add_rook2_w,
+					add_pawn1_w, add_pawn2_w, add_pawn3_w, add_pawn4_w, add_pawn5_w, add_pawn6_w, add_pawn7_w, add_pawn8_w]
 	
 	
 	#te elementy muszą zostać zrestartowane w każdej grze
@@ -866,7 +891,7 @@ def kings_chess(game_window, res):
 	click = 0
 	hold = 0
 	turn = "white"
-	turn_txt = "Tura białych"
+	turn_txt = "Ruch białych"
 	turn_pawns = white_pawns
 	en = []
 	check_txt = ""
@@ -883,7 +908,7 @@ def kings_chess(game_window, res):
 			if tr.color=="w":
 				rook_w_button.undertext="Wieża("+str(b_destroyed["rook"])+")"
 				rook_w_button.draw(game_window)
-				knight_w_button.undertext="Rycerz("+str(b_destroyed["knight"])+")"
+				knight_w_button.undertext="Skoczek("+str(b_destroyed["knight"])+")"
 				knight_w_button.draw(game_window)
 				bishop_w_button.undertext="Goniec("+str(b_destroyed["bishop"])+")"
 				bishop_w_button.draw(game_window)
@@ -892,7 +917,7 @@ def kings_chess(game_window, res):
 			else:
 				rook_b_button.undertext="Wieża("+str(w_destroyed["rook"])+")"
 				rook_b_button.draw(game_window)
-				knight_b_button.undertext="Rycerz("+str(w_destroyed["knight"])+")"
+				knight_b_button.undertext="Skoczek("+str(w_destroyed["knight"])+")"
 				knight_b_button.draw(game_window)
 				bishop_b_button.undertext="Goniec("+str(w_destroyed["bishop"])+")"
 				bishop_b_button.draw(game_window)
@@ -950,154 +975,107 @@ def kings_chess(game_window, res):
 						black_pawn.draw(game_window, board)
 					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 			pygame.display.update()
-		while adding:  # Dodawanie figury na szachownice
-			if figure==0:
-				add_w.draw(game_window)
+		while adding:  # Dodawanie figury na szachownice		
+			if add_first_frame:
 				if turn == "white":
-					if count_w["king"]==0:
-						add_rook_w.undertext="Wieża("+str(count_w["rook"])+")"
-						add_rook_w.draw(game_window)
-						add_knight_w.undertext="Rycerz("+str(count_w["knight"])+")"
-						add_knight_w.draw(game_window)
-						add_bishop_w.undertext="Goniec("+str(count_w["bishop"])+")"
-						add_bishop_w.draw(game_window)
-						add_queen_w.undertext="Królowa("+str(count_w["queen"])+")"
-						add_queen_w.draw(game_window)
-						add_pawn_w.undertext="Pionek("+str(count_w["pawn"])+")"
-						add_pawn_w.draw(game_window)
-					else:
-						add_king_w.draw(game_window)
+					if add_fig_but.figure=="rook":
+						temp=pawn(rook_w_png, (-1,-1), pawn_res, "rook", "w")
+					elif add_fig_but.figure=="knight":
+						temp=pawn(knight_w_png, (-1,-1), pawn_res, "knight", "w")
+					elif add_fig_but.figure=="bishop":
+						temp=pawn(bishop_w_png, (-1,-1), pawn_res, "bishop", "w")
+					elif add_fig_but.figure=="queen":
+						temp=pawn(queen_w_png, (-1,-1), pawn_res, "queen", "w")
+					elif add_fig_but.figure=="pawn":
+						temp=pawn(pawn_w_png, (-1,-1), pawn_res, "pawn", "w")
+					elif add_fig_but.figure=="king":
+						temp=pawn(king_w_png, (-1,-1), pawn_res, "king", "w")
 				else:
-					if count_b["king"]==0:
-						add_rook_b.undertext="Wieża("+str(count_b["rook"])+")"
-						add_rook_b.draw(game_window)
-						add_knight_b.undertext="Rycerz("+str(count_b["knight"])+")"
-						add_knight_b.draw(game_window)
-						add_bishop_b.undertext="Goniec("+str(count_b["bishop"])+")"
-						add_bishop_b.draw(game_window)
-						add_queen_b.undertext="Królowa("+str(count_b["queen"])+")"
-						add_queen_b.draw(game_window)
-						add_pawn_b.undertext="Pionek("+str(count_b["pawn"])+")"
-						add_pawn_b.draw(game_window)
-					else:
-						add_king_b.draw(game_window)
-				for event in pygame.event.get():
-					if event.type == pygame.QUIT:
-						playing = False
-						deciding = False
-						running = False
-						adding == False
-						pygame.quit()
-					elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1: #Sprawdzenie która figura została wybrana
-						temp=0
-						if turn == "white":
-							if count_w["king"]==0:
-								if add_rook_w.rect.collidepoint(event.pos) and count_w["rook"]>0:
-									figure="rook"
-									temp=pawn(rook_w_png, (-1,-1), pawn_res, "rook", "w")
-								elif add_knight_w.rect.collidepoint(event.pos) and count_w["knight"]>0:
-									figure="knight"
-									temp=pawn(knight_w_png, (-1,-1), pawn_res, "knight", "w")
-								elif add_bishop_w.rect.collidepoint(event.pos) and count_w["bishop"]>0:
-									figure="bishop"
-									temp=pawn(bishop_w_png, (-1,-1), pawn_res, "bishop", "w")
-								elif add_queen_w.rect.collidepoint(event.pos) and count_w["queen"]>0:
-									figure="queen"
-									temp=pawn(queen_w_png, (-1,-1), pawn_res, "queen", "w")
-								elif add_pawn_w.rect.collidepoint(event.pos) and count_w["pawn"]>0:
-									figure="pawn"
-									temp=pawn(pawn_w_png, (-1,-1), pawn_res, "pawn", "w")
-							else:
-								if add_king_w.rect.collidepoint(event.pos):
-									figure="king"
-									temp=pawn(king_w_png, (-1,-1), pawn_res, "king", "w")
-						else:
-							if count_b["king"]==0:
-								if add_rook_b.rect.collidepoint(event.pos) and count_b["rook"]>0:
-									figure="rook"
-									temp=pawn(rook_b_png, (-1,-1), pawn_res, "rook", "b")
-								elif add_knight_b.rect.collidepoint(event.pos) and count_b["knight"]>0:
-									figure="knight"
-									temp=pawn(knight_b_png, (-1,-1), pawn_res, "knight", "b")
-								elif add_bishop_b.rect.collidepoint(event.pos) and count_b["bishop"]>0:
-									figure="bishop"
-									temp=pawn(bishop_b_png, (-1,-1), pawn_res, "bishop", "b")
-								elif add_queen_b.rect.collidepoint(event.pos) and count_b["queen"]>0:
-									figure="queen"
-									temp=pawn(queen_b_png, (-1,-1), pawn_res, "queen", "b")
-								elif add_pawn_b.rect.collidepoint(event.pos) and count_b["pawn"]>0:
-									figure="pawn"
-									temp=pawn(pawn_b_png, (-1,-1), pawn_res, "pawn", "b")								
-							else:
-								if add_king_b.rect.collidepoint(event.pos):
-									figure="king"
-									temp=pawn(king_b_png, (-1,-1), pawn_res, "king", "b")
-						if not add_w.rect.collidepoint(event.pos) and temp==0:
-							adding=0
-							check_add=[]
-
-			else: #Postawienie wybranej figury na szachownicty
+					if add_fig_but.figure=="rook":
+						temp=pawn(rook_b_png, (-1,-1), pawn_res, "rook", "b")
+					elif add_fig_but.figure=="knight":
+						temp=pawn(knight_b_png, (-1,-1), pawn_res, "knight", "b")
+					elif add_fig_but.figure=="bishop":
+						temp=pawn(bishop_b_png, (-1,-1), pawn_res, "bishop", "b")
+					elif add_fig_but.figure=="queen":
+						temp=pawn(queen_b_png, (-1,-1), pawn_res, "queen", "b")
+					elif add_fig_but.figure=="pawn":
+						temp=pawn(pawn_b_png, (-1,-1), pawn_res, "pawn", "b")
+					elif add_fig_but.figure=="king":
+						temp=pawn(king_b_png, (-1,-1), pawn_res, "king", "b")
 				possible_pos=board.add_positions(white_pawns, black_pawns, turn, temp, w_destroyed, b_destroyed, game_window)
 				position_rects=[move_rect(x, board.area) for x in possible_pos]
 				if check_txt!="":
 					possible_pos=check_add
 					position_rects=[move_rect(x, board.area) for x in possible_pos]
-				for event in pygame.event.get():
-					if event.type == pygame.QUIT:
-						playing = False
-						deciding = False
-						running = False
-						adding == False
-						pygame.quit()
-					if event.type == pygame.MOUSEBUTTONUP:
-						mouse_pos = pygame.mouse.get_pos()
-						x=-1
-						y=-1
-						i=0
-						for area in board.pos_areas():
-							if area[0] < mouse_pos[0] and area[1] > mouse_pos[0]:
-								x = i
-							if area[0] < mouse_pos[1] and area[1] > mouse_pos[1]:
-								y = i
-							i += 1
-						if x!=-1 and y!=-1 and [x,y] in possible_pos:
-							board.append_figure(temp, (x,y), white_pawns, black_pawns)
-							adding=0
-							if temp.color=="w":
-								count_w[temp.type]-=1
-							else:
-								count_b[temp.type]-=1
-							en=[]
-							check_add=[]
-							if turn == "white":
-								turn = "black"
-								turn_pawns = black_pawns
-								turn_txt = "Tura czarnych"
-								black_watch.resume()
-								white_watch.pause_timer()
-							else:
-								turn = "white"
-								turn_pawns = white_pawns
-								turn_txt = "Tura białych"
-								white_watch.resume()
-								black_watch.pause_timer()
-							check_txt=""
-						figure=0
+				add_first_frame=0
+			''' jakas pozostalosc po straej funkcji, zobaczymy czy potrzebna dalej
+			if not add_w.rect.collidepoint(event.pos) and temp==0:
+				adding=0
+				check_add=[]
+			'''
+			#Postawienie wybranej figury na szachownicty
+			for event in pygame.event.get():
+				if event.type == pygame.QUIT:
+					playing = False
+					deciding = False
+					running = False
+					adding == False
+				if event.type == pygame.MOUSEBUTTONUP:
+					mouse_pos = pygame.mouse.get_pos()
+					x=-1
+					y=-1
+					i=0
+					for area in board.pos_areas():
+						if area[0] < mouse_pos[0] and area[1] > mouse_pos[0]:
+							x = i
+						if area[0] < mouse_pos[1] and area[1] > mouse_pos[1]:
+							y = i
+						i += 1
+					if x!=-1 and y!=-1 and [x,y] in possible_pos:
+						board.append_figure(temp, (x,y), white_pawns, black_pawns)
+						adding=0
+						if temp.color=="w":
+							count_w[temp.type]-=1
+							del(white_add_buttons[white_add_buttons.index(add_fig_but)])
+						else:
+							count_b[temp.type]-=1
+							del(black_add_buttons[black_add_buttons.index(add_fig_but)])
+						en=[]
+						check_add=[]
+						if turn == "white":
+							turn = "black"
+							turn_pawns = black_pawns
+							turn_txt = "Ruch czarnych"
+							black_watch.resume()
+							white_watch.pause_timer()
+						else:
+							turn = "white"
+							turn_pawns = white_pawns
+							turn_txt = "Ruch białych"
+							white_watch.resume()
+							black_watch.pause_timer()
+						check_txt=""
+					else:
+						adding=0
 						temp=0
-					game_window.fill(bg_color)
-					board.draw(game_window)
-					for white_pawn in white_pawns:
-						white_pawn.draw(game_window, board)
-					for black_pawn in black_pawns:
-						black_pawn.draw(game_window, board)
-					white_watch.update(game_window, board)
-					black_watch.update(game_window, board)
-					for x in position_rects:
-						x.draw_moves(game_window, board)
-					if temp!=0:
-						mouse_pos = pygame.mouse.get_pos()
-						temp.mouse_dragging(game_window, mouse_pos)
-					pygame.display.update()
+						add_fig_but=0
+					figure=0
+					temp=0
+				game_window.fill(bg_color)
+				board.draw(game_window)
+				for white_pawn in white_pawns:
+					white_pawn.draw(game_window, board)
+				for black_pawn in black_pawns:
+					black_pawn.draw(game_window, board)
+				white_watch.update(game_window, board)
+				black_watch.update(game_window, board)
+				for x in position_rects:
+					x.draw_moves(game_window, board)
+				if temp!=0:
+					mouse_pos = pygame.mouse.get_pos()
+					temp.mouse_dragging(game_window, mouse_pos)
+				pygame.display.update()
 
 				
 			if adding == False:
@@ -1116,7 +1094,6 @@ def kings_chess(game_window, res):
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
 		board.draw(game_window)
-		add_button.draw(game_window)
 		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
 		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15, board.res[1]/2))
 		white_watch.update(game_window, board)
@@ -1156,12 +1133,54 @@ def kings_chess(game_window, res):
 				click += 1
 			# kiedy puszczam figure
 			if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-				if add_button.rect.collidepoint(event.pos):
-					adding=True
-					if en!=[]:
-						check_add=add_defence(count_w, count_b, board, turn, en, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
-						if check_txt=="Szach_Mat!" and check_add!=[]:
-							check_txt=""
+				if turn=="white":
+					if "king" in [b.figure for b in white_add_buttons]:
+						for x in white_add_buttons:
+							if x.figure=="king":
+								if x.rect.collidepoint(event.pos):
+									add_fig_but=x
+									adding=1
+									add_first_frame=1
+									if en!=[]:
+										check_add=add_defence(count_w, count_b, board, turn, en, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
+										if check_txt=="Szach_Mat!" and check_add!=[]:
+											check_txt=""
+									break
+					else:
+						for x in white_add_buttons:
+							if x.rect.collidepoint(event.pos):
+								add_fig_but=x
+								adding=1
+								add_first_frame=1
+								if en!=[]:
+									check_add=add_defence(count_w, count_b, board, turn, en, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
+									if check_txt=="Szach_Mat!" and check_add!=[]:
+										check_txt=""
+								break
+				else:
+					if "king" in [b.figure for b in black_add_buttons]:
+						for x in black_add_buttons:
+							if x.figure=="king":
+								if x.rect.collidepoint(event.pos):
+									add_fig_but=x
+									adding=1
+									add_first_frame=1
+									if en!=[]:
+										check_add=add_defence(count_w, count_b, board, turn, en, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
+										if check_txt=="Szach_Mat!" and check_add!=[]:
+											check_txt=""
+									break
+					else:
+						for x in black_add_buttons:
+							if x.rect.collidepoint(event.pos):
+								add_fig_but=x
+								adding=1
+								add_first_frame=1
+								if en!=[]:
+									check_add=add_defence(count_w, count_b, board, turn, en, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
+									if check_txt=="Szach_Mat!" and check_add!=[]:
+										check_txt=""
+								break
 			if click != 0 and pygame.mouse.get_pressed()[0] == False:
 				click = 0
 				if hold == 1:  # jesli trzymalem figure
@@ -1182,13 +1201,13 @@ def kings_chess(game_window, res):
 						if turn == "white":
 							turn = "black"
 							turn_pawns = black_pawns
-							turn_txt = "Tura czarnych"
+							turn_txt = "Ruch czarnych"
 							black_watch.resume()
 							white_watch.pause_timer()
 						else:
 							turn = "white"
 							turn_pawns = white_pawns
-							turn_txt = "Tura białych"
+							turn_txt = "Ruch białych"
 							white_watch.resume()
 							black_watch.pause_timer()
 						check_txt = ""
@@ -1210,13 +1229,13 @@ def kings_chess(game_window, res):
 						if turn == "white":
 							turn = "black"
 							turn_pawns = black_pawns
-							turn_txt = "Tura czarnych"
+							turn_txt = "Ruch czarnych"
 							black_watch.resume()
 							white_watch.pause_timer()
 						else:
 							turn = "white"
 							turn_pawns = white_pawns
-							turn_txt = "Tura białych"
+							turn_txt = "Ruch białych"
 							white_watch.resume()
 							black_watch.pause_timer()
 						check_txt = ""
@@ -1249,7 +1268,26 @@ def kings_chess(game_window, res):
 			mouse_pos = pygame.mouse.get_pos()
 			hw.mouse_dragging(game_window, mouse_pos)
 		first_frame = False
-
+		
+		if turn=="white":
+			if "king" in [x.figure for x in white_add_buttons]:
+				for but in white_add_buttons:
+					if but.figure=="king":
+						but.draw(game_window)
+						break
+			else:
+				for but in white_add_buttons:
+					but.draw(game_window)
+		else:
+			if "king" in [x.figure for x in black_add_buttons]:
+				for but in black_add_buttons:
+					if but.figure=="king":
+						but.draw(game_window)
+						break
+			else:
+				for but in black_add_buttons:
+					but.draw(game_window)
+		
 		pygame.display.update()
 	'''
 	while deciding:
