@@ -567,7 +567,7 @@ def is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 	return(enemies)
 
 
-def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed):
+def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, timers, time):
 	res_b = (res[1]-res[1]/5, res[1]-res[1]/5)
 	check_txt = "Szach!"
 	if turn == "white":

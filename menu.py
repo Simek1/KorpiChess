@@ -13,7 +13,8 @@ def play_online():
 	global game_window, res
 	online_menu(game_window, res, nick_input.get_value())
 	
-
+def options():
+	pass
 
 
 pygame.init()
@@ -25,6 +26,7 @@ mainmenu = pygame_menu.Menu('Szachy królewskie', res[0], res[1], theme=themes.T
 nick_input=mainmenu.add.text_input('Nick: ', default='Nick', maxchar=20)
 mainmenu.add.button('Gra na jednym komputerze', play_local)
 mainmenu.add.button('Gra sieciowa', play_online)
+mainmenu.add.button("Opcje", options)
 mainmenu.add.button('Wyjście', pygame_menu.events.EXIT)
  
 #level = pygame_menu.Menu('Select a Difficulty', 600, 400, theme=themes.THEME_BLUE)
