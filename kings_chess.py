@@ -414,8 +414,8 @@ class move_rect(object):
 
 
 class stopwatch(object):
-	def __init__(self, color, font):
-		self.time = 1800
+	def __init__(self, color, font, max_time):
+		self.time = max_time
 		self.remaining_time = 1
 		self.start = pygame.time.get_ticks()
 		self.font=font
@@ -424,7 +424,8 @@ class stopwatch(object):
 			self.color = "Czas białych: "
 		else:
 			self.color = "Czas czarnych: "
-		self.txt = self.color+"30:00"
+		splited=str(self.time/60).split(".")
+		self.txt = self.color+splited[0]+":"+splited[1]
 
 	def update(self, win, board):
 		if self.paused == False:
@@ -742,7 +743,7 @@ def add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window,
 							add_mv.append(mv)
 	return add_mv
 	
-def kings_chess(game_window, res):
+def kings_chess(game_window, res, timers, max_time):
 	res_b = (res[1]-res[1]/5, res[1]-res[1]/5)
 	bg_color = (185, 182, 183)
 	
@@ -870,8 +871,9 @@ def kings_chess(game_window, res):
 			   "bishop": 2,
 			   "queen": 1,
 			   "king": 1}
-	white_watch = stopwatch("w", font)
-	black_watch = stopwatch("b", font)
+	if timers:
+		white_watch = stopwatch("w", font, max_time)
+		black_watch = stopwatch("b", font, max_time)
 	w_destroyed={"pawn": 0,
 			   "rook": 0,
 			   "knight": 0,
@@ -901,7 +903,8 @@ def kings_chess(game_window, res):
 
 	deciding = True
 	first_frame = True
-	black_watch.pause_timer()
+	if timers:
+		black_watch.pause_timer()
 	while playing:
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
 			transform_w.draw(game_window)
@@ -1047,14 +1050,16 @@ def kings_chess(game_window, res):
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							black_watch.resume()
-							white_watch.pause_timer()
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
 						else:
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							white_watch.resume()
-							black_watch.pause_timer()
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()
 						check_txt=""
 					else:
 						adding=0
@@ -1068,8 +1073,9 @@ def kings_chess(game_window, res):
 					white_pawn.draw(game_window, board)
 				for black_pawn in black_pawns:
 					black_pawn.draw(game_window, board)
-				white_watch.update(game_window, board)
-				black_watch.update(game_window, board)
+				if timers:
+					white_watch.update(game_window, board)
+					black_watch.update(game_window, board)
 				for x in position_rects:
 					x.draw_moves(game_window, board)
 				if temp!=0:
@@ -1089,15 +1095,20 @@ def kings_chess(game_window, res):
 					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 			pygame.display.update()
 		# if black_watch.remaining_time==0 or white_watch.remaining_time==0 or check_txt=="Szach-Mat!" or ("king" not in [p.type for p in white_pawns]) or ("king" not in [p.type for p in black_pawns]):
-		if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
-			playing = False
+		if timers:
+			if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
+				playing = False
+		else:
+			if check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
+				playing = False
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
 		board.draw(game_window)
 		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
 		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15, board.res[1]/2))
-		white_watch.update(game_window, board)
-		black_watch.update(game_window, board)
+		if timers:
+			white_watch.update(game_window, board)
+			black_watch.update(game_window, board)
 
 		for white_pawn in white_pawns:
 			white_pawn.draw(game_window, board)
@@ -1202,14 +1213,16 @@ def kings_chess(game_window, res):
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							black_watch.resume()
-							white_watch.pause_timer()
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
 						else:
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							white_watch.resume()
-							black_watch.pause_timer()
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()
 						check_txt = ""
 						if hw.type == "pawn" and ((hw.color == "w" and hw.pos[1] == 0) or (hw.color == "b" and hw.pos[1] == 7)):
 							transform = True
@@ -1230,14 +1243,16 @@ def kings_chess(game_window, res):
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							black_watch.resume()
-							white_watch.pause_timer()
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
 						else:
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							white_watch.resume()
-							black_watch.pause_timer()
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()
 						check_txt = ""
 						if hw.type == "pawn" and ((hw.color == "w" and hw.pos[1] == 0) or (hw.color == "b" and hw.pos[1] == 7)):
 							transform = True

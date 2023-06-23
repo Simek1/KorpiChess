@@ -6,6 +6,64 @@ from requests import get
 
 
 
+class input_box(object):
+	def __init__(self, size, pos, font_size, limit, text="", uppertext="", color=""):
+		self.size=size
+		self.pos=pos
+		self.font_size=font_size
+		self.text=text
+		self.limit=limit
+		self.font = pygame.font.SysFont("arial", self.font_size)
+		self.rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
+		self.uppertext=uppertext
+		self.status=0
+		self.upper=0
+		self.special=0
+		self.sh_alph={"q":"Q","w":"W","e":"E","r":"R","t":"T","y":"Y","u":"U","i":"I","o":"O","p":"P","[":"{","]":"}","\\":"|",
+			 "`":"~","1":"!","2":"@","3":"#","4":"$","5":"%","6":"^","7":"&","8":"*","9":"(","0":")","-":"_","=":"+",
+			 "a":"A","s":"S","d":"D","f":"F","g":"G","h":"H","j":"J","k":"K","l":"L",";":":","'":"\"",
+			 "z":"Z","x":"X","c":"C","v":"V","b":"B","n":"N","m":"M",",":"<",".":">","/":"?", 
+			 "ą":"Ą", "ę":"Ę", "ł":"Ł", "ó":"Ó","ż":"Ż","ź":"Ź","ć":"Ć","ń":"Ń","ś":"Ś"}
+		self.alt_alph={"a":"ą", "e":"ę", "l":"ł", "o":"ó","z":"ż","x":"ź", "c":"ć", "n":"ń", "s":"ś"}
+		if color=="":
+			self.color=(189,189,189)
+		else:
+			self.color=color
+	def draw(self, win):
+		txt = self.font.render(self.text, True, (0, 0, 0))
+		if self.status==0:
+			color=self.color
+		else:
+			color=(self.color[0]+30,self.color[1]+30,self.color[2]+30)
+		pygame.draw.rect(win, color, self.rect)
+		temp_txt=txt
+		i=1
+		while temp_txt.get_rect().width>self.size[0]:
+			temp_txt=self.font.render(self.text[i:], True, (0, 0, 0))
+			i+=1
+		win.blit(temp_txt, (self.pos[0], self.pos[1]))
+		if self.uppertext!="":
+			txt=self.font.render(self.uppertext, True, (0, 0, 0))
+			width=txt.get_rect().width
+			win.blit(txt, (self.pos[0]-5-width, self.pos[1]))
+	def write(self, letter, numpad_keys):
+		try:
+			if letter==8 and len(self.text)>0:
+				self.text=self.text[:-1]
+			elif len(self.text)<self.limit:
+				if letter in numpad_keys:
+					self.text+=str(numpad_keys.index(letter))
+				else:
+					letter=chr(letter)
+					if self.special==1:
+						if letter in self.alt_alph:
+							letter=self.alt_alph[letter]
+					if self.upper==1:
+						if letter in self.sh_alph:
+							letter=self.sh_alph[letter]
+					self.text+=letter
+		except Exception as e:
+				print(e)
 		
 class chat_box(object):
 	def __init__(self, pos, size, font_size):
@@ -109,7 +167,7 @@ class color_rects(object):
 		pygame.draw.rect(win, fr_color, self.frame)
 		pygame.draw.rect(win, color, self.rect)		
 
-def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_history):
+def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_history, timers, max_time):
 	res_b = (res[1]-res[1]/5, res[1]-res[1]/5)
 	bg_color = (185, 182, 183)
 	
@@ -939,7 +997,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 
 		pygame.display.update()		
 		
-def online_menu(win, res, nick):
+def online_menu(win, res, nick, timers, max_time):
 	font_size = int(win.get_size()[0]/45)
 	longest_ip="123.123.123.123"
 	font = pygame.font.SysFont("arial", font_size)
