@@ -4,7 +4,25 @@ import socket
 from kings_chess import *
 from requests import get
 
-
+class inactive_button(object):
+	def __init__(self, pos, size, color, text=""):
+		self.pos = pos
+		self.size = size
+		self.color = color
+		self.text = text
+		self.font_size = int(self.size[0]/4)
+		self.undertext_font=pygame.font.SysFont("arial", int(self.font_size/4))
+		self.font = pygame.font.SysFont("arial", self.font_size)
+		self.rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
+		self.status=0
+	def draw(self, win):
+		txt = self.font.render(self.text, True, (0, 0, 0))
+		txt_rect=txt.get_rect()
+		if self.status==0:
+			pygame.draw.rect(win, self.color, self.rect)
+		else:
+			pygame.draw.rect(win, (self.color[0]+20, self.color[1]+20, self.color[2]+20), self.rect)
+		win.blit(txt, (int(self.pos[0]+self.size[0]/2-txt_rect.width/2), int(self.pos[1]+self.size[1]/2-txt_rect.height/2)))
 
 class input_box(object):
 	def __init__(self, size, pos, font_size, limit, text="", uppertext="", color=""):
@@ -298,8 +316,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 			   "bishop": 2,
 			   "queen": 1,
 			   "king": 1}
-	white_watch = stopwatch("w", font)
-	black_watch = stopwatch("b", font)
+	if timers:
+		white_watch = stopwatch("w", font, max_time)
+		black_watch = stopwatch("b", font, max_time)
 	w_destroyed={"pawn": 0,
 			   "rook": 0,
 			   "knight": 0,
@@ -333,7 +352,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 
 	deciding = True
 	first_frame = True
-	black_watch.pause_timer()
+	if timers:
+		black_watch.pause_timer()
 	while playing:
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
 			transform_w.draw(game_window)
@@ -369,50 +389,58 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							tr.transform("rook", rook_w_png)
 							transform=False
 							send(f'@transform{t_type} {old_pos} {tr.pos} rook')
-							send(f"@time {white_watch.remaining_time}")
+							if timers:
+								send(f"@time {white_watch.remaining_time}")
 						elif knight_w_button.rect.collidepoint(event.pos) and b_destroyed["knight"]>0:
 							b_destroyed["knight"]-=1
 							tr.transform("knight", knight_w_png)
 							transform=False
 							send(f'@transform{t_type} {old_pos} {tr.pos} knight')
-							send(f"@time {white_watch.remaining_time}")
+							if timers:
+								send(f"@time {white_watch.remaining_time}")
 						elif bishop_w_button.rect.collidepoint(event.pos) and b_destroyed["bishop"]>0:
 							b_destroyed["bishop"]-=1
 							tr.transform("bishop", bishop_w_png)
 							transform=False
 							send(f'@transform{t_type} {old_pos} {tr.pos} bishop')
-							send(f"@time {white_watch.remaining_time}")
+							if timers:
+								send(f"@time {white_watch.remaining_time}")
 						elif queen_w_button.rect.collidepoint(event.pos) and b_destroyed["queen"]>0:
 							b_destroyed["queen"]-=1
 							tr.transform("queen", queen_w_png)
 							transform=False
 							send(f'@transform{t_type} {old_pos} {tr.pos} queen')
-							send(f"@time {white_watch.remaining_time}")
+							if timers:
+								send(f"@time {white_watch.remaining_time}")
 					else:
 						if rook_b_button.rect.collidepoint(event.pos) and w_destroyed["rook"]>0:
 							w_destroyed["rook"]-=1
 							tr.transform("rook", rook_b_png)
 							transform=False
 							send(f'@transform{t_type} {old_pos} {tr.pos} rook')
-							send(f"@time {black_watch.remaining_time}")  
+							if timers:
+								send(f"@time {black_watch.remaining_time}")  
 						elif knight_b_button.rect.collidepoint(event.pos) and w_destroyed["knight"]>0:
 							w_destroyed["knight"]-=1
 							tr.transform("knight", knight_b_png)
 							transform=False
 							send(f'@transform{t_type} {old_pos} {tr.pos} knight')
-							send(f"@time {black_watch.remaining_time}")  
+							if timers:
+								send(f"@time {black_watch.remaining_time}")  
 						elif bishop_b_button.rect.collidepoint(event.pos) and w_destroyed["bishop"]>0:
 							w_destroyed["bishop"]-=1
 							tr.transform("bishop", bishop_b_png)
 							transform=False
 							send(f'@transform{t_type} {old_pos} {tr.pos} bishop')
-							send(f"@time {black_watch.remaining_time}")  
+							if timers:
+								send(f"@time {black_watch.remaining_time}")  
 						elif queen_b_button.rect.collidepoint(event.pos) and w_destroyed["queen"]>0:
 							w_destroyed["queen"]-=1
 							tr.transform("queen", queen_b_png)
 							transform=False
 							send(f'@transform{t_type} {old_pos} {tr.pos} queen')
-							send(f"@time {black_watch.remaining_time}")  
+							if timers:
+								send(f"@time {black_watch.remaining_time}")  
 			if transform==False:
 				en=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 				if en!=[]: #blokowanie ruchow gdy jest szach
@@ -485,10 +513,11 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					if x!=-1 and y!=-1 and [x,y] in possible_pos:
 						board.append_figure(temp, (x,y), white_pawns, black_pawns)
 						send(f"@add {(x,y)} {temp.type}")
-						if player_color=="white":
-							send(f"@time {white_watch.remaining_time}")
-						else:
-							send(f"@time {black_watch.remaining_time}")  
+						if timers:
+							if player_color=="white":
+								send(f"@time {white_watch.remaining_time}")
+							else:
+								send(f"@time {black_watch.remaining_time}")  
 						adding=0
 						if temp.color=="w":
 							count_w[temp.type]-=1
@@ -502,14 +531,16 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							black_watch.resume()
-							white_watch.pause_timer()
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
 						else:
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							white_watch.resume()
-							black_watch.pause_timer()
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()
 						check_txt=""
 					else:
 						adding=0
@@ -523,8 +554,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					white_pawn.draw(game_window, board)
 				for black_pawn in black_pawns:
 					black_pawn.draw(game_window, board)
-				white_watch.update(game_window, board)
-				black_watch.update(game_window, board)
+				if timers:
+					white_watch.update(game_window, board)
+					black_watch.update(game_window, board)
 				for x in position_rects:
 					x.draw_moves(game_window, board)
 				if temp!=0:
@@ -544,8 +576,12 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 			pygame.display.update()
 		# if black_watch.remaining_time==0 or white_watch.remaining_time==0 or check_txt=="Szach-Mat!" or ("king" not in [p.type for p in white_pawns]) or ("king" not in [p.type for p in black_pawns]):
-		if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
-			playing = False
+		if timers:
+			if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
+				playing = False
+		else:
+			if check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
+				playing=False
 		if msgs!=[]: #dorobic filtrowanie wiadomoscie ze wzgledu na \ i sprawdzic czy ta lista bedzie sie akutalizowac, jesli nie to sprobowac zrobic z niej zmienna globalna
 			chat.update_chat(msgs)
 			for x in msgs: #dorobic dzialania typu transformacja i sprawdzanie szacha uwzględnienie aby nie wykonywało się to dla osoby która wysłąła wiadomosc
@@ -565,8 +601,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							white_watch.resume()
-							black_watch.pause_timer()							
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()							
 						else:
 							for f in white_pawns:
 								if f.pos==apos:
@@ -575,8 +612,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							black_watch.resume()
-							white_watch.pause_timer()
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
 						en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 						if en != []:  # blokowanie ruchow gdy jest szach
 							# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
@@ -599,8 +637,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							white_watch.resume()
-							black_watch.pause_timer()
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()
 						else:
 							for f in white_pawns:
 								if f.pos==apos:
@@ -609,8 +648,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							black_watch.resume()
-							white_watch.pause_timer()
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
 						en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 						if en != []:  # blokowanie ruchow gdy jest szach
 							# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
@@ -633,8 +673,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							white_watch.resume()
-							black_watch.pause_timer()
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()
 						else:
 							for f in white_pawns:
 								if f.pos==apos:
@@ -643,8 +684,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							black_watch.resume()
-							white_watch.pause_timer()
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
 						if player_color=="white":
 							if fig=="queen":
 								f.transform("queen", queen_b_png)
@@ -685,8 +727,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							white_watch.resume()
-							black_watch.pause_timer()
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()
 						else:
 							for f in white_pawns:
 								if f.pos==apos:
@@ -695,8 +738,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							black_watch.resume()
-							white_watch.pause_timer()
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
 						if player_color=="white":
 							if fig=="queen":
 								f.transform("queen", queen_b_png)
@@ -743,8 +787,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							white_watch.resume()
-							black_watch.pause_timer()
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()
 						else:
 							if fig=="pawn":
 								afig=pawn(pawn_w_png, apos, pawn_res, "pawn", "w")
@@ -761,10 +806,11 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							black_watch.resume()
-							white_watch.pause_timer()
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
 						board.append_figure(afig, apos, white_pawns, black_pawns)
-					if "@time" in x:
+					if "@time" in x and timers:
 						rm_time=eval(x.split()[2])
 						if player_color=="white":
 							black_watch.remaining_time=rm_time
@@ -778,8 +824,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 		board.draw(game_window)
 		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
 		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15, board.res[1]/2))
-		white_watch.update(game_window, board)
-		black_watch.update(game_window, board)
+		if timers:
+			white_watch.update(game_window, board)
+			black_watch.update(game_window, board)
 
 		for white_pawn in white_pawns:
 			white_pawn.draw(game_window, board)
@@ -911,14 +958,16 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							black_watch.resume()
-							white_watch.pause_timer()
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
 						else:
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							white_watch.resume()
-							black_watch.pause_timer()
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()
 						check_txt = ""
 						if hw.type == "pawn" and ((hw.color == "w" and hw.pos[1] == 0) or (hw.color == "b" and hw.pos[1] == 7)):
 							transform = True
@@ -926,10 +975,11 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							t_type="attack"
 						if transform == False:
 							send(f"@attack {old_pos} {(x, y)}")
-							if player_color=="white":
-								send(f"@time {white_watch.remaining_time}")
-							else:
-								send(f"@time {black_watch.remaining_time}")   
+							if timers:
+								if player_color=="white":
+									send(f"@time {white_watch.remaining_time}")
+								else:
+									send(f"@time {black_watch.remaining_time}")   
 					elif [x, y] in hw.mv:
 						old_pos=hw.pos
 						hw.pos = (x, y)
@@ -938,14 +988,16 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							black_watch.resume()
-							white_watch.pause_timer()
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
 						else:
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							white_watch.resume()
-							black_watch.pause_timer()
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()
 						check_txt = ""
 						if hw.type == "pawn" and ((hw.color == "w" and hw.pos[1] == 0) or (hw.color == "b" and hw.pos[1] == 7)):
 							transform = True
@@ -953,10 +1005,11 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							t_type="move"
 						if transform == False:
 							send(f"@move {old_pos} {(x, y)}")
-							if player_color=="white":
-								send(f"@time {white_watch.remaining_time}")
-							else:
-								send(f"@time {black_watch.remaining_time}")  
+							if timers:
+								if player_color=="white":
+									send(f"@time {white_watch.remaining_time}")
+								else:
+									send(f"@time {black_watch.remaining_time}")  
 							
 				hold = 0
 				hw = 0
@@ -1157,8 +1210,8 @@ def online_menu(win, res, nick, timers, max_time):
 							pl_color="black"
 							op_color="white"
 						print(nick_box.text, pl_color, ":)h")
-						send(f"@gamestart {op_color}")
-						kings_chess_online(win, res, nick_box.text, pl_color, new_msg, chat.converted_msgs)
+						send(f"@gamestart {op_color} {timers} {max_time}")
+						kings_chess_online(win, res, nick_box.text, pl_color, new_msg, chat.converted_msgs, timers, max_time)
 					else:
 						send("@chat Potrzeba 2 graczy aby wystartować")
 				if white_rect.frame.collidepoint(event.pos) or black_rect.frame.collidepoint(event.pos):
@@ -1211,9 +1264,10 @@ def online_menu(win, res, nick, timers, max_time):
 					nick_box.text=new_nick[:-1]
 					print(new_nick, "gotowy nick")
 				if "@gamestart" in x and "@chat" not in x:
-					pl_color=x.split()[2]
+					splted=x.split()
+					pl_color=splted[2]
 					print(nick_box.text, pl_color, ":)")
-					kings_chess_online(win, res, nick_box.text, pl_color, new_msg, chat.converted_msgs)
+					kings_chess_online(win, res, nick_box.text, pl_color, new_msg, chat.converted_msgs, int(splted[3]), int(splted[4]))
 			new_msg.clear()
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
