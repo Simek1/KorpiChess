@@ -5,6 +5,7 @@ import time
 from pygame.locals import *
 from server import *
 from client import *
+import copy
 #pygame.init()
 
 #res = (800, 600)
@@ -14,6 +15,25 @@ from client import *
 #pygame.display.set_caption("Chess")
 
 
+class inactive_button(object):
+	def __init__(self, pos, size, color, text=""):
+		self.pos = pos
+		self.size = size
+		self.color = color
+		self.text = text
+		self.font_size = int(self.size[0]/4)
+		self.undertext_font=pygame.font.SysFont("arial", int(self.font_size/4))
+		self.font = pygame.font.SysFont("arial", self.font_size)
+		self.rect = pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
+		self.status=0
+	def draw(self, win):
+		txt = self.font.render(self.text, True, (0, 0, 0))
+		txt_rect=txt.get_rect()
+		if self.status==0:
+			pygame.draw.rect(win, self.color, self.rect)
+		else:
+			pygame.draw.rect(win, (self.color[0]+20, self.color[1]+20, self.color[2]+20), self.rect)
+		win.blit(txt, (int(self.pos[0]+self.size[0]/2-txt_rect.width/2), int(self.pos[1]+self.size[1]/2-txt_rect.height/2)))
 
 
 class ch_board(object):
@@ -568,8 +588,7 @@ def is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 	return(enemies)
 
 
-def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, timers, time):
-	res_b = (res[1]-res[1]/5, res[1]-res[1]/5)
+def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed):
 	check_txt = "Szach!"
 	if turn == "white":
 		for pawn in white_pawns:
@@ -905,6 +924,19 @@ def kings_chess(game_window, res, timers, max_time):
 	first_frame = True
 	if timers:
 		black_watch.pause_timer()
+	print(board.pawns_matrix, ":)")
+	backup_white=white_pawns.copy()
+	backup_black=black_pawns.copy()
+	backup_white_pos=copy.deepcopy([pw.pos for pw in white_pawns])
+	backup_black_pos=copy.deepcopy([pw.pos for pw in black_pawns])
+	backup_board=copy.deepcopy(board.pawns_matrix)
+	backup_white_add=white_add_buttons.copy()
+	backup_black_add=black_add_buttons.copy()
+	backup_w_destroyed=w_destroyed.copy()
+	backup_b_destroyed=w_destroyed.copy()
+	backup_count_w=count_w.copy()
+	backup_count_b=count_b.copy()
+	back_button=inactive_button((board.res[0]+10, res[1]/10 *7), [res[0]/12, res[1]/12], (205, 202, 203), "Cofnij")
 	while playing:
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
 			transform_w.draw(game_window)
@@ -977,6 +1009,7 @@ def kings_chess(game_window, res, timers, max_time):
 					for black_pawn in black_pawns:
 						black_pawn.draw(game_window, board)
 					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+				back_button.status=0
 			pygame.display.update()
 		while adding:  # Dodawanie figury na szachownice		
 			if add_first_frame:
@@ -1036,6 +1069,19 @@ def kings_chess(game_window, res, timers, max_time):
 							y = i
 						i += 1
 					if x!=-1 and y!=-1 and [x,y] in possible_pos:
+						print(board.pawns_matrix, ":)")
+						backup_white=white_pawns.copy()
+						backup_black=black_pawns.copy()
+						backup_white_pos=copy.deepcopy([pw.pos for pw in white_pawns])
+						backup_black_pos=copy.deepcopy([pw.pos for pw in black_pawns])
+						backup_board=copy.deepcopy(board.pawns_matrix)
+						backup_white_add=white_add_buttons.copy()
+						backup_black_add=black_add_buttons.copy()
+						backup_w_destroyed=w_destroyed.copy()
+						backup_b_destroyed=w_destroyed.copy()
+						backup_count_w=count_w.copy()
+						backup_count_b=count_b.copy()
+						back_button.status=1
 						board.append_figure(temp, (x,y), white_pawns, black_pawns)
 						adding=0
 						if temp.color=="w":
@@ -1192,6 +1238,44 @@ def kings_chess(game_window, res, timers, max_time):
 									if check_txt=="Szach_Mat!" and check_add!=[]:
 										check_txt=""
 								break
+				if back_button.rect.collidepoint(event.pos) and back_button.status==1:
+					back_button.status=0
+					white_pawns=backup_white
+					black_pawns=backup_black
+					for i in range(len(backup_white_pos)):
+						white_pawns[i].pos=backup_white_pos[i]
+					for i in range(len(backup_black_pos)):
+						black_pawns[i].pos=backup_black_pos[i]	
+					board.pawns_matrix=backup_board
+					white_add_buttons=backup_white_add
+					black_add_buttons=backup_black_add
+					w_destroyed=backup_w_destroyed
+					b_destroyed=backup_b_destroyed
+					count_w=backup_count_w
+					count_b=backup_count_b
+					print(board.pawns_matrix)
+					if turn == "white":
+						turn = "black"
+						turn_pawns = black_pawns
+						turn_txt = "Ruch czarnych"
+						if timers:
+							black_watch.resume()
+							white_watch.pause_timer()
+					else:
+						turn = "white"
+						turn_pawns = white_pawns
+						turn_txt = "Ruch białych"
+						if timers:
+							white_watch.resume()
+							black_watch.pause_timer()
+					en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+					if en != []:  # blokowanie ruchow gdy jest szach
+						# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
+						for white_pawn in white_pawns:
+							white_pawn.draw(game_window, board)
+						for black_pawn in black_pawns:
+							black_pawn.draw(game_window, board)
+						check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 			if click != 0 and pygame.mouse.get_pressed()[0] == False:
 				click = 0
 				if hold == 1:  # jesli trzymalem figure
@@ -1206,6 +1290,19 @@ def kings_chess(game_window, res, timers, max_time):
 							y = i
 						i += 1
 					if [x, y] in hw.att:
+						print(board.pawns_matrix, ":)")
+						backup_white=white_pawns.copy()
+						backup_black=black_pawns.copy()
+						backup_white_pos=copy.deepcopy([pw.pos for pw in white_pawns])
+						backup_black_pos=copy.deepcopy([pw.pos for pw in black_pawns])
+						backup_board=copy.deepcopy(board.pawns_matrix)
+						backup_white_add=white_add_buttons.copy()
+						backup_black_add=black_add_buttons.copy()
+						backup_w_destroyed=w_destroyed.copy()
+						backup_b_destroyed=w_destroyed.copy()
+						backup_count_w=count_w.copy()
+						backup_count_b=count_b.copy()
+						back_button.status=1
 						hw.pos = (x, y)
 						destroy_enemy((x, y), turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						check = False
@@ -1237,6 +1334,19 @@ def kings_chess(game_window, res, timers, max_time):
 									black_pawn.draw(game_window, board)
 								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					elif [x, y] in hw.mv:
+						print(board.pawns_matrix, ":)")
+						backup_white=white_pawns.copy()
+						backup_black=black_pawns.copy()
+						backup_white_pos=copy.deepcopy([pw.pos for pw in white_pawns])
+						backup_black_pos=copy.deepcopy([pw.pos for pw in black_pawns])
+						backup_board=copy.deepcopy(board.pawns_matrix)
+						backup_white_add=white_add_buttons.copy()
+						backup_black_add=black_add_buttons.copy()
+						backup_w_destroyed=w_destroyed.copy()
+						backup_b_destroyed=w_destroyed.copy()
+						backup_count_w=count_w.copy()
+						backup_count_b=count_b.copy()
+						back_button.status=1
 						hw.pos = (x, y)
 						check = False
 						if turn == "white":
@@ -1303,6 +1413,7 @@ def kings_chess(game_window, res, timers, max_time):
 				for but in black_add_buttons:
 					but.draw(game_window)
 		
+		back_button.draw(game_window)
 		pygame.display.update()
 	'''
 	while deciding:
