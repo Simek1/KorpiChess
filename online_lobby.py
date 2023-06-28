@@ -455,6 +455,13 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 				queen_b_button.undertext="Królowa("+str(w_destroyed["queen"])+")"
 				queen_b_button.draw(game_window)
 			for event in pygame.event.get():
+				if event.type == pygame.KEYDOWN:
+					if event.key==27:
+						playing=False
+						deciding=False
+						running=False
+						transform==False
+						send("@stopgame")
 				if event.type == pygame.QUIT:
 					playing=False
 					deciding=False
@@ -572,6 +579,13 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 				possible_pos=check_add
 				position_rects=[move_rect(x, board.area) for x in possible_pos]
 			for event in pygame.event.get():
+				if event.type == pygame.KEYDOWN:
+					if event.key==27:
+						playing = False
+						deciding = False
+						running = False
+						adding == False
+						send("@stopgame")
 				if event.type == pygame.QUIT:
 					playing = False
 					deciding = False
@@ -921,6 +935,12 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 		for black_pawn in black_pawns:
 			black_pawn.draw(game_window, board)
 		for event in pygame.event.get():
+			if event.type == pygame.KEYDOWN:
+				if event.key==27:
+					playing = False
+					deciding = False
+					running = False
+					send("@stopgame")
 			if event.type == pygame.QUIT:
 				playing = False
 				deciding = False
@@ -1248,6 +1268,8 @@ def online_menu(win, res, nick, timers, max_time):
 							box.upper=1
 						box.write(event.key, numpad_keys)
 						break
+				if event.key==27:
+					menuing=0
 			elif event.type ==pygame.KEYUP:
 				for box in boxes:
 					if box.status==1:
@@ -1316,6 +1338,9 @@ def online_menu(win, res, nick, timers, max_time):
 						white_rect.status=0
 						black_rect.status=1
 			elif event.type == pygame.KEYDOWN:
+				if event.key==27:
+					hosting=0
+					close_server()
 				if chat.chat_input.status==1:
 					if event.key==13:
 						if len(chat.chat_input.text)>0:
@@ -1374,6 +1399,9 @@ def online_menu(win, res, nick, timers, max_time):
 				else:
 					chat.chat_input.status=0
 			elif event.type == pygame.KEYDOWN:
+				if event.key==27:
+					connected=0
+					send("!@#disc#@!")
 				if chat.chat_input.status==1:
 					if event.key==13:
 						if len(chat.chat_input.text)>0:

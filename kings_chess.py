@@ -1027,12 +1027,17 @@ def kings_chess(game_window, res, timers, max_time):
 				queen_b_button.undertext="Królowa("+str(w_destroyed["queen"])+")"
 				queen_b_button.draw(game_window)
 			for event in pygame.event.get():
+				if event.type == pygame.KEYDOWN:
+					if event.key==27:
+						playing=False
+						deciding=False
+						running=False
+						transform==False
 				if event.type == pygame.QUIT:
 					playing=False
 					deciding=False
 					running=False
 					transform==False
-					pygame.quit()
 				elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 					if tr.color=="w":
 						if rook_w_button.rect.collidepoint(event.pos) and b_destroyed["rook"]>0:
@@ -1120,6 +1125,12 @@ def kings_chess(game_window, res, timers, max_time):
 			'''
 			#Postawienie wybranej figury na szachownicty
 			for event in pygame.event.get():
+				if event.type == pygame.KEYDOWN:
+					if event.key==27:
+						playing = False
+						deciding = False
+						running = False
+						adding == False
 				if event.type == pygame.QUIT:
 					playing = False
 					deciding = False
@@ -1239,6 +1250,11 @@ def kings_chess(game_window, res, timers, max_time):
 		for black_pawn in black_pawns:
 			black_pawn.draw(game_window, board)
 		for event in pygame.event.get():
+			if event.type == pygame.KEYDOWN:
+				if event.key==27:
+					playing = False
+					deciding = False
+					running = False
 			if event.type == pygame.QUIT:
 				playing = False
 				deciding = False
