@@ -109,6 +109,22 @@ def options():
 	txt_res_size=txt_res_rect.width
 	timers_switch_txt=deafult_font.render("Włącz/wyłącz zegar:", True, (0,0,0))
 	timers_switch=inactive_button(((res[0]/4)/3+timers_switch_txt.get_rect().width, (res[1]/10)*4), [res[0]/12, res[1]/12], (185, 182, 183), "Włącz")
+	def_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*4), [res[0]/11, res[1]/12], (185, 182, 183), "800x600")
+	hd_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*5), [res[0]/11, res[1]/12], (185, 182, 183), "1280x720")
+	fullhd_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*6), [res[0]/11, res[1]/12], (185, 182, 183), "1920x1080")
+	if res==(800,600):
+		def_res.status=1
+		hd_res.status=0
+		fullhd_res.status=0
+	elif res==(1280,720):
+		def_res.status=0
+		hd_res.status=1
+		fullhd_res.status=0
+	else:
+		def_res.status=0
+		hd_res.status=0
+		fullhd_res.status=1
+	res_buttons=[def_res, hd_res, fullhd_res]
 	if timers==1:
 		timers_switch.status=1
 		timers_switch.text="Wyłącz"
@@ -143,21 +159,144 @@ def options():
 					else:
 						timers_switch.status=0
 						timers_switch.text="Włącz"
+				if def_res.rect.collidepoint(event.pos) and def_res.status==0:
+					res=(800,600)
+					pygame.display.set_mode(res)
+					def_res.status=1
+					hd_res.status=0
+					fullhd_res.status=0
+					font_size = int(res[0]/45)
+					deafult_font=pygame.font.SysFont("arial", font_size)
+					title_font=pygame.font.SysFont("arial", int(res[0]/30))
+					left_column=pygame.Rect(res[0]/40, 0, (res[0]/2)-((res[0]/40)*2), res[1])
+					right_column=pygame.Rect(res[0]/40+res[0]/2, 0, (res[0]/2)-((res[0]/40)*2), res[1])
+					txt_timers=title_font.render("Zegary", True, (0,0,0))
+					txt_timers_rect=txt_timers.get_rect()
+					txt_timers_size=txt_timers_rect.width
+					txt_res=title_font.render("Rozdzielczość", True, (0,0,0))
+					txt_res_rect=txt_res.get_rect()
+					txt_res_size=txt_res_rect.width
+					timers_switch_txt=deafult_font.render("Włącz/wyłącz zegar:", True, (0,0,0))
+					timers_switch=inactive_button(((res[0]/4)/3+timers_switch_txt.get_rect().width, (res[1]/10)*4), [res[0]/12, res[1]/12], (185, 182, 183), "Włącz")
+					def_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*4), [res[0]/11, res[1]/12], (185, 182, 183), "800x600")
+					hd_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*5), [res[0]/11, res[1]/12], (185, 182, 183), "1280x720")
+					fullhd_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*6), [res[0]/11, res[1]/12], (185, 182, 183), "1920x1080")
+					max_time_input=input_box([res[0]/20,timers_switch_txt.get_rect().height], ((res[0]/4)/3+timers_switch_txt.get_rect().width, (res[1]/10)*6), font_size, 3, uppertext="Czas gry(minuty)")
+					max_time_input.text=str(int(max_time/60))
+					if res==(800,600):
+						def_res.status=1
+						hd_res.status=0
+						fullhd_res.status=0
+					elif res==(1280,720):
+						def_res.status=0
+						hd_res.status=1
+						fullhd_res.status=0
+					else:
+						def_res.status=0
+						hd_res.status=0
+						fullhd_res.status=1
+					res_buttons=[def_res, hd_res, fullhd_res]
+					if timers==1:
+						timers_switch.status=1
+						timers_switch.text="Wyłącz"
+				elif hd_res.rect.collidepoint(event.pos) and hd_res.status==0:
+					res=(1280,720)
+					pygame.display.set_mode(res)
+					def_res.status=0
+					hd_res.status=1
+					fullhd_res.status=0
+					font_size = int(res[0]/45)
+					deafult_font=pygame.font.SysFont("arial", font_size)
+					title_font=pygame.font.SysFont("arial", int(res[0]/30))
+					left_column=pygame.Rect(res[0]/40, 0, (res[0]/2)-((res[0]/40)*2), res[1])
+					right_column=pygame.Rect(res[0]/40+res[0]/2, 0, (res[0]/2)-((res[0]/40)*2), res[1])
+					txt_timers=title_font.render("Zegary", True, (0,0,0))
+					txt_timers_rect=txt_timers.get_rect()
+					txt_timers_size=txt_timers_rect.width
+					txt_res=title_font.render("Rozdzielczość", True, (0,0,0))
+					txt_res_rect=txt_res.get_rect()
+					txt_res_size=txt_res_rect.width
+					timers_switch_txt=deafult_font.render("Włącz/wyłącz zegar:", True, (0,0,0))
+					timers_switch=inactive_button(((res[0]/4)/3+timers_switch_txt.get_rect().width, (res[1]/10)*4), [res[0]/12, res[1]/12], (185, 182, 183), "Włącz")
+					def_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*4), [res[0]/11, res[1]/12], (185, 182, 183), "800x600")
+					hd_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*5), [res[0]/11, res[1]/12], (185, 182, 183), "1280x720")
+					fullhd_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*6), [res[0]/11, res[1]/12], (185, 182, 183), "1920x1080")
+					max_time_input=input_box([res[0]/20,timers_switch_txt.get_rect().height], ((res[0]/4)/3+timers_switch_txt.get_rect().width, (res[1]/10)*6), font_size, 3, uppertext="Czas gry(minuty)")
+					max_time_input.text=str(int(max_time/60))
+					if res==(800,600):
+						def_res.status=1
+						hd_res.status=0
+						fullhd_res.status=0
+					elif res==(1280,720):
+						def_res.status=0
+						hd_res.status=1
+						fullhd_res.status=0
+					else:
+						def_res.status=0
+						hd_res.status=0
+						fullhd_res.status=1
+					res_buttons=[def_res, hd_res, fullhd_res]
+					if timers==1:
+						timers_switch.status=1
+						timers_switch.text="Wyłącz"
+				elif fullhd_res.rect.collidepoint(event.pos) and fullhd_res.status==0:
+					res=(1920,1080)
+					pygame.display.set_mode(res)
+					def_res.status=0
+					hd_res.status=0
+					fullhd_res.status=1
+					font_size = int(res[0]/45)
+					deafult_font=pygame.font.SysFont("arial", font_size)
+					title_font=pygame.font.SysFont("arial", int(res[0]/30))
+					left_column=pygame.Rect(res[0]/40, 0, (res[0]/2)-((res[0]/40)*2), res[1])
+					right_column=pygame.Rect(res[0]/40+res[0]/2, 0, (res[0]/2)-((res[0]/40)*2), res[1])
+					txt_timers=title_font.render("Zegary", True, (0,0,0))
+					txt_timers_rect=txt_timers.get_rect()
+					txt_timers_size=txt_timers_rect.width
+					txt_res=title_font.render("Rozdzielczość", True, (0,0,0))
+					txt_res_rect=txt_res.get_rect()
+					txt_res_size=txt_res_rect.width
+					timers_switch_txt=deafult_font.render("Włącz/wyłącz zegar:", True, (0,0,0))
+					timers_switch=inactive_button(((res[0]/4)/3+timers_switch_txt.get_rect().width, (res[1]/10)*4), [res[0]/12, res[1]/12], (185, 182, 183), "Włącz")
+					def_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*4), [res[0]/11, res[1]/12], (185, 182, 183), "800x600")
+					hd_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*5), [res[0]/11, res[1]/12], (185, 182, 183), "1280x720")
+					fullhd_res=inactive_button((res[0]/4*3 -res[0]/11/2, res[1]/10*6), [res[0]/11, res[1]/12], (185, 182, 183), "1920x1080")
+					max_time_input=input_box([res[0]/20,timers_switch_txt.get_rect().height], ((res[0]/4)/3+timers_switch_txt.get_rect().width, (res[1]/10)*6), font_size, 3, uppertext="Czas gry(minuty)")
+					max_time_input.text=str(int(max_time/60))
+					if res==(800,600):
+						def_res.status=1
+						hd_res.status=0
+						fullhd_res.status=0
+					elif res==(1280,720):
+						def_res.status=0
+						hd_res.status=1
+						fullhd_res.status=0
+					else:
+						def_res.status=0
+						hd_res.status=0
+						fullhd_res.status=1
+					res_buttons=[def_res, hd_res, fullhd_res]
+					if timers==1:
+						timers_switch.status=1
+						timers_switch.text="Wyłącz"
 			if event.type == pygame.KEYDOWN:
 				if max_time_input.status==1:
 					if event.key in (8, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 1073741913 ,1073741914 ,1073741915, 1073741916, 1073741917, 1073741918 ,1073741919, 1073741920, 1073741921):
 						max_time_input.write(event.key, numpad_keys)
 		game_window.blit(timers_switch_txt, ((res[0]/4)/3, (res[1]/10*4)+timers_switch.size[1]/2-timers_switch_txt.get_rect().height/2))
+		for x in res_buttons:
+			x.draw(game_window)
 		timers_switch.draw(game_window)
 		max_time_input.draw(game_window)
 		pygame.display.update()
 
 		
 try:
-	settings=open("settings.txt", "r")
-	settings=settings.readlines()
+	sett=open("settings.txt", "r")
+	settings=sett.readlines()
 	timers=int(settings[0])
 	max_time=int(settings[1])
+	sett.close()
 except Exception as e:
 	timers=0
 	max_time=1800
