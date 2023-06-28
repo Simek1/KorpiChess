@@ -1002,6 +1002,8 @@ def kings_chess(game_window, res, timers, max_time):
 	backup_b_destroyed=w_destroyed.copy()
 	backup_count_w=count_w.copy()
 	backup_count_b=count_b.copy()
+	backup_white_opp=white_opp.copy()
+	backup_black_opp=black_opp.copy()
 	back_button=inactive_button((board.res[0]+10, res[1]/10 *7), [res[0]/12, res[1]/12], (205, 202, 203), "Cofnij")
 	while playing:
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
@@ -1147,6 +1149,8 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_b_destroyed=w_destroyed.copy()
 						backup_count_w=count_w.copy()
 						backup_count_b=count_b.copy()
+						backup_white_opp=white_opp.copy()
+						backup_black_opp=black_opp.copy()
 						back_button.status=1
 						board.append_figure(temp, (x,y), white_pawns, black_pawns)
 						adding=0
@@ -1327,6 +1331,8 @@ def kings_chess(game_window, res, timers, max_time):
 					b_destroyed=backup_b_destroyed
 					count_w=backup_count_w
 					count_b=backup_count_b
+					white_opp=backup_white_opp
+					black_opp=backup_black_opp
 					print(board.pawns_matrix)
 					if turn == "white":
 						turn = "black"
@@ -1376,6 +1382,8 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_b_destroyed=w_destroyed.copy()
 						backup_count_w=count_w.copy()
 						backup_count_b=count_b.copy()
+						backup_white_opp=white_opp.copy()
+						backup_black_opp=black_opp.copy()
 						back_button.status=1
 						hw.pos = (x, y)
 						destroy_enemy((x, y), turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
@@ -1420,6 +1428,8 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_b_destroyed=w_destroyed.copy()
 						backup_count_w=count_w.copy()
 						backup_count_b=count_b.copy()
+						backup_white_opp=white_opp.copy()
+						backup_black_opp=black_opp.copy()
 						back_button.status=1
 						hw.pos = (x, y)
 						check = False
