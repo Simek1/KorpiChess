@@ -880,8 +880,9 @@ def kings_chess(game_window, res, timers, max_time):
 	opp_pawn8_b = button([res_b[0]/8*7, res_b[1]+pawn_res[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_b_png, figure="pawn")
 
 	black_opp=[opp_rook1_b, opp_knight1_b, opp_bishop1_b, opp_queen_b, opp_king_b, opp_bishop2_b, opp_knight2_b, opp_rook2_b, opp_pawn1_b,
-			opp_pawn2_b, opp_pawn2_b, opp_pawn3_b,opp_pawn4_b, opp_pawn5_b, opp_pawn6_b, opp_pawn7_b, opp_pawn8_b]
+			 opp_pawn2_b, opp_pawn3_b,opp_pawn4_b, opp_pawn5_b, opp_pawn6_b, opp_pawn7_b, opp_pawn8_b]
 	start_pos=[res_b[0], res[1]/10*5]
+	print(start_pos)
 	for pw in black_opp:
 		if start_pos[0]+mini_pawn_res[0]<res[0]:
 			pw.pos=(start_pos[0], start_pos[1])
@@ -890,8 +891,10 @@ def kings_chess(game_window, res, timers, max_time):
 			start_pos[0]=res_b[0]
 			start_pos[1]+=mini_pawn_res[1]
 			pw.pos=(start_pos[0], start_pos[1])
-			start_pos[0]+mini_pawn_res[0]
-
+			start_pos[0]+=mini_pawn_res[0]
+		print(start_pos, pw.pos)
+	
+	
 	black_add_buttons=[add_rook1_b, add_knight1_b, add_bishop1_b, add_queen_b, add_king_b, add_bishop2_b, add_knight2_b, add_rook2_b,
 					add_pawn1_b, add_pawn2_b, add_pawn3_b, add_pawn4_b, add_pawn5_b, add_pawn6_b, add_pawn7_b, add_pawn8_b]
 	
@@ -933,7 +936,7 @@ def kings_chess(game_window, res, timers, max_time):
 
 	
 	white_opp=[opp_rook1_w, opp_knight1_w, opp_bishop1_w, opp_queen_w, opp_king_w, opp_bishop2_w, opp_knight2_w, opp_rook2_w, opp_pawn1_w,
-			opp_pawn2_w, opp_pawn2_w, opp_pawn3_w, opp_pawn4_w, opp_pawn5_w, opp_pawn6_w, opp_pawn7_w, opp_pawn8_w]
+			opp_pawn2_w, opp_pawn3_w, opp_pawn4_w, opp_pawn5_w, opp_pawn6_w, opp_pawn7_w, opp_pawn8_w]
 	
 	for i in range(len(white_opp)):
 		white_opp[i].pos=black_opp[i].pos
@@ -1150,7 +1153,6 @@ def kings_chess(game_window, res, timers, max_time):
 							y = i
 						i += 1
 					if x!=-1 and y!=-1 and [x,y] in possible_pos:
-						print(board.pawns_matrix, ":)")
 						backup_white=white_pawns.copy()
 						backup_black=black_pawns.copy()
 						backup_white_pos=copy.deepcopy([pw.pos for pw in white_pawns])
@@ -1171,8 +1173,10 @@ def kings_chess(game_window, res, timers, max_time):
 							count_w[temp.type]-=1
 							del(white_add_buttons[white_add_buttons.index(add_fig_but)])
 						else:
+							print([x.pos for x in black_add_buttons])
 							count_b[temp.type]-=1
 							del(black_add_buttons[black_add_buttons.index(add_fig_but)])
+							print([x.pos for x in black_add_buttons])
 						en=[]
 						check_add=[]
 						if turn == "white":

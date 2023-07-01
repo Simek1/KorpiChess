@@ -306,7 +306,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 		black_add_buttons=[add_rook1_b, add_knight1_b, add_bishop1_b, add_queen_b, add_king_b, add_bishop2_b, add_knight2_b, add_rook2_b,
 						add_pawn1_b, add_pawn2_b, add_pawn3_b, add_pawn4_b, add_pawn5_b, add_pawn6_b, add_pawn7_b, add_pawn8_b]
 		white_opp=[opp_rook1_w, opp_knight1_w, opp_bishop1_w, opp_queen_w, opp_king_w, opp_bishop2_w, opp_knight2_w, opp_rook2_w, opp_pawn1_w,
-				opp_pawn2_w, opp_pawn2_w, opp_pawn3_w, opp_pawn4_w, opp_pawn5_w, opp_pawn6_w, opp_pawn7_w, opp_pawn8_w]
+				opp_pawn2_w, opp_pawn3_w, opp_pawn4_w, opp_pawn5_w, opp_pawn6_w, opp_pawn7_w, opp_pawn8_w]
 		
 		start_pos=[res_b[0], res[1]/10*5]
 
@@ -360,7 +360,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 		white_add_buttons=[add_rook1_w, add_knight1_w, add_bishop1_w, add_queen_w, add_king_w, add_bishop2_w, add_knight2_w, add_rook2_w,
 						add_pawn1_w, add_pawn2_w, add_pawn3_w, add_pawn4_w, add_pawn5_w, add_pawn6_w, add_pawn7_w, add_pawn8_w]
 		black_opp=[opp_rook1_b, opp_knight1_b, opp_bishop1_b, opp_queen_b, opp_king_b, opp_bishop2_b, opp_knight2_b, opp_rook2_b, opp_pawn1_b,
-				opp_pawn2_b, opp_pawn2_b, opp_pawn3_b,opp_pawn4_b, opp_pawn5_b, opp_pawn6_b, opp_pawn7_b, opp_pawn8_b]
+				opp_pawn2_b, opp_pawn3_b,opp_pawn4_b, opp_pawn5_b, opp_pawn6_b, opp_pawn7_b, opp_pawn8_b]
 		
 		start_pos=[res_b[0], res[1]/10*5]
 
