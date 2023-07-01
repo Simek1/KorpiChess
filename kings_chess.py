@@ -1010,6 +1010,7 @@ def kings_chess(game_window, res, timers, max_time):
 	backup_white_opp=white_opp.copy()
 	backup_black_opp=black_opp.copy()
 	back_button=inactive_button((board.res[0]+10, res[1]/10 *7), [res[0]/12, res[1]/12], (205, 202, 203), "Cofnij")
+	ending=False
 	while playing:
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
 			transform_w.draw(game_window)
@@ -1238,9 +1239,31 @@ def kings_chess(game_window, res, timers, max_time):
 		# if black_watch.remaining_time==0 or white_watch.remaining_time==0 or check_txt=="Szach-Mat!" or ("king" not in [p.type for p in white_pawns]) or ("king" not in [p.type for p in black_pawns]):
 		if timers:
 			if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
-				playing = False
+				ending=1
+				if black_watch.remaining_time==0:
+					turn_txt="Wygrały czarne"
+				elif white_watch.remaining_time==0:
+					turn_txt="Wygrały białe"
+				elif check_txt == "Szach-Mat!" and turn=="white":
+					turn_txt="Wygrały czarne"
+				elif check_txt == "Szach-Mat!" and turn=="black":
+					turn_txt="Wygrały białe"
+				elif w_destroyed["king"]==1:
+					turn_txt="Wygrały czarne"
+				elif b_destroyed["king"]==1:
+					turn_txt="Wygrały białe"
+				playing=False
 		else:
 			if check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
+				ending=1
+				if check_txt == "Szach-Mat!" and turn=="white":
+					turn_txt="Wygrały czarne"
+				elif check_txt == "Szach-Mat!" and turn=="black":
+					turn_txt="Wygrały białe"
+				elif w_destroyed["king"]==1:
+					turn_txt="Wygrały czarne"
+				elif b_destroyed["king"]==1:
+					turn_txt="Wygrały białe"
 				playing = False
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
@@ -1544,6 +1567,49 @@ def kings_chess(game_window, res, timers, max_time):
 					running = False
 		pygame.display.update()
 	'''
+	while ending:
+		pygame.time.Clock().tick(30)
+		game_window.fill(bg_color)
+		board.draw(game_window)
+		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
+		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15, board.res[1]/2))
+		for event in pygame.event.get():
+			if event.type == pygame.KEYDOWN:
+				if event.key==27:
+					ending=False
+			if event.type == pygame.QUIT:
+				ending=False
+		if turn=="white":
+			if "king" in [x.figure for x in white_add_buttons]:
+				for but in white_add_buttons:
+					if but.figure=="king":
+						but.draw(game_window)
+						break
+			else:
+				for but in white_add_buttons:
+					but.draw(game_window)
+		else:
+			if "king" in [x.figure for x in black_add_buttons]:
+				for but in black_add_buttons:
+					if but.figure=="king":
+						but.draw(game_window)
+						break
+			else:
+				for but in black_add_buttons:
+					but.draw(game_window)
+		
+		back_button.draw(game_window)
+		if turn=="white":
+			for opp in black_opp:
+				opp.draw(game_window)
+		else:
+			for opp in white_opp:
+				opp.draw(game_window)
+		for white_pawn in white_pawns:
+			white_pawn.draw(game_window, board)
+		for black_pawn in black_pawns:
+			black_pawn.draw(game_window, board)
+		pygame.display.update()
 #kings_chess(game_window, res)
 
 

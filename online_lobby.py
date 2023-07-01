@@ -431,6 +431,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 
 	deciding = True
 	first_frame = True
+	ending=False
 	if timers:
 		black_watch.pause_timer()
 	while playing:
@@ -672,10 +673,41 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 		# if black_watch.remaining_time==0 or white_watch.remaining_time==0 or check_txt=="Szach-Mat!" or ("king" not in [p.type for p in white_pawns]) or ("king" not in [p.type for p in black_pawns]):
 		if timers:
 			if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
-				playing = False
+				ending=True
+				playing=False
+				win="w"
+				if black_watch.remaining_time==0:
+					turn_txt="Wygrały czarne"
+					win="b"
+				elif white_watch.remaining_time==0:
+					turn_txt="Wygrały białe"
+				elif check_txt == "Szach-Mat!" and turn=="white":
+					turn_txt="Wygrały czarne"
+					win="b"
+				elif check_txt == "Szach-Mat!" and turn=="black":
+					turn_txt="Wygrały białe"
+				elif w_destroyed["king"]==1:
+					turn_txt="Wygrały czarne"
+					win="b"
+				elif b_destroyed["king"]==1:
+					turn_txt="Wygrały białe"
+				send(f"@win {win}")
 		else:
 			if check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
-				playing=False
+				ending=True
+				win="w"
+				if check_txt == "Szach-Mat!" and turn=="white":
+					turn_txt="Wygrały czarne"
+					win="b"
+				elif check_txt == "Szach-Mat!" and turn=="black":
+					turn_txt="Wygrały białe"
+				elif w_destroyed["king"]==1:
+					turn_txt="Wygrały czarne"
+					win="b"
+				elif b_destroyed["king"]==1:
+					turn_txt="Wygrały białe"
+				playing = False
+				send(f"@win {win}")
 		if msgs!=[]: #dorobic filtrowanie wiadomoscie ze wzgledu na \ i sprawdzic czy ta lista bedzie sie akutalizowac, jesli nie to sprobowac zrobic z niej zmienna globalna
 			chat.update_chat(msgs)
 			for x in msgs: #dorobic dzialania typu transformacja i sprawdzanie szacha uwzględnienie aby nie wykonywało się to dla osoby która wysłąła wiadomosc
@@ -920,6 +952,15 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							white_watch_remaining_time=rm_time
 					if "<SERVER>" in x and "wyłączył grę" in x:
 						playing=0
+					if "@win" in x:
+						x=x.split()
+						win_color=x[2]
+						if win_color=="w":
+							turn_txt="Wygrały białe"
+						else:
+							turn_txt="Wygrały czarne"
+						playing=False
+						ending=True
 			msgs.clear()
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
@@ -1163,6 +1204,86 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 				opp.draw(game_window)
 
 		pygame.display.update()		
+	while ending:
+		pygame.time.Clock().tick(30)
+		if msgs!=[]: #dorobic filtrowanie wiadomoscie ze wzgledu na \ i sprawdzic czy ta lista bedzie sie akutalizowac, jesli nie to sprobowac zrobic z niej zmienna globalna
+			chat.update_chat(msgs)
+			for x in msgs: #dorobic dzialania typu transformacja i sprawdzanie szacha uwzględnienie aby nie wykonywało się to dla osoby która wysłąła wiadomosc
+				if x=="<SERVER>: Server został wyłączony.":
+					playing=False
+					connected=False
+				if "<SERVER>" in x and "wyłączył grę" in x:
+					ending=0
+			msgs.clear()
+		for event in pygame.event.get():			
+			if event.type == pygame.QUIT:
+				ending=0
+				send("@stopgame")
+				break
+			elif event.type == pygame.KEYDOWN:
+				if event.key==27:
+					ending=0
+					send("@stopgame")
+				if chat.chat_input.status==1:
+					if event.key==13:
+						if len(chat.chat_input.text)>0:
+							send("@chat "+chat.chat_input.text)
+							chat.chat_input.text=""
+					else:
+						if event.key in (1073742048, 1073742054, 1073742050):
+							chat.chat_input.special=1
+						if event.key in (1073742053, 1073742049):
+							chat.chat_input.upper=1
+						chat.chat_input.write(event.key, numpad_keys)
+			elif event.type ==pygame.KEYUP:
+				if chat.chat_input.status==1:
+					if event.key in (1073742048, 1073742054, 1073742050):
+						chat.chat_input.special=0
+					if event.key in (1073742053, 1073742049):
+						chat.chat_input.upper=0
+			elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+				if chat.chat_input.rect.collidepoint(event.pos):
+					chat.chat_input.status=1
+				else:
+					chat.chat_input.status=0
+					chat.chat_input.special=0
+					chat.chat_input.upper=0
+			
+		game_window.fill(bg_color)
+		board.draw(game_window)
+		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
+		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15, board.res[1]/2))
+		chat.draw(game_window)
+		for white_pawn in white_pawns:
+			white_pawn.draw(game_window, board)
+		for black_pawn in black_pawns:
+			black_pawn.draw(game_window, board)
+		if player_color=="white":
+			for opp in black_opp:
+				opp.draw(game_window)
+		else:
+			for opp in white_opp:
+				opp.draw(game_window)
+		if player_color=="white":
+			if "king" in [x.figure for x in white_add_buttons]:
+				for but in white_add_buttons:
+					if but.figure=="king":
+						but.draw(game_window)
+						break
+			else:
+				for but in white_add_buttons:
+					but.draw(game_window)
+		else:
+			if "king" in [x.figure for x in black_add_buttons]:
+				for but in black_add_buttons:
+					if but.figure=="king":
+						but.draw(game_window)
+						break
+			else:
+				for but in black_add_buttons:
+					but.draw(game_window)
+					
+		pygame.display.update()
 		
 def online_menu(win, res, nick, timers, max_time):
 	font_size = int(win.get_size()[0]/45)
@@ -1422,6 +1543,6 @@ def online_menu(win, res, nick, timers, max_time):
 		chat.draw(win)
 		
 		pygame.display.update()
-		pygame.display.update()
+	
 
 	
