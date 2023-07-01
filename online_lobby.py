@@ -655,7 +655,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					x.draw_moves(game_window, board)
 				if temp!=0:
 					mouse_pos = pygame.mouse.get_pos()
-					temp.mouse_dragging(game_window, mouse_pos)
+					temp.mouse_dragging(game_window, mouse_pos, pawn_res)
 				pygame.display.update()
 
 				
@@ -1134,7 +1134,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 			for a in attack_moves:
 				a.draw_attack(game_window, board)
 			mouse_pos = pygame.mouse.get_pos()
-			hw.mouse_dragging(game_window, mouse_pos)
+			hw.mouse_dragging(game_window, mouse_pos, pawn_res)
 		chat.draw(game_window)
 		first_frame = False
 		if player_color=="white":

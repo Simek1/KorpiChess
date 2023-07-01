@@ -400,10 +400,12 @@ class pawn(object):
 		self.graph = graph
 		self.type = pawn_type
 
-	def mouse_dragging(self, win, mouse_position):
+	def mouse_dragging(self, win, mouse_position, pawn_res):
 		temp = copy.copy(self.graph)
 		temp.set_alpha(100)
-		win.blit(temp, mouse_position)
+		x=mouse_position[0]-pawn_res[0]/2
+		y=mouse_position[1]-pawn_res[1]/2
+		win.blit(temp, (x,y))
 
 	def draw(self, win, board):
 		board.pawns_matrix[self.pos[1]][self.pos[0]] = self.color
@@ -1215,7 +1217,7 @@ def kings_chess(game_window, res, timers, max_time):
 					x.draw_moves(game_window, board)
 				if temp!=0:
 					mouse_pos = pygame.mouse.get_pos()
-					temp.mouse_dragging(game_window, mouse_pos)
+					temp.mouse_dragging(game_window, mouse_pos, pawn_res)
 				pygame.display.update()
 
 				
@@ -1491,7 +1493,7 @@ def kings_chess(game_window, res, timers, max_time):
 			for a in attack_moves:
 				a.draw_attack(game_window, board)
 			mouse_pos = pygame.mouse.get_pos()
-			hw.mouse_dragging(game_window, mouse_pos)
+			hw.mouse_dragging(game_window, mouse_pos, pawn_res)
 		first_frame = False
 		
 		if turn=="white":
