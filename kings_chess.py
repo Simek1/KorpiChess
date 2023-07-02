@@ -79,44 +79,10 @@ class ch_board(object):
 			for x in black_pawns:
 				if x.type=="king":
 					king_pos=x.pos
-					if x.pos[0]>0:
-						en_king.append([x.pos[1]-1, x.pos[0]])
-					if x.pos[1]>0:
-						en_king.append([x.pos[1], x.pos[0]-1])
-					if x.pos[0]<7:
-						en_king.append([x.pos[1]+1, x.pos[0]])
-					if x.pos[1]<7:
-						en_king.append([x.pos[1], x.pos[0]+1])
-					if x.pos[0]>0 and x.pos[1]>0:
-						en_king.append([x.pos[1]-1, x.pos[0]-1])
-					if x.pos[0]<7 and x.pos[1]<7:
-						en_king.append([x.pos[1]+1, x.pos[0]+1])
-					if x.pos[0]>0 and x.pos[1]<7:
-						en_king.append([x.pos[1]-1, x.pos[0]+1])
-					if x.pos[0]<7 and x.pos[1]>0:
-						en_king.append([x.pos[1]+1, x.pos[0]-1])
-					break
 		else:
 			for x in white_pawns:
 				if x.type=="king":
 					king_pos=x.pos
-					if x.pos[0]>0:
-						en_king.append([x.pos[1]-1, x.pos[0]])
-					if x.pos[1]>0:
-						en_king.append([x.pos[1], x.pos[0]-1])
-					if x.pos[0]<7:
-						en_king.append([x.pos[1]+1, x.pos[0]])
-					if x.pos[1]<7:
-						en_king.append([x.pos[1], x.pos[0]+1])
-					if x.pos[0]>0 and x.pos[1]>0:
-						en_king.append([x.pos[1]-1, x.pos[0]-1])
-					if x.pos[0]<7 and x.pos[1]<7:
-						en_king.append([x.pos[1]+1, x.pos[0]+1])
-					if x.pos[0]>0 and x.pos[1]<7:
-						en_king.append([x.pos[1]-1, x.pos[0]+1])
-					if x.pos[0]<7 and x.pos[1]>0:
-						en_king.append([x.pos[1]+1, x.pos[0]-1])
-					break
 		x=0
 		for row in self.pawns_matrix:
 			y=0
@@ -1174,10 +1140,8 @@ def kings_chess(game_window, res, timers, max_time):
 							count_w[temp.type]-=1
 							del(white_add_buttons[white_add_buttons.index(add_fig_but)])
 						else:
-							print([x.pos for x in black_add_buttons])
 							count_b[temp.type]-=1
 							del(black_add_buttons[black_add_buttons.index(add_fig_but)])
-							print([x.pos for x in black_add_buttons])
 						en=[]
 						check_add=[]
 						if turn == "white":
