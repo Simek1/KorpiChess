@@ -977,6 +977,25 @@ def kings_chess(game_window, res, timers, max_time):
 	backup_black_opp=black_opp.copy()
 	back_button=inactive_button((board.res[0]+10, res[1]/10 *7), [res[0]/12, res[1]/12], (205, 202, 203), "Cofnij")
 	ending=False
+	repeating_figures_w=[]
+	repeating_pos_w=[]
+	repeating_reserve_w=[]
+	repeating_figures_b=[]
+	repeating_pos_b=[]
+	repeating_reserve_b=[]
+	repeating_figures_w.append([x.type for x in white_pawns])
+	repeating_pos_w.append([x.pos for x in white_pawns])
+	repeating_reserve_w.append([x.figure for x in white_add_buttons])
+	repeating_figures_b.append([x.type for x in black_pawns])
+	repeating_pos_b.append([x.pos for x in black_pawns])
+	repeating_reserve_b.append([x.figure for x in black_add_buttons])
+	backup_rep_fig_w=repeating_figures_w.copy()
+	backup_rep_pos_w=repeating_pos_w.copy()
+	backup_rep_res_w=repeating_reserve_w.copy()
+	backup_rep_fig_b=repeating_figures_b.copy()
+	backup_rep_pos_b=repeating_pos_b.copy()
+	backup_rep_res_b=repeating_reserve_b.copy()
+	repeated=False
 	while playing:
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
 			transform_w.draw(game_window)
@@ -1055,6 +1074,26 @@ def kings_chess(game_window, res, timers, max_time):
 						black_pawn.draw(game_window, board)
 					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 				back_button.status=0
+				if tr.color=="w":
+					backup_rep_fig_w=repeating_figures_w.copy()
+					backup_rep_pos_w=repeating_pos_w.copy()
+					backup_rep_res_w=repeating_reserve_w.copy()
+					repeating_figures_w=[]
+					repeating_pos_w=[]
+					repeating_reserve_w=[]
+					repeating_figures_w.append([x.type for x in white_pawns])
+					repeating_pos_w.append([x.pos for x in white_pawns])
+					repeating_reserve_w.append([x.figure for x in white_add_buttons])
+				else:
+					backup_rep_fig_b=repeating_figures_b.copy()
+					backup_rep_pos_b=repeating_pos_b.copy()
+					backup_rep_res_b=repeating_reserve_b.copy()
+					repeating_figures_b=[]
+					repeating_pos_b=[]
+					repeating_reserve_b=[]
+					repeating_figures_b.append([x.type for x in black_pawns])
+					repeating_pos_b.append([x.pos for x in black_pawns])
+					repeating_reserve_b.append([x.figure for x in black_add_buttons])					
 			pygame.display.update()
 		while adding:  # Dodawanie figury na szachownice		
 			if add_first_frame:
@@ -1139,9 +1178,27 @@ def kings_chess(game_window, res, timers, max_time):
 						if temp.color=="w":
 							count_w[temp.type]-=1
 							del(white_add_buttons[white_add_buttons.index(add_fig_but)])
+							backup_rep_fig_w=repeating_figures_w.copy()
+							backup_rep_pos_w=repeating_pos_w.copy()
+							backup_rep_res_w=repeating_reserve_w.copy()
+							repeating_figures_w=[]
+							repeating_pos_w=[]
+							repeating_reserve_w=[]
+							repeating_figures_w.append([x.type for x in white_pawns])
+							repeating_pos_w.append([x.pos for x in white_pawns])
+							repeating_reserve_w.append([x.figure for x in white_add_buttons])
 						else:
 							count_b[temp.type]-=1
 							del(black_add_buttons[black_add_buttons.index(add_fig_but)])
+							backup_rep_fig_b=repeating_figures_b.copy()
+							backup_rep_pos_b=repeating_pos_b.copy()
+							backup_rep_res_b=repeating_reserve_b.copy()
+							repeating_figures_b=[]
+							repeating_pos_b=[]
+							repeating_reserve_b=[]
+							repeating_figures_b.append([x.type for x in black_pawns])
+							repeating_pos_b.append([x.pos for x in black_pawns])
+							repeating_reserve_b.append([x.figure for x in black_add_buttons])
 						en=[]
 						check_add=[]
 						if turn == "white":
@@ -1229,6 +1286,10 @@ def kings_chess(game_window, res, timers, max_time):
 				elif b_destroyed["king"]==1:
 					turn_txt="Wygrały białe"
 				playing = False
+		if repeated==True:
+			turn_txt="Remis, portrójne powtórzenie"
+			ending=True
+			playing=False
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
 		board.draw(game_window)
@@ -1342,7 +1403,13 @@ def kings_chess(game_window, res, timers, max_time):
 					count_b=backup_count_b
 					white_opp=backup_white_opp
 					black_opp=backup_black_opp
-					print(board.pawns_matrix)
+					repeating_figures_w=backup_rep_fig_w
+					repeating_pos_w=backup_rep_pos_w
+					repeating_reserve_w=backup_rep_res_w
+					repeating_figures_b=backup_rep_fig_b
+					repeating_pos_b=backup_rep_pos_b
+					repeating_reserve_b=backup_rep_res_b
+
 					if turn == "white":
 						turn = "black"
 						turn_pawns = black_pawns
@@ -1398,6 +1465,15 @@ def kings_chess(game_window, res, timers, max_time):
 						destroy_enemy((x, y), turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						check = False
 						if turn == "white":
+							backup_rep_fig_w=repeating_figures_w.copy()
+							backup_rep_pos_w=repeating_pos_w.copy()
+							backup_rep_res_w=repeating_reserve_w.copy()
+							repeating_figures_w=[]
+							repeating_pos_w=[]
+							repeating_reserve_w=[]
+							repeating_figures_w.append([x.type for x in white_pawns])
+							repeating_pos_w.append([x.pos for x in white_pawns])
+							repeating_reserve_w.append([x.figure for x in white_add_buttons])
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
@@ -1405,6 +1481,15 @@ def kings_chess(game_window, res, timers, max_time):
 								black_watch.resume()
 								white_watch.pause_timer()
 						else:
+							backup_rep_fig_b=repeating_figures_b.copy()
+							backup_rep_pos_b=repeating_pos_b.copy()
+							backup_rep_res_b=repeating_reserve_b.copy()
+							repeating_figures_b=[]
+							repeating_pos_b=[]
+							repeating_reserve_b=[]
+							repeating_figures_b.append([x.type for x in black_pawns])
+							repeating_pos_b.append([x.pos for x in black_pawns])
+							repeating_reserve_b.append([x.figure for x in black_add_buttons])
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
@@ -1446,6 +1531,27 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
+							backup_rep_fig_w=repeating_figures_w.copy()
+							backup_rep_pos_w=repeating_pos_w.copy()
+							backup_rep_res_w=repeating_reserve_w.copy()
+							figs=[x.type for x in white_pawns]
+							poses=[x.pos for x in white_pawns]
+							resv=[x.figure for x in white_add_buttons]
+							if poses in repeating_pos_w:
+								ind=repeating_pos_w.index(poses)
+								if figs==repeating_figures_w[ind] and resv==repeating_reserve_w[ind]:
+									rep=0
+									for i in range(len(repeating_pos_w)):
+										if repeating_pos_w[i]==poses and repeating_figures_w[i]==figs and repeating_reserve_w[i]==resv:
+											rep+=1
+											if rep==2:
+												repeated=True
+												break
+										
+							repeating_pos_w.append(poses)
+							repeating_figures_w.append(figs)
+							repeating_reserve_w.append(resv)
+							
 							if timers:
 								black_watch.resume()
 								white_watch.pause_timer()
@@ -1453,6 +1559,25 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
+							figs=[x.type for x in black_pawns]
+							poses=[x.pos for x in black_pawns]
+							resv=[x.figure for x in black_add_buttons]
+							backup_rep_fig_b=repeating_figures_b.copy()
+							backup_rep_pos_b=repeating_pos_b.copy()
+							backup_rep_res_b=repeating_reserve_b.copy()
+							if poses in repeating_pos_b:
+								ind=repeating_pos_b.index(poses)
+								if figs==repeating_figures_b[ind] and resv==repeating_reserve_b[ind]:
+									rep=0
+									for i in range(len(repeating_pos_b)):
+										if repeating_pos_b[i]==poses and repeating_figures_b[i]==figs and repeating_reserve_b[i]==resv:
+											rep+=1
+											if rep==2:
+												repeated=True
+												break
+							repeating_figures_b.append(figs)
+							repeating_pos_b.append(poses)
+							repeating_reserve_b.append(resv)
 							if timers:
 								white_watch.resume()
 								black_watch.pause_timer()
