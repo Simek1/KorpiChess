@@ -255,6 +255,7 @@ mainmenu.add.button('Wyjście', pygame_menu.events.EXIT)
 running=1
 reint=0
 while running:
+	pygame.time.Clock().tick(30)
 	events = pygame.event.get()
 	for event in events:
 		if event.type == pygame.QUIT:

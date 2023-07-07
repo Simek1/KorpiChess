@@ -448,7 +448,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	if timers:
 		black_watch.pause_timer()
 	while playing:
+		pygame.time.Clock().tick(30)
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
+			pygame.time.Clock().tick(30)
 			transform_w.draw(game_window)
 			if tr.color=="w":
 				rook_w_button.undertext="Wieża("+str(b_destroyed["rook"])+")"
@@ -566,6 +568,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					repeating_reserve_b.append([x.figure for x in black_add_buttons])
 			pygame.display.update()
 		while adding:  # Dodawanie figury na szachownice
+			pygame.time.Clock().tick(30)
 			if add_first_frame:
 				if player_color == "white":
 					if add_fig_but.figure=="rook":
@@ -1004,7 +1007,6 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					if "@repeated" in x:
 						repeated=True
 			msgs.clear()
-		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
 		board.draw(game_window)
 		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
@@ -1291,7 +1293,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 			for opp in white_opp:
 				opp.draw(game_window)
 		if repeated==True:
-			turn_txt="Remis, portrójne powtórzenie"
+			turn_txt="Remis, potrójne powtórzenie"
 			ending=True
 			playing=False
 		pygame.display.update()		
@@ -1417,6 +1419,7 @@ def online_menu(win, res, nick, timers, max_time):
 	connected=0
 	
 	while menuing:
+		pygame.time.Clock().tick(30)
 		win.fill((90,200,210))
 		pygame.draw.rect(win,(90,180,180), left_column)
 		pygame.draw.rect(win,(90,180,180), right_column)
@@ -1497,6 +1500,7 @@ def online_menu(win, res, nick, timers, max_time):
 		win.blit(local_ip_txt, local_ip_pos)
 		pygame.display.update()
 	while hosting==1: #wersja lobby dla hosta
+		pygame.time.Clock().tick(30)
 		if nicks!=old_nicks:
 			txt_nicks=[]
 			old_nicks=nicks.copy()
@@ -1579,6 +1583,7 @@ def online_menu(win, res, nick, timers, max_time):
 			black_rect.draw(win)
 		pygame.display.update()
 	while connected==1: #Wersja lobby dla dołączającego gracza
+		pygame.time.Clock().tick(30)
 		win.fill((90,200,210))
 		win.blit(waiting_txt, waiting_txt_pos)
 		if new_msg!=[]:

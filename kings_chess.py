@@ -454,7 +454,6 @@ class button(object):
 		if self.graph != "" and type(self.graph) != pygame.Surface:
 			self.graph.transform.scale(self.graph, self.size)
 		self.figure=figure
-
 	def draw(self, win):
 		txt = self.font.render(self.text, True, (0, 0, 0))
 		txt_rect = txt.get_rect()
@@ -962,6 +961,8 @@ def kings_chess(game_window, res, timers, max_time):
 	if timers:
 		black_watch.pause_timer()
 	print(board.pawns_matrix, ":)")
+	backup_tr_w=0
+	backup_tr_b=0
 	backup_white=white_pawns.copy()
 	backup_black=black_pawns.copy()
 	backup_white_pos=copy.deepcopy([pw.pos for pw in white_pawns])
@@ -969,8 +970,8 @@ def kings_chess(game_window, res, timers, max_time):
 	backup_board=copy.deepcopy(board.pawns_matrix)
 	backup_white_add=white_add_buttons.copy()
 	backup_black_add=black_add_buttons.copy()
-	backup_w_destroyed=w_destroyed.copy()
-	backup_b_destroyed=w_destroyed.copy()
+	backup_w_destroyed=copy.deepcopy(w_destroyed)
+	backup_b_destroyed=copy.deepcopy(b_destroyed)
 	backup_count_w=count_w.copy()
 	backup_count_b=count_b.copy()
 	backup_white_opp=white_opp.copy()
@@ -1031,6 +1032,7 @@ def kings_chess(game_window, res, timers, max_time):
 					transform==False
 				elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 					if tr.color=="w":
+						backup_figures_w=[fig.type for fig in white_pawns]
 						if rook_w_button.rect.collidepoint(event.pos) and b_destroyed["rook"]>0:
 							b_destroyed["rook"]-=1
 							tr.transform("rook", rook_w_png)
@@ -1048,6 +1050,7 @@ def kings_chess(game_window, res, timers, max_time):
 							tr.transform("queen", queen_w_png)
 							transform=False
 					else:
+						backup_figures_b=[fig.type for fig in black_pawns]
 						if rook_b_button.rect.collidepoint(event.pos) and w_destroyed["rook"]>0:
 							w_destroyed["rook"]-=1
 							tr.transform("rook", rook_b_png)
@@ -1073,11 +1076,8 @@ def kings_chess(game_window, res, timers, max_time):
 					for black_pawn in black_pawns:
 						black_pawn.draw(game_window, board)
 					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
-				back_button.status=0
 				if tr.color=="w":
-					backup_rep_fig_w=repeating_figures_w.copy()
-					backup_rep_pos_w=repeating_pos_w.copy()
-					backup_rep_res_w=repeating_reserve_w.copy()
+					backup_tr_w=1
 					repeating_figures_w=[]
 					repeating_pos_w=[]
 					repeating_reserve_w=[]
@@ -1085,15 +1085,13 @@ def kings_chess(game_window, res, timers, max_time):
 					repeating_pos_w.append([x.pos for x in white_pawns])
 					repeating_reserve_w.append([x.figure for x in white_add_buttons])
 				else:
-					backup_rep_fig_b=repeating_figures_b.copy()
-					backup_rep_pos_b=repeating_pos_b.copy()
-					backup_rep_res_b=repeating_reserve_b.copy()
+					backup_tr_b=1
 					repeating_figures_b=[]
 					repeating_pos_b=[]
 					repeating_reserve_b=[]
 					repeating_figures_b.append([x.type for x in black_pawns])
 					repeating_pos_b.append([x.pos for x in black_pawns])
-					repeating_reserve_b.append([x.figure for x in black_add_buttons])					
+					repeating_reserve_b.append([x.figure for x in black_add_buttons])
 			pygame.display.update()
 		while adding:  # Dodawanie figury na szachownice		
 			if add_first_frame:
@@ -1159,6 +1157,8 @@ def kings_chess(game_window, res, timers, max_time):
 							y = i
 						i += 1
 					if x!=-1 and y!=-1 and [x,y] in possible_pos:
+						backup_tr_w=0
+						backup_tr_b=0
 						backup_white=white_pawns.copy()
 						backup_black=black_pawns.copy()
 						backup_white_pos=copy.deepcopy([pw.pos for pw in white_pawns])
@@ -1166,8 +1166,8 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_board=copy.deepcopy(board.pawns_matrix)
 						backup_white_add=white_add_buttons.copy()
 						backup_black_add=black_add_buttons.copy()
-						backup_w_destroyed=w_destroyed.copy()
-						backup_b_destroyed=w_destroyed.copy()
+						backup_w_destroyed=copy.deepcopy(w_destroyed)
+						backup_b_destroyed=copy.deepcopy(b_destroyed)
 						backup_count_w=count_w.copy()
 						backup_count_b=count_b.copy()
 						backup_white_opp=white_opp.copy()
@@ -1287,7 +1287,7 @@ def kings_chess(game_window, res, timers, max_time):
 					turn_txt="Wygrały białe"
 				playing = False
 		if repeated==True:
-			turn_txt="Remis, portrójne powtórzenie"
+			turn_txt="Remis, potrójne powtórzenie"
 			ending=True
 			playing=False
 		pygame.time.Clock().tick(30)
@@ -1393,7 +1393,19 @@ def kings_chess(game_window, res, timers, max_time):
 					for i in range(len(backup_white_pos)):
 						white_pawns[i].pos=backup_white_pos[i]
 					for i in range(len(backup_black_pos)):
-						black_pawns[i].pos=backup_black_pos[i]	
+						black_pawns[i].pos=backup_black_pos[i]
+					if backup_tr_w:
+						for i in range(len(white_pawns)):
+							if white_pawns[i].type!=backup_figures_w[i]:
+								white_pawns[i].transform("pawn", pawn_w_png)
+								backup_tr_w=0
+								break
+					if backup_tr_b:
+						for i in range(len(black_pawns)):
+							if black_pawns[i].type!=backup_figures_b[i]:
+								black_pawns[i].transform("pawn", pawn_b_png)
+								backup_tr_b=0
+								break
 					board.pawns_matrix=backup_board
 					white_add_buttons=backup_white_add
 					black_add_buttons=backup_black_add
@@ -1409,7 +1421,7 @@ def kings_chess(game_window, res, timers, max_time):
 					repeating_figures_b=backup_rep_fig_b
 					repeating_pos_b=backup_rep_pos_b
 					repeating_reserve_b=backup_rep_res_b
-
+					print(repeating_figures_w, repeating_pos_w)
 					if turn == "white":
 						turn = "black"
 						turn_pawns = black_pawns
@@ -1446,7 +1458,8 @@ def kings_chess(game_window, res, timers, max_time):
 							y = i
 						i += 1
 					if [x, y] in hw.att:
-						print(board.pawns_matrix, ":)")
+						backup_tr_w=0
+						backup_tr_b=0
 						backup_white=white_pawns.copy()
 						backup_black=black_pawns.copy()
 						backup_white_pos=copy.deepcopy([pw.pos for pw in white_pawns])
@@ -1454,8 +1467,8 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_board=copy.deepcopy(board.pawns_matrix)
 						backup_white_add=white_add_buttons.copy()
 						backup_black_add=black_add_buttons.copy()
-						backup_w_destroyed=w_destroyed.copy()
-						backup_b_destroyed=w_destroyed.copy()
+						backup_w_destroyed=copy.deepcopy(w_destroyed)
+						backup_b_destroyed=copy.deepcopy(b_destroyed)
 						backup_count_w=count_w.copy()
 						backup_count_b=count_b.copy()
 						backup_white_opp=white_opp.copy()
@@ -1500,6 +1513,20 @@ def kings_chess(game_window, res, timers, max_time):
 						if hw.type == "pawn" and ((hw.color == "w" and hw.pos[1] == 0) or (hw.color == "b" and hw.pos[1] == 7)):
 							transform = True
 							tr = hw
+							backup_white=white_pawns.copy()
+							backup_black=black_pawns.copy()
+							backup_white_pos=copy.deepcopy([pw.pos for pw in white_pawns])
+							backup_black_pos=copy.deepcopy([pw.pos for pw in black_pawns])
+							backup_board=copy.deepcopy(board.pawns_matrix)
+							backup_white_add=white_add_buttons.copy()
+							backup_black_add=black_add_buttons.copy()
+							backup_w_destroyed=copy.deepcopy(w_destroyed)
+							backup_b_destroyed=copy.deepcopy(b_destroyed)
+							backup_count_w=count_w.copy()
+							backup_count_b=count_b.copy()
+							backup_white_opp=white_opp.copy()
+							backup_black_opp=black_opp.copy()
+							back_button.status=1				
 						if transform == False:
 							en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 							if en != []:  # blokowanie ruchow gdy jest szach
@@ -1511,6 +1538,8 @@ def kings_chess(game_window, res, timers, max_time):
 								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					elif [x, y] in hw.mv:
 						print(board.pawns_matrix, ":)")
+						backup_tr_w=0
+						backup_tr_b=0
 						backup_white=white_pawns.copy()
 						backup_black=black_pawns.copy()
 						backup_white_pos=copy.deepcopy([pw.pos for pw in white_pawns])
@@ -1518,8 +1547,8 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_board=copy.deepcopy(board.pawns_matrix)
 						backup_white_add=white_add_buttons.copy()
 						backup_black_add=black_add_buttons.copy()
-						backup_w_destroyed=w_destroyed.copy()
-						backup_b_destroyed=w_destroyed.copy()
+						backup_w_destroyed=copy.deepcopy(w_destroyed)
+						backup_b_destroyed=copy.deepcopy(b_destroyed)
 						backup_count_w=count_w.copy()
 						backup_count_b=count_b.copy()
 						backup_white_opp=white_opp.copy()
