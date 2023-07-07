@@ -783,12 +783,12 @@ def kings_chess(game_window, res, timers, max_time):
 	rook_b_button = button([transform_w.pos[0]+transform_w.size[0]/5-pawn_res[0]/2, transform_w.pos[1]+transform_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Wieża", graph=rook_b_png)
 	knight_b_button = button([(transform_w.pos[0]+transform_w.size[0]/5-pawn_res[0]/2)*2, transform_w.pos[1]+transform_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Koń", graph=knight_b_png)
 	bishop_b_button = button([(transform_w.pos[0]+transform_w.size[0]/5-pawn_res[0]/2)*3, transform_w.pos[1]+transform_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Goniec", graph=bishop_b_png)
-	queen_b_button = button([(transform_w.pos[0]+transform_w.size[0]/5-pawn_res[0]/2)*4, transform_w.pos[1]+transform_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Królowa", graph=queen_b_png)
+	queen_b_button = button([(transform_w.pos[0]+transform_w.size[0]/5-pawn_res[0]/2)*4, transform_w.pos[1]+transform_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Hetman", graph=queen_b_png)
 	
 	rook_w_button = button([transform_w.pos[0]+transform_w.size[0]/5-pawn_res[0]/2,transform_w.pos[1]+transform_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Wieża", graph=rook_w_png)
 	knight_w_button = button([(transform_w.pos[0]+transform_w.size[0]/5-pawn_res[0]/2)*2, transform_w.pos[1]+transform_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Koń", graph=knight_w_png)
 	bishop_w_button = button([(transform_w.pos[0]+transform_w.size[0]/5-pawn_res[0]/2)*3, transform_w.pos[1]+transform_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Goniec", graph=bishop_w_png)
-	queen_w_button = button([(transform_w.pos[0]+transform_w.size[0]/5-pawn_res[0]/2)*4, transform_w.pos[1]+transform_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Królowa", graph=queen_w_png)
+	queen_w_button = button([(transform_w.pos[0]+transform_w.size[0]/5-pawn_res[0]/2)*4, transform_w.pos[1]+transform_w.size[1]/2-pawn_res[1]/2], pawn_res, (0, 0, 0), undertext="Hetman", graph=queen_w_png)
 	
 	#######
 	
@@ -1006,7 +1006,7 @@ def kings_chess(game_window, res, timers, max_time):
 				knight_w_button.draw(game_window)
 				bishop_w_button.undertext="Goniec("+str(b_destroyed["bishop"])+")"
 				bishop_w_button.draw(game_window)
-				queen_w_button.undertext="Królowa("+str(b_destroyed["queen"])+")"
+				queen_w_button.undertext="Hetman("+str(b_destroyed["queen"])+")"
 				queen_w_button.draw(game_window)
 			else:
 				rook_b_button.undertext="Wieża("+str(w_destroyed["rook"])+")"
@@ -1015,7 +1015,7 @@ def kings_chess(game_window, res, timers, max_time):
 				knight_b_button.draw(game_window)
 				bishop_b_button.undertext="Goniec("+str(w_destroyed["bishop"])+")"
 				bishop_b_button.draw(game_window)
-				queen_b_button.undertext="Królowa("+str(w_destroyed["queen"])+")"
+				queen_b_button.undertext="Hetman("+str(w_destroyed["queen"])+")"
 				queen_b_button.draw(game_window)
 			for event in pygame.event.get():
 				if event.type == pygame.KEYDOWN:
