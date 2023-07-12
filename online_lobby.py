@@ -186,7 +186,7 @@ class color_rects(object):
 		pygame.draw.rect(win, color, self.rect)		
 
 def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_history, timers, max_time):
-	res_b = (res[1]-res[1]/5, res[1]-res[1]/5)
+	res_b = (res[1]-res[1]/5-res[1]/50, res[1]-res[1]/5-res[1]/50)
 	bg_color = (185, 182, 183)
 	
 	font_size = int(game_window.get_size()[0]/45)
@@ -239,7 +239,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	rook_b_png = pygame.transform.scale(org_rook_b_png, pawn_res)
 	rook_w_png = pygame.transform.scale(org_rook_w_png, pawn_res)
 
-	board=ch_board(board_png,(0,0), res_b)
+	break_font=font.render("Z", True, (0, 0, 0))
+	board=ch_board(board_png,(break_font.get_rect().width,break_font.get_rect().height), res_b)
 	
 	again_button = button((res[0]/4-res[0]/20, res[1]/4-res[1]/20), [res[0]/10, res[1]/10], (139, 139, 139), "Zagraj ponownie")
 	quit_button = button(((res[0]/4-res[0]/20)*3, res[1]/4-res[1]/20), [res[0]/10, res[1]/10], (139, 139, 139), "Wyjdź z gry")
@@ -267,39 +268,39 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	
 	
 	if player_color=="black":
-		add_rook1_b = button([0,res_b[1]], pawn_res, (0, 0, 0), graph=rook_b_png, figure="rook")
-		add_knight1_b = button([res_b[0]/8, res_b[1]], pawn_res, (0, 0, 0), graph=knight_b_png, figure="knight")
-		add_bishop1_b = button([res_b[0]/8*2, res_b[1]], pawn_res, (0, 0, 0), graph=bishop_b_png, figure="bishop")
-		add_queen_b = button([res_b[0]/8*3, res_b[1]], pawn_res, (0, 0, 0), graph=queen_b_png, figure="queen")
-		add_king_b = button([res_b[0]/8*4, res_b[1]], pawn_res, (0, 0, 0), graph=king_b_png, figure="king")
-		add_bishop2_b = button([res_b[0]/8*5, res_b[1]], pawn_res, (0, 0, 0), graph=bishop_b_png, figure="bishop")
-		add_knight2_b = button([res_b[0]/8*6, res_b[1]], pawn_res, (0, 0, 0), graph=knight_b_png, figure="knight")
-		add_rook2_b = button([res_b[0]/8*7, res_b[1]], pawn_res, (0, 0, 0), graph=rook_b_png, figure="rook")
-		add_pawn1_b = button([0,res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
-		add_pawn2_b = button([res_b[0]/8, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
-		add_pawn3_b = button([res_b[0]/8*2, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
-		add_pawn4_b = button([res_b[0]/8*3, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
-		add_pawn5_b = button([res_b[0]/8*4, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
-		add_pawn6_b = button([res_b[0]/8*5, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
-		add_pawn7_b = button([res_b[0]/8*6, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
-		add_pawn8_b = button([res_b[0]/8*7, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+		add_rook1_b = button([board.pos[0],res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=rook_b_png, figure="rook")
+		add_knight1_b = button([res_b[0]/8+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=knight_b_png, figure="knight")
+		add_bishop1_b = button([res_b[0]/8*2+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=bishop_b_png, figure="bishop")
+		add_queen_b = button([res_b[0]/8*3+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=queen_b_png, figure="queen")
+		add_king_b = button([res_b[0]/8*4+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=king_b_png, figure="king")
+		add_bishop2_b = button([res_b[0]/8*5+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=bishop_b_png, figure="bishop")
+		add_knight2_b = button([res_b[0]/8*6+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=knight_b_png, figure="knight")
+		add_rook2_b = button([res_b[0]/8*7+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=rook_b_png, figure="rook")
+		add_pawn1_b = button([board.pos[0],res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+		add_pawn2_b = button([res_b[0]/8+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+		add_pawn3_b = button([res_b[0]/8*2+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+		add_pawn4_b = button([res_b[0]/8*3+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+		add_pawn5_b = button([res_b[0]/8*4+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+		add_pawn6_b = button([res_b[0]/8*5+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+		add_pawn7_b = button([res_b[0]/8*6+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
+		add_pawn8_b = button([res_b[0]/8*7+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_b_png, figure="pawn")
 		
-		opp_rook1_w = button([0,res_b[1]], mini_pawn_res, (0, 0, 0), graph=mini_rook_w_png, figure="rook")
-		opp_knight1_w = button([res_b[0]/8, res_b[1]], mini_pawn_res, (0, 0, 0), graph=mini_knight_w_png, figure="knight")
-		opp_bishop1_w = button([res_b[0]/8*2, res_b[1]], mini_pawn_res, (0, 0, 0), graph=mini_bishop_w_png, figure="bishop")
-		opp_queen_w = button([res_b[0]/8*3, res_b[1]], mini_pawn_res, (0, 0, 0), graph=mini_queen_w_png, figure="queen")
-		opp_king_w = button([res_b[0]/8*4, res_b[1]], mini_pawn_res, (0, 0, 0), graph=mini_king_w_png, figure="king")
-		opp_bishop2_w = button([res_b[0]/8*5, res_b[1]], mini_pawn_res, (0, 0, 0), graph=mini_bishop_w_png, figure="bishop")
-		opp_knight2_w = button([res_b[0]/8*6, res_b[1]], mini_pawn_res, (0, 0, 0), graph=mini_knight_w_png, figure="knight")
-		opp_rook2_w = button([res_b[0]/8*7, res_b[1]], mini_pawn_res, (0, 0, 0), graph=mini_rook_w_png, figure="rook")
-		opp_pawn1_w = button([0,res_b[1]+pawn_res[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
-		opp_pawn2_w = button([res_b[0]/8, res_b[1]+pawn_res[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
-		opp_pawn3_w = button([res_b[0]/8*2, res_b[1]+pawn_res[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
-		opp_pawn4_w = button([res_b[0]/8*3, res_b[1]+pawn_res[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
-		opp_pawn5_w = button([res_b[0]/8*4, res_b[1]+pawn_res[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
-		opp_pawn6_w = button([res_b[0]/8*5, res_b[1]+pawn_res[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
-		opp_pawn7_w = button([res_b[0]/8*6, res_b[1]+pawn_res[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
-		opp_pawn8_w = button([res_b[0]/8*7, res_b[1]+pawn_res[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
+		opp_rook1_w = button([board.pos[0],res_b[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_rook_w_png, figure="rook")
+		opp_knight1_w = button([res_b[0]/8+board.pos[0], res_b[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_knight_w_png, figure="knight")
+		opp_bishop1_w = button([res_b[0]/8*2+board.pos[0], res_b[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_bishop_w_png, figure="bishop")
+		opp_queen_w = button([res_b[0]/8*3+board.pos[0], res_b[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_queen_w_png, figure="queen")
+		opp_king_w = button([res_b[0]/8*4+board.pos[0], res_b[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_king_w_png, figure="king")
+		opp_bishop2_w = button([res_b[0]/8*5+board.pos[0], res_b[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_bishop_w_png, figure="bishop")
+		opp_knight2_w = button([res_b[0]/8*6+board.pos[0], res_b[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_knight_w_png, figure="knight")
+		opp_rook2_w = button([res_b[0]/8*7+board.pos[0], res_b[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_rook_w_png, figure="rook")
+		opp_pawn1_w = button([board.pos[0],res_b[1]+pawn_res[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
+		opp_pawn2_w = button([res_b[0]/8+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
+		opp_pawn3_w = button([res_b[0]/8*2+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
+		opp_pawn4_w = button([res_b[0]/8*3+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
+		opp_pawn5_w = button([res_b[0]/8*4+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
+		opp_pawn6_w = button([res_b[0]/8*5+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
+		opp_pawn7_w = button([res_b[0]/8*6+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
+		opp_pawn8_w = button([res_b[0]/8*7+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], mini_pawn_res, (0, 0, 0), graph=mini_pawn_w_png, figure="pawn")
 		
 
 
@@ -308,36 +309,36 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 		white_opp=[opp_rook1_w, opp_knight1_w, opp_bishop1_w, opp_queen_w, opp_king_w, opp_bishop2_w, opp_knight2_w, opp_rook2_w, opp_pawn1_w,
 				opp_pawn2_w, opp_pawn3_w, opp_pawn4_w, opp_pawn5_w, opp_pawn6_w, opp_pawn7_w, opp_pawn8_w]
 		
-		start_pos=[res_b[0], res[1]/10*5]
+		start_pos=[res_b[0]+board.pos[0], res[1]/10*5]
 
 		for pw in white_opp:
 			if start_pos[0]+mini_pawn_res[0]<res[0]:
 				pw.pos=(start_pos[0], start_pos[1])
 				start_pos[0]+=mini_pawn_res[0]
 			else:
-				start_pos[0]=res_b[0]
+				start_pos[0]=res_b[0]+board.pos[0]
 				start_pos[1]+=mini_pawn_res[1]
 				pw.pos=(start_pos[0], start_pos[1])
 				start_pos[0]+mini_pawn_res[0]
 	
 	
 	else:
-		add_rook1_w = button([0,res_b[1]], pawn_res, (0, 0, 0), graph=rook_w_png, figure="rook")
-		add_knight1_w = button([res_b[0]/8, res_b[1]], pawn_res, (0, 0, 0), graph=knight_w_png, figure="knight")
-		add_bishop1_w = button([res_b[0]/8*2, res_b[1]], pawn_res, (0, 0, 0), graph=bishop_w_png, figure="bishop")
-		add_queen_w = button([res_b[0]/8*3, res_b[1]], pawn_res, (0, 0, 0), graph=queen_w_png, figure="queen")
-		add_king_w = button([res_b[0]/8*4, res_b[1]], pawn_res, (0, 0, 0), graph=king_w_png, figure="king")
-		add_bishop2_w = button([res_b[0]/8*5, res_b[1]], pawn_res, (0, 0, 0), graph=bishop_w_png, figure="bishop")
-		add_knight2_w = button([res_b[0]/8*6, res_b[1]], pawn_res, (0, 0, 0), graph=knight_w_png, figure="knight")
-		add_rook2_w = button([res_b[0]/8*7, res_b[1]], pawn_res, (0, 0, 0), graph=rook_w_png, figure="rook")
-		add_pawn1_w = button([0,res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
-		add_pawn2_w = button([res_b[0]/8, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
-		add_pawn3_w = button([res_b[0]/8*2, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
-		add_pawn4_w = button([res_b[0]/8*3, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
-		add_pawn5_w = button([res_b[0]/8*4, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
-		add_pawn6_w = button([res_b[0]/8*5, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
-		add_pawn7_w = button([res_b[0]/8*6, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
-		add_pawn8_w = button([res_b[0]/8*7, res_b[1]+pawn_res[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+		add_rook1_w = button([board.pos[0],res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=rook_w_png, figure="rook")
+		add_knight1_w = button([res_b[0]/8+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=knight_w_png, figure="knight")
+		add_bishop1_w = button([res_b[0]/8*2+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=bishop_w_png, figure="bishop")
+		add_queen_w = button([res_b[0]/8*3+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=queen_w_png, figure="queen")
+		add_king_w = button([res_b[0]/8*4+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=king_w_png, figure="king")
+		add_bishop2_w = button([res_b[0]/8*5+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=bishop_w_png, figure="bishop")
+		add_knight2_w = button([res_b[0]/8*6+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=knight_w_png, figure="knight")
+		add_rook2_w = button([res_b[0]/8*7+board.pos[0], res_b[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=rook_w_png, figure="rook")
+		add_pawn1_w = button([board.pos[0],res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+		add_pawn2_w = button([res_b[0]/8+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+		add_pawn3_w = button([res_b[0]/8*2+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+		add_pawn4_w = button([res_b[0]/8*3+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+		add_pawn5_w = button([res_b[0]/8*4+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+		add_pawn6_w = button([res_b[0]/8*5+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+		add_pawn7_w = button([res_b[0]/8*6+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
+		add_pawn8_w = button([res_b[0]/8*7+board.pos[0], res_b[1]+pawn_res[1]+board.pos[1]], pawn_res, (0, 0, 0), graph=pawn_w_png, figure="pawn")
 		
 		opp_rook1_b = button([0,res_b[1]], mini_pawn_res, (0, 0, 0), graph=mini_rook_b_png, figure="rook")
 		opp_knight1_b = button([res_b[0]/8, res_b[1]], mini_pawn_res, (0, 0, 0), graph=mini_knight_b_png, figure="knight")
@@ -362,7 +363,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 		black_opp=[opp_rook1_b, opp_knight1_b, opp_bishop1_b, opp_queen_b, opp_king_b, opp_bishop2_b, opp_knight2_b, opp_rook2_b, opp_pawn1_b,
 				opp_pawn2_b, opp_pawn3_b,opp_pawn4_b, opp_pawn5_b, opp_pawn6_b, opp_pawn7_b, opp_pawn8_b]
 		
-		start_pos=[res_b[0], res[1]/10*5]
+		start_pos=[res_b[0]+board.pos[0], res[1]/10*5]
 
 		
 		for pw in black_opp:
@@ -370,7 +371,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 				pw.pos=(start_pos[0], start_pos[1])
 				start_pos[0]+=mini_pawn_res[0]
 			else:
-				start_pos[0]=res_b[0]
+				start_pos[0]=res_b[0]+board.pos[0]
 				start_pos[1]+=mini_pawn_res[1]
 				pw.pos=(start_pos[0], start_pos[1])
 				start_pos[0]+mini_pawn_res[0]
@@ -447,6 +448,24 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	repeated=False
 	if timers:
 		black_watch.pause_timer()
+		
+	y_8=[font.render("8", True, (0, 0, 0)), (0, int(board.res[1]/16*1+board.pos[1]))]
+	y_7=[font.render("7", True, (0, 0, 0)), (0, int(board.res[1]/16*3+board.pos[1]))]
+	y_6=[font.render("6", True, (0, 0, 0)), (0, int(board.res[1]/16*5+board.pos[1]))]
+	y_5=[font.render("5", True, (0, 0, 0)), (0, int(board.res[1]/16*7+board.pos[1]))]
+	y_4=[font.render("4", True, (0, 0, 0)), (0, int(board.res[1]/16*9+board.pos[1]))]
+	y_3=[font.render("3", True, (0, 0, 0)), (0, int(board.res[1]/16*11+board.pos[1]))]
+	y_2=[font.render("2", True, (0, 0, 0)), (0, int(board.res[1]/16*13+board.pos[1]))]
+	y_1=[font.render("1", True, (0, 0, 0)), (0, int(board.res[1]/16*15+board.pos[1]))]
+	x_a=[font.render("A", True, (0, 0, 0)), (int(board.res[1]/16*1+board.pos[0]), 0)]
+	x_b=[font.render("B", True, (0, 0, 0)), (int(board.res[1]/16*3+board.pos[0]), 0)]
+	x_c=[font.render("C", True, (0, 0, 0)), (int(board.res[1]/16*5+board.pos[0]), 0)]
+	x_d=[font.render("D", True, (0, 0, 0)), (int(board.res[1]/16*7+board.pos[0]), 0)]
+	x_e=[font.render("E", True, (0, 0, 0)), (int(board.res[1]/16*9+board.pos[0]), 0)]
+	x_f=[font.render("F", True, (0, 0, 0)), (int(board.res[1]/16*11+board.pos[0]), 0)]
+	x_g=[font.render("G", True, (0, 0, 0)), (int(board.res[1]/16*13+board.pos[0]), 0)]
+	x_h=[font.render("H", True, (0, 0, 0)), (int(board.res[1]/16*15+board.pos[0]), 0)]
+	cords=[y_8, y_7, y_6, y_5, y_4, y_3, y_2, y_1, x_a, x_b, x_c, x_d, x_e, x_f, x_g ,x_h]
 	while playing:
 		pygame.time.Clock().tick(30)
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
@@ -1008,9 +1027,11 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						repeated=True
 			msgs.clear()
 		game_window.fill(bg_color)
+		for x in cords:
+			game_window.blit(x[0],x[1])
 		board.draw(game_window)
-		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
-		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15, board.res[1]/2))
+		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15+board.pos[0], 15))
+		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15+board.pos[0], board.res[1]/2+board.pos[1]))
 		if timers:
 			white_watch.update(game_window, board)
 			black_watch.update(game_window, board)
@@ -1343,9 +1364,11 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					chat.chat_input.upper=0
 			
 		game_window.fill(bg_color)
+		for x in cords:
+			game_window.blit(x[0],x[1])
 		board.draw(game_window)
-		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15, 15))
-		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15, board.res[1]/2))
+		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15+board.pos[0], 15))
+		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15+board.pos[0], board.res[1]/2+board.pos[0]))
 		chat.draw(game_window)
 		for white_pawn in white_pawns:
 			white_pawn.draw(game_window, board)
