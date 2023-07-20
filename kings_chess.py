@@ -537,6 +537,7 @@ def is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 			for p in white_pawns:
 				if p.type == "king":
 					king_in_danger = p
+					break
 			for pawn in black_pawns:
 				att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed)[1]
 				if list(king_in_danger.pos) in att:
@@ -580,15 +581,19 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 					# sprawdzenie czy krol moze zniszczyc przeciwnika
 					if list(enemy.pos) in pawn.att:
 						for att in pawn.att:
-							popped_pawn = black_pawns.pop(black_pawns.index(enemy))
-							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "w"
-							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = 0
-							possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
-							black_pawns.append(popped_pawn)
-							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "b"
-							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = "w"
-							if possiblity == []:
-								new_att.append(att)
+							if att==list(enemy.pos):
+								popped_pawn = black_pawns.pop(black_pawns.index(enemy))
+								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "w"
+								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = 0
+								old_pos=pawn.pos
+								pawn.pos=(att[0],att[1])
+								possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+								pawn.pos=old_pos
+								black_pawns.append(popped_pawn)
+								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "b"
+								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = "w"
+								if possiblity == []:
+									new_att.append(att)
 				else:
 					# sprawdzenie czy pionek może zasłonić króla
 					for mv in pawn.mv:
@@ -604,15 +609,16 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 					# sprawdzenie czy pionek moze znisczyc przeciwnika
 					if list(enemy.pos) in pawn.att:
 						for att in pawn.att:
-							popped_pawn = black_pawns.pop(black_pawns.index(enemy))
-							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "w"
-							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = 0
-							possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
-							black_pawns.append(popped_pawn)
-							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "b"
-							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = "w"
-							if possiblity == []:
-								new_att.append(att)
+							if att==list(enemy.pos):
+								popped_pawn = black_pawns.pop(black_pawns.index(enemy))
+								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "w"
+								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = 0
+								possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+								black_pawns.append(popped_pawn)
+								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "b"
+								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = "w"
+								if possiblity == []:
+									new_att.append(att)
 			pawn.mv = new_mv
 			pawn.att = new_att
 		mat = True
@@ -643,15 +649,19 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 					# sprawdzenie czy krol moze zniszczyc przeciwnika
 					if list(enemy.pos) in pawn.att:
 						for att in pawn.att:
-							popped_pawn=white_pawns.pop(white_pawns.index(enemy))
-							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="w"
-							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]=0
-							possiblity=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
-							white_pawns.append(popped_pawn)
-							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="b"
-							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]="w"
-							if possiblity==[]:
-								new_att.append(att)
+							if att==list(enemy.pos):
+								popped_pawn=white_pawns.pop(white_pawns.index(enemy))
+								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="b"
+								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]=0
+								old_pos=pawn.pos
+								pawn.pos=(att[0],att[1])
+								possiblity=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+								pawn.pos=old_pos
+								white_pawns.append(popped_pawn)
+								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="w"
+								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]="b"
+								if possiblity==[]:
+									new_att.append(att)
 				else:
 					# sprawdzenie czy pionek może zasłonić króla
 					for mv in pawn.mv:
@@ -667,15 +677,16 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 					# sprawdzenie czy pionek moze znisczyc przeciwnika
 					if list(enemy.pos) in pawn.att:
 						for att in pawn.att: #poprawic ta czesc w oryginalnym trybie
-							popped_pawn=white_pawns.pop(white_pawns.index(enemy))
-							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="b"
-							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]=0
-							possiblity=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
-							white_pawns.append(popped_pawn)
-							board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="w"
-							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]="b"
-							if possiblity==[]:
-								new_att.append(att)
+							if att==list(enemy.pos):
+								popped_pawn=white_pawns.pop(white_pawns.index(enemy))
+								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="b"
+								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]=0
+								possiblity=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+								white_pawns.append(popped_pawn)
+								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="w"
+								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]="b"
+								if possiblity==[]:
+									new_att.append(att)
 			pawn.mv = new_mv
 			pawn.att = new_att
 		mat = True
