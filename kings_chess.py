@@ -513,7 +513,6 @@ def end_turn(turn, turn_pawns, white_pawns, black_pawns, turn_txt, white_watch, 
 def destroy_enemy(pos, turn, white_pawns, black_pawns, w_destroyed, b_destroyed):
 	i = 0
 	if turn == "white":
-		print("white", "destroy")
 		for pawn in black_pawns:
 			if pawn.pos == pos:
 				b_destroyed[pawn.type]+=1
@@ -521,7 +520,6 @@ def destroy_enemy(pos, turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
 				break
 			i += 1
 	else:
-		print("black", "destroy")
 		for pawn in white_pawns:
 			if pawn.pos == pos:
 				w_destroyed[pawn.type]+=1
@@ -1021,6 +1019,8 @@ def kings_chess(game_window, res, timers, max_time):
 	x_g=[font.render("G", True, (0, 0, 0)), (int(board.res[1]/16*13+board.pos[0]), 0)]
 	x_h=[font.render("H", True, (0, 0, 0)), (int(board.res[1]/16*15+board.pos[0]), 0)]
 	cords=[y_8, y_7, y_6, y_5, y_4, y_3, y_2, y_1, x_a, x_b, x_c, x_d, x_e, x_f, x_g ,x_h]
+	white_reserve=[]
+	black_reserve=[]
 	
 	while playing:
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
@@ -1215,6 +1215,7 @@ def kings_chess(game_window, res, timers, max_time):
 						else:
 							count_b[temp.type]-=1
 							del(black_add_buttons[black_add_buttons.index(add_fig_but)])
+
 							backup_rep_fig_b=repeating_figures_b.copy()
 							backup_rep_pos_b=repeating_pos_b.copy()
 							backup_rep_res_b=repeating_reserve_b.copy()
@@ -1232,7 +1233,12 @@ def kings_chess(game_window, res, timers, max_time):
 							turn_txt = "Ruch czarnych"
 							for i in range(len(white_opp)):
 								if white_opp[i].figure==temp.type:
-									del(white_opp[i])
+									if white_opp[i].figure not in ["king", "pawn"]:
+										white_reserve.append([white_opp.pop(white_opp.index(white_opp[i])), 0])
+										white_reserve[-1][0].pos=(board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve)-mini_pawn_res[0],res[1]/10*3)
+										print([x[0].figure for x in white_reserve])
+									else:
+										del(white_opp[i])
 									break
 							if timers:
 								black_watch.resume()
@@ -1243,7 +1249,12 @@ def kings_chess(game_window, res, timers, max_time):
 							turn_txt = "Ruch białych"
 							for i in range(len(black_opp)):
 								if black_opp[i].figure==temp.type:
-									del(black_opp[i])
+									if black_opp[i].figure not in ["king", "pawn"]:
+										black_reserve.append([black_opp.pop(black_opp.index(black_opp[i])), 0])
+										black_reserve[-1][0].pos=(board.res[0]+board.pos[0]+mini_pawn_res[0]*len(black_reserve)-mini_pawn_res[0],res[1]/10*3)
+										print([x[0].figure for x in black_reserve])
+									else:
+										del(black_opp[i])
 									break
 							if timers:
 								white_watch.resume()
@@ -1500,6 +1511,22 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_black_opp=black_opp.copy()
 						back_button.status=1
 						hw.pos = (x, y)
+						if turn=="black":
+							for op in white_pawns:
+								if op.pos==(x,y):
+									for rsv in white_reserve:
+										if rsv[0].figure==op.type and rsv[1]==0:
+											rsv[1]=1
+											break										
+									break
+						else:
+							for op in black_pawns:
+								if op.pos==(x,y):
+									for rsv in black_reserve:
+										if rsv[0].figure==op.type and rsv[1]==0:
+											rsv[1]=1
+											break										
+									break
 						destroy_enemy((x, y), turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						check = False
 						if turn == "white":
@@ -1677,6 +1704,10 @@ def kings_chess(game_window, res, timers, max_time):
 			else:
 				for but in white_add_buttons:
 					but.draw(game_window)
+			for x in white_reserve:
+				if "pawn" in [p.type for p in white_pawns] or "pawn" in [p.figure for p in white_add_buttons]:
+					if x[1]==1:
+						x[0].draw(game_window)
 		else:
 			if "king" in [x.figure for x in black_add_buttons]:
 				for but in black_add_buttons:
@@ -1686,7 +1717,10 @@ def kings_chess(game_window, res, timers, max_time):
 			else:
 				for but in black_add_buttons:
 					but.draw(game_window)
-		
+			for x in black_reserve:
+				if "pawn" in [p.type for p in black_pawns] or "pawn" in [p.figure for p in black_add_buttons]:
+					if x[1]==1:
+						x[0].draw(game_window)		
 		back_button.draw(game_window)
 		if turn=="white":
 			for opp in black_opp:
