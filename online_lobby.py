@@ -474,22 +474,22 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 			pygame.time.Clock().tick(30)
 			transform_w.draw(game_window)
 			if tr.color=="w":
-				rook_w_button.undertext="Wieża("+str(b_destroyed["rook"])+")"
+				rook_w_button.undertext="Wieża("+str(w_destroyed["rook"])+")"
 				rook_w_button.draw(game_window)
-				knight_w_button.undertext="Skoczek("+str(b_destroyed["knight"])+")"
+				knight_w_button.undertext="Skoczek("+str(w_destroyed["knight"])+")"
 				knight_w_button.draw(game_window)
-				bishop_w_button.undertext="Goniec("+str(b_destroyed["bishop"])+")"
+				bishop_w_button.undertext="Goniec("+str(w_destroyed["bishop"])+")"
 				bishop_w_button.draw(game_window)
-				queen_w_button.undertext="Hetman("+str(b_destroyed["queen"])+")"
+				queen_w_button.undertext="Hetman("+str(w_destroyed["queen"])+")"
 				queen_w_button.draw(game_window)
 			else:
-				rook_b_button.undertext="Wieża("+str(w_destroyed["rook"])+")"
+				rook_b_button.undertext="Wieża("+str(b_destroyed["rook"])+")"
 				rook_b_button.draw(game_window)
-				knight_b_button.undertext="Skoczek("+str(w_destroyed["knight"])+")"
+				knight_b_button.undertext="Skoczek("+str(b_destroyed["knight"])+")"
 				knight_b_button.draw(game_window)
-				bishop_b_button.undertext="Goniec("+str(w_destroyed["bishop"])+")"
+				bishop_b_button.undertext="Goniec("+str(b_destroyed["bishop"])+")"
 				bishop_b_button.draw(game_window)
-				queen_b_button.undertext="Hetman("+str(w_destroyed["queen"])+")"
+				queen_b_button.undertext="Hetman("+str(b_destroyed["queen"])+")"
 				queen_b_button.draw(game_window)
 			for event in pygame.event.get():
 				if event.type == pygame.KEYDOWN:
@@ -507,60 +507,92 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					send("@stopgame")
 				elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 					if tr.color=="w":
-						if rook_w_button.rect.collidepoint(event.pos) and b_destroyed["rook"]>0:
-							b_destroyed["rook"]-=1
+						if rook_w_button.rect.collidepoint(event.pos) and w_destroyed["rook"]>0:
+							w_destroyed["rook"]-=1
 							tr.transform("rook", rook_w_png)
 							transform=False
+							for rsv in white_reserve:
+								if rsv[0].figure=="rook" and rsv[1]==1:
+									rsv[1]=0
+									break
 							send(f'@transform{t_type} {old_pos} {tr.pos} rook')
 							if timers:
 								send(f"@time {white_watch.remaining_time}")
-						elif knight_w_button.rect.collidepoint(event.pos) and b_destroyed["knight"]>0:
-							b_destroyed["knight"]-=1
+						elif knight_w_button.rect.collidepoint(event.pos) and w_destroyed["knight"]>0:
+							w_destroyed["knight"]-=1
 							tr.transform("knight", knight_w_png)
 							transform=False
+							for rsv in white_reserve:
+								if rsv[0].figure=="knight" and rsv[1]==1:
+									rsv[1]=0
+									break
 							send(f'@transform{t_type} {old_pos} {tr.pos} knight')
 							if timers:
 								send(f"@time {white_watch.remaining_time}")
-						elif bishop_w_button.rect.collidepoint(event.pos) and b_destroyed["bishop"]>0:
-							b_destroyed["bishop"]-=1
+						elif bishop_w_button.rect.collidepoint(event.pos) and w_destroyed["bishop"]>0:
+							w_destroyed["bishop"]-=1
 							tr.transform("bishop", bishop_w_png)
 							transform=False
+							for rsv in white_reserve:
+								if rsv[0].figure=="bishop" and rsv[1]==1:
+									rsv[1]=0
+									break
 							send(f'@transform{t_type} {old_pos} {tr.pos} bishop')
 							if timers:
 								send(f"@time {white_watch.remaining_time}")
-						elif queen_w_button.rect.collidepoint(event.pos) and b_destroyed["queen"]>0:
-							b_destroyed["queen"]-=1
+						elif queen_w_button.rect.collidepoint(event.pos) and w_destroyed["queen"]>0:
+							w_destroyed["queen"]-=1
 							tr.transform("queen", queen_w_png)
 							transform=False
+							for rsv in white_reserve:
+								if rsv[0].figure=="queen" and rsv[1]==1:
+									rsv[1]=0
+									break
 							send(f'@transform{t_type} {old_pos} {tr.pos} queen')
 							if timers:
 								send(f"@time {white_watch.remaining_time}")
 					else:
-						if rook_b_button.rect.collidepoint(event.pos) and w_destroyed["rook"]>0:
-							w_destroyed["rook"]-=1
+						if rook_b_button.rect.collidepoint(event.pos) and b_destroyed["rook"]>0:
+							b_destroyed["rook"]-=1
 							tr.transform("rook", rook_b_png)
 							transform=False
+							for rsv in black_reserve:
+								if rsv[0].figure=="rook" and rsv[1]==1:
+									rsv[1]=0
+									break
 							send(f'@transform{t_type} {old_pos} {tr.pos} rook')
 							if timers:
 								send(f"@time {black_watch.remaining_time}")  
-						elif knight_b_button.rect.collidepoint(event.pos) and w_destroyed["knight"]>0:
-							w_destroyed["knight"]-=1
+						elif knight_b_button.rect.collidepoint(event.pos) and b_destroyed["knight"]>0:
+							b_destroyed["knight"]-=1
 							tr.transform("knight", knight_b_png)
 							transform=False
+							for rsv in black_reserve:
+								if rsv[0].figure=="knight" and rsv[1]==1:
+									rsv[1]=0
+									break
 							send(f'@transform{t_type} {old_pos} {tr.pos} knight')
 							if timers:
 								send(f"@time {black_watch.remaining_time}")  
-						elif bishop_b_button.rect.collidepoint(event.pos) and w_destroyed["bishop"]>0:
-							w_destroyed["bishop"]-=1
+						elif bishop_b_button.rect.collidepoint(event.pos) and b_destroyed["bishop"]>0:
+							b_destroyed["bishop"]-=1
 							tr.transform("bishop", bishop_b_png)
 							transform=False
+							for rsv in black_reserve:
+								if rsv[0].figure=="bishop" and rsv[1]==1:
+									rsv[1]=0
+									break
 							send(f'@transform{t_type} {old_pos} {tr.pos} bishop')
 							if timers:
 								send(f"@time {black_watch.remaining_time}")  
-						elif queen_b_button.rect.collidepoint(event.pos) and w_destroyed["queen"]>0:
-							w_destroyed["queen"]-=1
+						elif queen_b_button.rect.collidepoint(event.pos) and b_destroyed["queen"]>0:
+							b_destroyed["queen"]-=1
 							tr.transform("queen", queen_b_png)
 							transform=False
+							for rsv in black_reserve:
+								if rsv[0].figure=="queen" and rsv[1]==1:
+									rsv[1]=0
+									break
 							send(f'@transform{t_type} {old_pos} {tr.pos} queen')
 							if timers:
 								send(f"@time {black_watch.remaining_time}")  
@@ -887,6 +919,22 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						apos=eval(x[2]+x[3])
 						mve=eval(x[4]+x[5])
 						fig=x[6]
+						if player_color=="white":
+							for pw in white_pawns:
+								if pw.pos==mve:
+									for rsv in white_reserve:
+										if rsv[0].figure==pw.type and rsv[1]==0:
+											rsv[1]=1
+											break
+									break
+						else:
+							for pw in black_pawns:
+								if pw.pos==mve:
+									for rsv in black_reserve:
+										if rsv[0].figure==pw.type and rsv[1]==0:
+											rsv[1]=1
+											break
+									break
 						destroy_enemy(mve, opponent_color, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						if player_color=="white":
 							for f in black_pawns:
