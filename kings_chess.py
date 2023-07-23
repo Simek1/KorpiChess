@@ -331,34 +331,58 @@ class pawn(object):
 				if self.pos[1]-1 > -1:
 					if board.pawns_matrix[self.pos[1]-1][self.pos[0]] == 0:
 						if self.pos[1]-1==0:
-							for dst in b_destroyed:
-								if b_destroyed[dst]!=0 and dst!="pawn":
+							for dst in w_destroyed:
+								if w_destroyed[dst]!=0 and dst!="pawn":
 									possible_positions.append([self.pos[0], self.pos[1]-1])
 									break
 						else:
 							possible_positions.append([self.pos[0], self.pos[1]-1])
 					if self.pos[0]-1 > -1:
 						if board.pawns_matrix[self.pos[1]-1][self.pos[0]-1] != 0 and board.pawns_matrix[self.pos[1]-1][self.pos[0]-1] != self.color:
-							possible_attack.append([self.pos[0]-1, self.pos[1]-1])
+							if self.pos[1]-1==0:
+								for dst in w_destroyed:
+									if w_destroyed[dst]!=0 and dst!="pawn":
+										possible_attack.append([self.pos[0]-1, self.pos[1]-1])
+										break
+							else:
+								possible_attack.append([self.pos[0]-1, self.pos[1]-1])
 					if self.pos[0]+1 < 8:
 						if board.pawns_matrix[self.pos[1]-1][self.pos[0]+1] != 0 and board.pawns_matrix[self.pos[1]-1][self.pos[0]+1] != self.color:
-							possible_attack.append([self.pos[0]+1, self.pos[1]-1])
+							if self.pos[1]-1==0:
+								for dst in w_destroyed:
+									if w_destroyed[dst]!=0 and dst!="pawn":
+										possible_attack.append([self.pos[0]+1, self.pos[1]-1])
+										break
+							else:
+								possible_attack.append([self.pos[0]+1, self.pos[1]-1])
 			if self.color == "b":
 				if self.pos[1]+1 < 8:
 					if board.pawns_matrix[self.pos[1]+1][self.pos[0]] == 0:
 						if self.pos[1]+1==7:
-							for dst in w_destroyed:
-								if w_destroyed[dst]!=0 and dst!="pawn":
+							for dst in b_destroyed:
+								if b_destroyed[dst]!=0 and dst!="pawn":
 									possible_positions.append([self.pos[0], self.pos[1]+1])
 									break
 						else:
 							possible_positions.append([self.pos[0], self.pos[1]+1])
 					if self.pos[0]-1 > -1:
 						if board.pawns_matrix[self.pos[1]+1][self.pos[0]-1] != 0 and board.pawns_matrix[self.pos[1]+1][self.pos[0]-1] != self.color:
-							possible_attack.append([self.pos[0]-1, self.pos[1]+1])
+							if self.pos[1]+1==7:
+								for dst in b_destroyed:
+									if b_destroyed[dst]!=0 and dst!="pawn":
+										possible_attack.append([self.pos[0]-1, self.pos[1]+1])
+										break
+							else:
+								possible_attack.append([self.pos[0]-1, self.pos[1]+1])
 					if self.pos[0]+1 < 8:
 						if board.pawns_matrix[self.pos[1]+1][self.pos[0]+1] != 0 and board.pawns_matrix[self.pos[1]+1][self.pos[0]+1] != self.color:
-							possible_attack.append([self.pos[0]+1, self.pos[1]+1])
+							if self.pos[1]+1==7:
+								for dst in b_destroyed:
+									if b_destroyed[dst]!=0 and dst!="pawn":
+										possible_attack.append([self.pos[0]+1, self.pos[1]+1])
+										break
+							else:
+								possible_attack.append([self.pos[0]+1, self.pos[1]+1])
 
 		return(possible_positions, possible_attack)
 
@@ -1026,22 +1050,22 @@ def kings_chess(game_window, res, timers, max_time):
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
 			transform_w.draw(game_window)
 			if tr.color=="w":
-				rook_w_button.undertext="Wieża("+str(b_destroyed["rook"])+")"
+				rook_w_button.undertext="Wieża("+str(w_destroyed["rook"])+")"
 				rook_w_button.draw(game_window)
-				knight_w_button.undertext="Skoczek("+str(b_destroyed["knight"])+")"
+				knight_w_button.undertext="Skoczek("+str(w_destroyed["knight"])+")"
 				knight_w_button.draw(game_window)
-				bishop_w_button.undertext="Goniec("+str(b_destroyed["bishop"])+")"
+				bishop_w_button.undertext="Goniec("+str(w_destroyed["bishop"])+")"
 				bishop_w_button.draw(game_window)
-				queen_w_button.undertext="Hetman("+str(b_destroyed["queen"])+")"
+				queen_w_button.undertext="Hetman("+str(w_destroyed["queen"])+")"
 				queen_w_button.draw(game_window)
 			else:
-				rook_b_button.undertext="Wieża("+str(w_destroyed["rook"])+")"
+				rook_b_button.undertext="Wieża("+str(b_destroyed["rook"])+")"
 				rook_b_button.draw(game_window)
-				knight_b_button.undertext="Skoczek("+str(w_destroyed["knight"])+")"
+				knight_b_button.undertext="Skoczek("+str(b_destroyed["knight"])+")"
 				knight_b_button.draw(game_window)
-				bishop_b_button.undertext="Goniec("+str(w_destroyed["bishop"])+")"
+				bishop_b_button.undertext="Goniec("+str(b_destroyed["bishop"])+")"
 				bishop_b_button.draw(game_window)
-				queen_b_button.undertext="Hetman("+str(w_destroyed["queen"])+")"
+				queen_b_button.undertext="Hetman("+str(b_destroyed["queen"])+")"
 				queen_b_button.draw(game_window)
 			for event in pygame.event.get():
 				if event.type == pygame.KEYDOWN:
@@ -1058,39 +1082,71 @@ def kings_chess(game_window, res, timers, max_time):
 				elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 					if tr.color=="w":
 						backup_figures_w=[fig.type for fig in white_pawns]
-						if rook_w_button.rect.collidepoint(event.pos) and b_destroyed["rook"]>0:
-							b_destroyed["rook"]-=1
+						if rook_w_button.rect.collidepoint(event.pos) and w_destroyed["rook"]>0:
+							w_destroyed["rook"]-=1
 							tr.transform("rook", rook_w_png)
+							for rsv in white_reserve:
+								if rsv[0].figure=="rook" and rsv[1]==1:
+									rsv[1]=0
+									break
 							transform=False
-						elif knight_w_button.rect.collidepoint(event.pos) and b_destroyed["knight"]>0:
-							b_destroyed["knight"]-=1
+						elif knight_w_button.rect.collidepoint(event.pos) and w_destroyed["knight"]>0:
+							w_destroyed["knight"]-=1
 							tr.transform("knight", knight_w_png)
+							for rsv in white_reserve:
+								if rsv[0].figure=="knight" and rsv[1]==1:
+									rsv[1]=0
+									break
 							transform=False
-						elif bishop_w_button.rect.collidepoint(event.pos) and b_destroyed["bishop"]>0:
-							b_destroyed["bishop"]-=1
+						elif bishop_w_button.rect.collidepoint(event.pos) and w_destroyed["bishop"]>0:
+							w_destroyed["bishop"]-=1
 							tr.transform("bishop", bishop_w_png)
+							for rsv in white_reserve:
+								if rsv[0].figure=="bishop" and rsv[1]==1:
+									rsv[1]=0
+									break
 							transform=False
-						elif queen_w_button.rect.collidepoint(event.pos) and b_destroyed["queen"]>0:
-							b_destroyed["queen"]-=1
+						elif queen_w_button.rect.collidepoint(event.pos) and w_destroyed["queen"]>0:
+							w_destroyed["queen"]-=1
 							tr.transform("queen", queen_w_png)
+							for rsv in white_reserve:
+								if rsv[0].figure=="queen" and rsv[1]==1:
+									rsv[1]=0
+									break
 							transform=False
 					else:
 						backup_figures_b=[fig.type for fig in black_pawns]
-						if rook_b_button.rect.collidepoint(event.pos) and w_destroyed["rook"]>0:
-							w_destroyed["rook"]-=1
+						if rook_b_button.rect.collidepoint(event.pos) and b_destroyed["rook"]>0:
+							b_destroyed["rook"]-=1
 							tr.transform("rook", rook_b_png)
+							for rsv in black_reserve:
+								if rsv[0].figure=="rook" and rsv[1]==1:
+									rsv[1]=0
+									break
 							transform=False
-						elif knight_b_button.rect.collidepoint(event.pos) and w_destroyed["knight"]>0:
-							w_destroyed["knight"]-=1
+						elif knight_b_button.rect.collidepoint(event.pos) and b_destroyed["knight"]>0:
+							b_destroyed["knight"]-=1
 							tr.transform("knight", knight_b_png)
+							for rsv in black_reserve:
+								if rsv[0].figure=="knight" and rsv[1]==1:
+									rsv[1]=0
+									break
 							transform=False
-						elif bishop_b_button.rect.collidepoint(event.pos) and w_destroyed["bishop"]>0:
-							w_destroyed["bishop"]-=1
+						elif bishop_b_button.rect.collidepoint(event.pos) and b_destroyed["bishop"]>0:
+							b_destroyed["bishop"]-=1
 							tr.transform("bishop", bishop_b_png)
+							for rsv in black_reserve:
+								if rsv[0].figure=="bishop" and rsv[1]==1:
+									rsv[1]=0
+									break
 							transform=False
-						elif queen_b_button.rect.collidepoint(event.pos) and w_destroyed["queen"]>0:
-							w_destroyed["queen"]-=1
+						elif queen_b_button.rect.collidepoint(event.pos) and b_destroyed["queen"]>0:
+							b_destroyed["queen"]-=1
 							tr.transform("queen", queen_b_png)
+							for rsv in black_reserve:
+								if rsv[0].figure=="queen" and rsv[1]==1:
+									rsv[1]=0
+									break
 							transform=False
 			if transform==False:
 				en=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
