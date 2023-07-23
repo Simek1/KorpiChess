@@ -1045,6 +1045,8 @@ def kings_chess(game_window, res, timers, max_time):
 	cords=[y_8, y_7, y_6, y_5, y_4, y_3, y_2, y_1, x_a, x_b, x_c, x_d, x_e, x_f, x_g ,x_h]
 	white_reserve=[]
 	black_reserve=[]
+	white_reserve_backup=[]
+	black_reserve_backup=[]
 	
 	while playing:
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
@@ -1081,6 +1083,8 @@ def kings_chess(game_window, res, timers, max_time):
 					transform==False
 				elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 					if tr.color=="w":
+						white_reserve_backup=[rv.copy() for rv in white_reserve]
+						#white_reserve_backup=[[bck[0].type, bck[1]] for bck in white_reserve]
 						backup_figures_w=[fig.type for fig in white_pawns]
 						if rook_w_button.rect.collidepoint(event.pos) and w_destroyed["rook"]>0:
 							w_destroyed["rook"]-=1
@@ -1115,6 +1119,8 @@ def kings_chess(game_window, res, timers, max_time):
 									break
 							transform=False
 					else:
+						black_reserve_backup=[rv.copy() for rv in black_reserve]
+						#black_reserve_backup=[[bck[0].type, bck[1]] for bck in black_reserve]
 						backup_figures_b=[fig.type for fig in black_pawns]
 						if rook_b_button.rect.collidepoint(event.pos) and b_destroyed["rook"]>0:
 							b_destroyed["rook"]-=1
@@ -1253,6 +1259,8 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_count_b=count_b.copy()
 						backup_white_opp=white_opp.copy()
 						backup_black_opp=black_opp.copy()
+						white_reserve_backup=[rv.copy() for rv in white_reserve]
+						black_reserve_backup=[rv.copy() for rv in black_reserve]
 						back_button.status=1
 						board.append_figure(temp, (x,y), white_pawns, black_pawns)
 						adding=0
@@ -1498,6 +1506,8 @@ def kings_chess(game_window, res, timers, max_time):
 								black_pawns[i].transform("pawn", pawn_b_png)
 								backup_tr_b=0
 								break
+					white_reserve=white_reserve_backup
+					black_reserve=black_reserve_backup
 					board.pawns_matrix=backup_board
 					white_add_buttons=backup_white_add
 					black_add_buttons=backup_black_add
@@ -1565,6 +1575,14 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_count_b=count_b.copy()
 						backup_white_opp=white_opp.copy()
 						backup_black_opp=black_opp.copy()
+						white_reserve_backup=[rv.copy() for rv in white_reserve]
+						black_reserve_backup=[rv.copy() for rv in black_reserve]
+						#white_reserve_butt_backup=[btt[0] for btt in white_resrve]
+						#white_reserve_status_backup=[btt[1] for btt in white_reserve]
+						#white_reserve_butt_backup=[btt[0] for btt in black_resrve]
+						#white_reserve_status_backup=[btt[1] for btt in black_reserve]
+						#white_reserve_backup=[[bck[0].type, bck[1]] for bck in white_reserve]
+						#black_reserve_backup=[[bck[0].type, bck[1]] for bck in black_reserve]
 						back_button.status=1
 						hw.pos = (x, y)
 						if turn=="black":
@@ -1581,6 +1599,8 @@ def kings_chess(game_window, res, timers, max_time):
 									for rsv in black_reserve:
 										if rsv[0].figure==op.type and rsv[1]==0:
 											rsv[1]=1
+											print(black_reserve)
+											print(black_reserve_backup)
 											break										
 									break
 						destroy_enemy((x, y), turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
