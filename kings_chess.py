@@ -1084,7 +1084,6 @@ def kings_chess(game_window, res, timers, max_time):
 				elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 					if tr.color=="w":
 						white_reserve_backup=[rv.copy() for rv in white_reserve]
-						#white_reserve_backup=[[bck[0].type, bck[1]] for bck in white_reserve]
 						backup_figures_w=[fig.type for fig in white_pawns]
 						if rook_w_button.rect.collidepoint(event.pos) and w_destroyed["rook"]>0:
 							w_destroyed["rook"]-=1
@@ -1577,12 +1576,6 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_black_opp=black_opp.copy()
 						white_reserve_backup=[rv.copy() for rv in white_reserve]
 						black_reserve_backup=[rv.copy() for rv in black_reserve]
-						#white_reserve_butt_backup=[btt[0] for btt in white_resrve]
-						#white_reserve_status_backup=[btt[1] for btt in white_reserve]
-						#white_reserve_butt_backup=[btt[0] for btt in black_resrve]
-						#white_reserve_status_backup=[btt[1] for btt in black_reserve]
-						#white_reserve_backup=[[bck[0].type, bck[1]] for bck in white_reserve]
-						#black_reserve_backup=[[bck[0].type, bck[1]] for bck in black_reserve]
 						back_button.status=1
 						hw.pos = (x, y)
 						if turn=="black":
