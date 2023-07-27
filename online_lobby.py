@@ -310,16 +310,21 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 			opp_pawn2_w, opp_pawn3_w, opp_pawn4_w, opp_pawn5_w, opp_pawn6_w, opp_pawn7_w, opp_pawn8_w]
 	
 	start_pos=[res_b[0]+board.pos[0], res[1]/10*5]
-
+	
+	first_pawn=True
 	for pw in white_opp:
-		if start_pos[0]+mini_pawn_res[0]<res[0]:
+		print(start_pos)
+		if start_pos[0]+mini_pawn_res[0]<res[0] and not (first_pawn==True and pw.figure=="pawn"):
 			pw.pos=(start_pos[0], start_pos[1])
 			start_pos[0]+=mini_pawn_res[0]
 		else:
+			if first_pawn==True and pw.figure=="pawn":
+				first_pawn=False
 			start_pos[0]=res_b[0]+board.pos[0]
 			start_pos[1]+=mini_pawn_res[1]
 			pw.pos=(start_pos[0], start_pos[1])
-			start_pos[0]+mini_pawn_res[0]
+			start_pos[0]+=mini_pawn_res[0]
+		print(start_pos)
 	
 	
 	
@@ -365,16 +370,18 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	
 	start_pos=[res_b[0]+board.pos[0], res[1]/10*5]
 
-	
+	first_pawn=True
 	for pw in black_opp:
-		if start_pos[0]+mini_pawn_res[0]<res[0]:
+		if start_pos[0]+mini_pawn_res[0]<res[0] and not (first_pawn==True and pw.figure=="pawn"):
 			pw.pos=(start_pos[0], start_pos[1])
 			start_pos[0]+=mini_pawn_res[0]
 		else:
+			if (first_pawn==True and pw.figure=="pawn"):
+				first_pawn=False
 			start_pos[0]=res_b[0]+board.pos[0]
 			start_pos[1]+=mini_pawn_res[1]
 			pw.pos=(start_pos[0], start_pos[1])
-			start_pos[0]+mini_pawn_res[0]
+			start_pos[0]+=mini_pawn_res[0]
 	
 	
 	chat=chat_box((res[1]-res[1]/6, res[1]/5*3), (res[0]-res[1]+res[1]/6, res[1]/5*2), font_size)

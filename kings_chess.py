@@ -876,7 +876,7 @@ def kings_chess(game_window, res, timers, max_time):
 	black_opp=[opp_rook1_b, opp_knight1_b, opp_bishop1_b, opp_queen_b, opp_king_b, opp_bishop2_b, opp_knight2_b, opp_rook2_b, opp_pawn1_b,
 			 opp_pawn2_b, opp_pawn3_b,opp_pawn4_b, opp_pawn5_b, opp_pawn6_b, opp_pawn7_b, opp_pawn8_b]
 	start_pos=[res_b[0]+board.pos[0], res[1]/10*5]
-	print(start_pos)
+	
 	first_pawn=True
 	for pw in black_opp:
 		if start_pos[0]+mini_pawn_res[0]<res[0] and not (first_pawn==True and pw.figure=="pawn"):
@@ -889,7 +889,7 @@ def kings_chess(game_window, res, timers, max_time):
 			start_pos[1]+=mini_pawn_res[1]
 			pw.pos=(start_pos[0], start_pos[1])
 			start_pos[0]+=mini_pawn_res[0]
-		print(start_pos, pw.pos)
+
 	
 	
 	black_add_buttons=[add_rook1_b, add_knight1_b, add_bishop1_b, add_queen_b, add_king_b, add_bishop2_b, add_knight2_b, add_rook2_b,
