@@ -877,11 +877,14 @@ def kings_chess(game_window, res, timers, max_time):
 			 opp_pawn2_b, opp_pawn3_b,opp_pawn4_b, opp_pawn5_b, opp_pawn6_b, opp_pawn7_b, opp_pawn8_b]
 	start_pos=[res_b[0]+board.pos[0], res[1]/10*5]
 	print(start_pos)
+	first_pawn=True
 	for pw in black_opp:
-		if start_pos[0]+mini_pawn_res[0]<res[0]:
+		if start_pos[0]+mini_pawn_res[0]<res[0] and not (first_pawn==True and pw.figure=="pawn"):
 			pw.pos=(start_pos[0], start_pos[1])
 			start_pos[0]+=mini_pawn_res[0]
 		else:
+			if first_pawn==True and pw.figure=="pawn":
+				first_pawn=False
 			start_pos[0]=res_b[0]+board.pos[0]
 			start_pos[1]+=mini_pawn_res[1]
 			pw.pos=(start_pos[0], start_pos[1])
