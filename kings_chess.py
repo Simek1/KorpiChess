@@ -589,12 +589,13 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 				if pawn.type == "king":
 					# sprawdzenie czy krol moze uciec
 					for mv in pawn.mv:
-						if mv not in enemy.mv:
+						if mv not in enemy.mv or enemy.type=="pawn":
 							board.pawns_matrix[mv[1]][mv[0]] = "w"
 							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = 0
+							old_pos=pawn.pos
 							pawn.pos = mv
 							possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
-							pawn.pos = pawn.old_pos
+							pawn.pos = old_pos
 							board.pawns_matrix[mv[1]][mv[0]] = 0
 							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = 'w'
 							if possiblity == []:
@@ -657,12 +658,13 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 				if pawn.type == "king":
 					# sprawdzenie czy krol moze uciec
 					for mv in pawn.mv:
-						if mv not in enemy.mv:
+						if mv not in enemy.mv or enemy.type=="pawn":
 							board.pawns_matrix[mv[1]][mv[0]] = "b"
 							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = 0
+							old_pos=pawn.pos
 							pawn.pos = mv
 							possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
-							pawn.pos = pawn.old_pos
+							pawn.pos = old_pos
 							board.pawns_matrix[mv[1]][mv[0]] = 0
 							board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = 'b'
 							if possiblity == []:
