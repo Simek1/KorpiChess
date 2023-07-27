@@ -239,9 +239,9 @@ pygame.init()
 game_window = pygame.display.set_mode(res)
 if fscreen:
 	pygame.display.set_mode(res, pygame.FULLSCREEN)
-pygame.display.set_caption("Szachy Królewskie")
+pygame.display.set_caption("Korpalski Chess")
 
-mainmenu = pygame_menu.Menu('Szachy królewskie', res[0], res[1], theme=themes.THEME_BLUE)
+mainmenu = pygame_menu.Menu('Korpalski Chess', res[0], res[1], theme=themes.THEME_BLUE)
 nick_input=mainmenu.add.text_input('Nick: ', default='Nick', maxchar=20)
 mainmenu.add.button('Gra na jednym komputerze', play_local)
 mainmenu.add.button('Gra sieciowa', play_online)
@@ -265,7 +265,7 @@ while running:
 				running=0
 	if reint==1:
 		reint=0
-		mainmenu = pygame_menu.Menu('Szachy królewskie', res[0], res[1], theme=themes.THEME_BLUE)
+		mainmenu = pygame_menu.Menu('Korpalski Chess', res[0], res[1], theme=themes.THEME_BLUE)
 		nick_input=mainmenu.add.text_input('Nick: ', default='Nick', maxchar=20)
 		mainmenu.add.button('Gra na jednym komputerze', play_local)
 		mainmenu.add.button('Gra sieciowa', play_online)
