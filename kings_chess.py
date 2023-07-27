@@ -717,7 +717,7 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 				mat = False
 				break
 	if mat:
-		check_txt = "Szach-Mat!"
+		check_txt = "Mat."
 	return check_txt
 
 def add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed): #Sprawdzenie czy mozna wybronic mata dodaniem nowego pionka
@@ -1359,17 +1359,17 @@ def kings_chess(game_window, res, timers, max_time):
 						black_pawn.draw(game_window, board)
 					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 			pygame.display.update()
-		# if black_watch.remaining_time==0 or white_watch.remaining_time==0 or check_txt=="Szach-Mat!" or ("king" not in [p.type for p in white_pawns]) or ("king" not in [p.type for p in black_pawns]):
+		# if black_watch.remaining_time==0 or white_watch.remaining_time==0 or check_txt=="Mat." or ("king" not in [p.type for p in white_pawns]) or ("king" not in [p.type for p in black_pawns]):
 		if timers:
-			if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
+			if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Mat." or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
 				ending=1
 				if black_watch.remaining_time==0:
 					turn_txt="Czarne wygrały."
 				elif white_watch.remaining_time==0:
 					turn_txt="Białe wygrały."
-				elif check_txt == "Szach-Mat!" and turn=="white":
+				elif check_txt == "Mat." and turn=="white":
 					turn_txt="Czarne wygrały."
-				elif check_txt == "Szach-Mat!" and turn=="black":
+				elif check_txt == "Mat." and turn=="black":
 					turn_txt="Białe wygrały."
 				elif w_destroyed["king"]==1:
 					turn_txt="Czarne wygrały."
@@ -1377,11 +1377,11 @@ def kings_chess(game_window, res, timers, max_time):
 					turn_txt="Białe wygrały."
 				playing=False
 		else:
-			if check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
+			if check_txt == "Mat." or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
 				ending=1
-				if check_txt == "Szach-Mat!" and turn=="white":
+				if check_txt == "Mat." and turn=="white":
 					turn_txt="Czarne wygrały."
-				elif check_txt == "Szach-Mat!" and turn=="black":
+				elif check_txt == "Mat." and turn=="black":
 					turn_txt="Białe wygrały."
 				elif w_destroyed["king"]==1:
 					turn_txt="Czarne wygrały."
