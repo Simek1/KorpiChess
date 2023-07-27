@@ -1364,29 +1364,29 @@ def kings_chess(game_window, res, timers, max_time):
 			if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
 				ending=1
 				if black_watch.remaining_time==0:
-					turn_txt="Wygrały czarne"
+					turn_txt="Czarne wygrały."
 				elif white_watch.remaining_time==0:
-					turn_txt="Wygrały białe"
+					turn_txt="Białe wygrały."
 				elif check_txt == "Szach-Mat!" and turn=="white":
-					turn_txt="Wygrały czarne"
+					turn_txt="Czarne wygrały."
 				elif check_txt == "Szach-Mat!" and turn=="black":
-					turn_txt="Wygrały białe"
+					turn_txt="Białe wygrały."
 				elif w_destroyed["king"]==1:
-					turn_txt="Wygrały czarne"
+					turn_txt="Czarne wygrały."
 				elif b_destroyed["king"]==1:
-					turn_txt="Wygrały białe"
+					turn_txt="Białe wygrały."
 				playing=False
 		else:
 			if check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
 				ending=1
 				if check_txt == "Szach-Mat!" and turn=="white":
-					turn_txt="Wygrały czarne"
+					turn_txt="Czarne wygrały."
 				elif check_txt == "Szach-Mat!" and turn=="black":
-					turn_txt="Wygrały białe"
+					turn_txt="Białe wygrały."
 				elif w_destroyed["king"]==1:
-					turn_txt="Wygrały czarne"
+					turn_txt="Czarne wygrały."
 				elif b_destroyed["king"]==1:
-					turn_txt="Wygrały białe"
+					turn_txt="Białe wygrały."
 				playing = False
 		if repeated==True:
 			turn_txt="Remis, potrójne powtórzenie"

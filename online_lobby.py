@@ -797,35 +797,35 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 				playing=False
 				win="w"
 				if black_watch.remaining_time==0:
-					turn_txt="Wygrały czarne"
+					turn_txt="Czarne wygrały."
 					win="b"
 				elif white_watch.remaining_time==0:
-					turn_txt="Wygrały białe"
+					turn_txt="Białe wygrały."
 				elif check_txt == "Szach-Mat!" and turn=="white":
-					turn_txt="Wygrały czarne"
+					turn_txt="Czarne wygrały."
 					win="b"
 				elif check_txt == "Szach-Mat!" and turn=="black":
-					turn_txt="Wygrały białe"
+					turn_txt="Białe wygrały."
 				elif w_destroyed["king"]==1:
-					turn_txt="Wygrały czarne"
+					turn_txt="Czarne wygrały."
 					win="b"
 				elif b_destroyed["king"]==1:
-					turn_txt="Wygrały białe"
+					turn_txt="Białe wygrały."
 				send(f"@win {win}")
 		else:
 			if check_txt == "Szach-Mat!" or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
 				ending=True
 				win="w"
 				if check_txt == "Szach-Mat!" and turn=="white":
-					turn_txt="Wygrały czarne"
+					turn_txt="Czarne wygrały."
 					win="b"
 				elif check_txt == "Szach-Mat!" and turn=="black":
-					turn_txt="Wygrały białe"
+					turn_txt="Białe wygrały."
 				elif w_destroyed["king"]==1:
-					turn_txt="Wygrały czarne"
+					turn_txt="Czarne wygrały."
 					win="b"
 				elif b_destroyed["king"]==1:
-					turn_txt="Wygrały białe"
+					turn_txt="Białe wygrały."
 				playing = False
 				send(f"@win {win}")
 		if msgs!=[]: #dorobic filtrowanie wiadomoscie ze wzgledu na \ i sprawdzic czy ta lista bedzie sie akutalizowac, jesli nie to sprobowac zrobic z niej zmienna globalna
@@ -1108,9 +1108,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						x=x.split()
 						win_color=x[2]
 						if win_color=="w":
-							turn_txt="Wygrały białe"
+							turn_txt="Białe wygrały."
 						else:
-							turn_txt="Wygrały czarne"
+							turn_txt="Czarne wygrały."
 						playing=False
 						ending=True
 					if "@repeated" in x:
