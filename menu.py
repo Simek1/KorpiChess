@@ -234,7 +234,6 @@ except Exception as e:
 	fscreen=0
 	print(e)
 	
-
 pygame.init()
 game_window = pygame.display.set_mode(res)
 if fscreen:
@@ -247,7 +246,6 @@ mainmenu.add.button('Gra na jednym komputerze', play_local)
 mainmenu.add.button('Gra sieciowa', play_online)
 mainmenu.add.button("Opcje", options)
 mainmenu.add.button('Wyjście', pygame_menu.events.EXIT)
-
 #level = pygame_menu.Menu('Select a Difficulty', 600, 400, theme=themes.THEME_BLUE)
 #level.add.selector('Difficulty:',[('Hard',1),('Easy',2)], onchange=set_difficulty)
 

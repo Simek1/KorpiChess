@@ -763,7 +763,83 @@ def add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window,
 						if possiblity == []:
 							add_mv.append(mv)
 	return add_mv
+
+def def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, fig): #pozbywanei sie ruchow ktore wystawiaja krola na szach
+	if turn=="white":
+		for f in white_pawns:
+			new_mv=[]
+			new_att=[]
+			if f == fig:
+				'''
+				for i in range(len(black_pawns)):
+					black_pawns[i].mv,black_pawns[i].att=black_pawns[i].possible_moves(game_window, board, w_destroyed, b_destroyed)
+				for i in range(len(black_pawns)):
+				'''
+				for mv in f.mv:
+					board.pawns_matrix[mv[1]][mv[0]] = "w"
+					board.pawns_matrix[f.pos[1]][f.pos[0]] = 0
+					old_pos=f.pos
+					f.pos=(mv[0],mv[1])
+					possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+					f.pos=old_pos
+					board.pawns_matrix[mv[1]][mv[0]] = 0
+					board.pawns_matrix[f.pos[1]][f.pos[0]] = 'w'
+					if possiblity == []:
+						new_mv.append(mv)
+				for att in f.att:
+					for enemy in black_pawns:
+						if [enemy.pos[0],enemy.pos[1]]==att:
+							break
+					popped_pawn = black_pawns.pop(black_pawns.index(enemy))
+					board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "w"
+					board.pawns_matrix[f.pos[1]][f.pos[0]] = 0
+					old_pos=f.pos
+					f.pos=(att[0],att[1])
+					possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+					f.pos=old_pos
+					black_pawns.append(popped_pawn)
+					board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "b"
+					board.pawns_matrix[f.pos[1]][f.pos[0]] = "w"
+					if possiblity == []:
+						new_att.append(att)
+				break
+	else:
+		for f in black_pawns:
+			new_mv=[]
+			new_att=[]
+			if f == fig:
+				for mv in f.mv:
+					board.pawns_matrix[mv[1]][mv[0]] = "b"
+					board.pawns_matrix[f.pos[1]][f.pos[0]] = 0
+					old_pos=f.pos
+					f.pos=(mv[0],mv[1])
+					possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+					f.pos=old_pos
+					board.pawns_matrix[mv[1]][mv[0]] = 0
+					board.pawns_matrix[f.pos[1]][f.pos[0]] = 'b'
+					if possiblity == []:
+						new_mv.append(mv)
+				for att in f.att:
+					for enemy in white_pawns:
+						if enemy.pos==att:
+							break
+					popped_pawn = white_pawns.pop(white_pawns.index(enemy))
+					board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "b"
+					board.pawns_matrix[f.pos[1]][f.pos[0]] = 0
+					old_pos=f.pos
+					f.pos=(att[0],att[1])
+					possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+					f.pos=old_pos
+					white_pawns.append(popped_pawn)
+					board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "w"
+					board.pawns_matrix[f.pos[1]][f.pos[0]] = "b"
+					if possiblity == []:
+						new_att.append(att)
+				break
+	fig.mv=new_mv
+	fig.att=new_att
 	
+
 def kings_chess(game_window, res, timers, max_time):
 	res_b = (res[1]-res[1]/5-res[1]/50, res[1]-res[1]/5-res[1]/50)
 	bg_color = (185, 182, 183)
@@ -1433,7 +1509,9 @@ def kings_chess(game_window, res, timers, max_time):
 					if x != -1 and y != -1:
 						for pa in turn_pawns:
 							if en == []:  # jesli nie ma szacha
+								print("łos")
 								pa.mv, pa.att = pa.possible_moves(game_window, board, w_destroyed, b_destroyed)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, pa)
 							p = board.pos_matrix[pa.pos[0]][pa.pos[1]]
 							if (x, y) == pa.pos:
 								hold = 1
