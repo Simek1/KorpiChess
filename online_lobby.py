@@ -611,7 +611,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						white_pawn.draw(game_window, board)
 					for black_pawn in black_pawns:
 						black_pawn.draw(game_window, board)
-					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 				if player_color=="white":
 					repeating_figures_w=[]
 					repeating_pos_w=[]
@@ -788,7 +788,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						white_pawn.draw(game_window, board)
 					for black_pawn in black_pawns:
 						black_pawn.draw(game_window, board)
-					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 			pygame.display.update()
 		# if black_watch.remaining_time==0 or white_watch.remaining_time==0 or check_txt=="Mat." or ("king" not in [p.type for p in white_pawns]) or ("king" not in [p.type for p in black_pawns]):
 		if timers:
@@ -868,7 +868,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								white_pawn.draw(game_window, board)
 							for black_pawn in black_pawns:
 								black_pawn.draw(game_window, board)
-							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 						#endturn
 					if "@attack" in x:
 						x=x.split()
@@ -920,7 +920,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								white_pawn.draw(game_window, board)
 							for black_pawn in black_pawns:
 								black_pawn.draw(game_window, board)
-							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 					if "@transformattack" in x:
 						x=x.split()
 						apos=eval(x[2]+x[3])
@@ -990,7 +990,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								white_pawn.draw(game_window, board)
 							for black_pawn in black_pawns:
 								black_pawn.draw(game_window, board)
-							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 					if "@transformmove" in x:
 						x=x.split()
 						print(x)
@@ -1044,7 +1044,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								white_pawn.draw(game_window, board)
 							for black_pawn in black_pawns:
 								black_pawn.draw(game_window, board)
-							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 					if "@add" in x:
 						x=x.split()
 						apos=eval(x[2]+x[3])

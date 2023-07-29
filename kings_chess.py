@@ -578,7 +578,7 @@ def is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 	return(enemies)
 
 
-def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed):
+def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns):
 	check_txt = "Szach!"
 	if turn == "white":
 		for pawn in white_pawns:
@@ -645,8 +645,9 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 			pawn.mv = new_mv
 			pawn.att = new_att
 		mat = True
+		add_d=add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
 		for pawn in white_pawns:
-			if pawn.mv != [] or pawn.att != []:
+			if pawn.mv != [] or pawn.att != [] or add_d!=[]:
 				mat = False
 				break
 	else:
@@ -714,8 +715,9 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 			pawn.mv = new_mv
 			pawn.att = new_att
 		mat = True
+		add_d=add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
 		for pawn in black_pawns:
-			if pawn.mv != [] or pawn.att != []:
+			if pawn.mv != [] or pawn.att != [] or add_d!=[]:
 				mat = False
 				break
 	if mat:
@@ -1242,7 +1244,7 @@ def kings_chess(game_window, res, timers, max_time):
 						white_pawn.draw(game_window, board)
 					for black_pawn in black_pawns:
 						black_pawn.draw(game_window, board)
-					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 				if tr.color=="w":
 					backup_tr_w=1
 					repeating_figures_w=[]
@@ -1435,7 +1437,7 @@ def kings_chess(game_window, res, timers, max_time):
 						white_pawn.draw(game_window, board)
 					for black_pawn in black_pawns:
 						black_pawn.draw(game_window, board)
-					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 			pygame.display.update()
 		# if black_watch.remaining_time==0 or white_watch.remaining_time==0 or check_txt=="Mat." or ("king" not in [p.type for p in white_pawns]) or ("king" not in [p.type for p in black_pawns]):
 		if timers:
@@ -1626,7 +1628,7 @@ def kings_chess(game_window, res, timers, max_time):
 							white_pawn.draw(game_window, board)
 						for black_pawn in black_pawns:
 							black_pawn.draw(game_window, board)
-						check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+						check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 			if click != 0 and pygame.mouse.get_pressed()[0] == False:
 				click = 0
 				if hold == 1:  # jesli trzymalem figure
@@ -1738,7 +1740,7 @@ def kings_chess(game_window, res, timers, max_time):
 									white_pawn.draw(game_window, board)
 								for black_pawn in black_pawns:
 									black_pawn.draw(game_window, board)
-								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 					elif [x, y] in hw.mv:
 						print(board.pawns_matrix, ":)")
 						backup_tr_w=0
@@ -1825,7 +1827,7 @@ def kings_chess(game_window, res, timers, max_time):
 									white_pawn.draw(game_window, board)
 								for black_pawn in black_pawns:
 									black_pawn.draw(game_window, board)
-								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 				hold = 0
 				hw = 0
 		# kiedy trzymam figure
