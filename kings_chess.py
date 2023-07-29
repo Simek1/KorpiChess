@@ -821,7 +821,7 @@ def def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 						new_mv.append(mv)
 				for att in f.att:
 					for enemy in white_pawns:
-						if enemy.pos==att:
+						if [enemy.pos[0],enemy.pos[1]]==att:
 							break
 					popped_pawn = white_pawns.pop(white_pawns.index(enemy))
 					board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "b"
@@ -1509,7 +1509,6 @@ def kings_chess(game_window, res, timers, max_time):
 					if x != -1 and y != -1:
 						for pa in turn_pawns:
 							if en == []:  # jesli nie ma szacha
-								print("łos")
 								pa.mv, pa.att = pa.possible_moves(game_window, board, w_destroyed, b_destroyed)
 								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, pa)
 							p = board.pos_matrix[pa.pos[0]][pa.pos[1]]

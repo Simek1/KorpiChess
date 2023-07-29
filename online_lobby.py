@@ -1159,6 +1159,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						for pa in turn_pawns:
 							if en == []:  # jesli nie ma szacha
 								pa.mv, pa.att = pa.possible_moves(game_window, board, w_destroyed, b_destroyed)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, pa)
 							p = board.pos_matrix[pa.pos[0]][pa.pos[1]]
 							if (x, y) == pa.pos:
 								hold = 1
