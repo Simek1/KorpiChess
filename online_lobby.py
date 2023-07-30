@@ -475,6 +475,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	cords=[y_8, y_7, y_6, y_5, y_4, y_3, y_2, y_1, x_a, x_b, x_c, x_d, x_e, x_f, x_g ,x_h]
 	white_reserve=[]
 	black_reserve=[]
+	nx_enpas=False
 	while playing:
 		pygame.time.Clock().tick(30)
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
@@ -728,6 +729,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
+							for ff in black_pawns:
+								ff.enpas=False
 							for i in range(len(white_opp)):
 								if white_opp[i].figure==temp.type:
 									if white_opp[i].figure not in ["king", "pawn"]:
@@ -744,6 +747,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
+							for ff in white_pawns:
+								ff.enpas=False
 							for i in range(len(black_opp)):
 								if black_opp[i].figure==temp.type:
 									if black_opp[i].figure not in ["king", "pawn"]:
@@ -835,6 +840,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					playing=False
 					connected=False
 				if "@chat" not in x and "<"+player_name+">" not in x:
+					if "@enpas" in x:
+						nx_enpas=True
 					if "@move" in x:
 						x=x.split()
 						apos=eval(x[2]+x[3])
@@ -861,6 +868,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							if timers:
 								black_watch.resume()
 								white_watch.pause_timer()
+						if nx_enpas:
+							f.enpas=True
+							nx_enpas=False
 						en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 						if en != []:  # blokowanie ruchow gdy jest szach
 							# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
@@ -1158,7 +1168,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					if x != -1 and y != -1:
 						for pa in turn_pawns:
 							if en == []:  # jesli nie ma szacha
-								pa.mv, pa.att = pa.possible_moves(game_window, board, w_destroyed, b_destroyed)
+								pa.mv, pa.att = pa.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
 								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, pa)
 							p = board.pos_matrix[pa.pos[0]][pa.pos[1]]
 							if (x, y) == pa.pos:
@@ -1263,6 +1273,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
+							for ff in black_pawns:
+								ff.enpas=False
 							repeating_figures_w=[]
 							repeating_pos_w=[]
 							repeating_reserve_w=[]
@@ -1282,6 +1294,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
+							for ff in white_pawns:
+								ff.enpas=False
 							if timers:
 								white_watch.resume()
 								black_watch.pause_timer()
@@ -1299,12 +1313,18 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 									send(f"@time {black_watch.remaining_time}")   
 					elif [x, y] in hw.mv:
 						old_pos=hw.pos
+						if hw.type=="pawn":
+							if [x,y] not in [[hw.pos[0],hw.pos[1]+1], [hw.pos[0]+1, hw.pos[1]+1], [hw.pos[0]-1, hw.pos[0]+1]] or [x,y] not in [[hw.pos[0],hw.pos[1]-1], [hw.pos[0]+1, hw.pos[1]-1], [hw.pos[0]-1, hw.pos[0]-1]]:
+								hw.enpas=True
+								send("@enpas")
 						hw.pos = (x, y)
 						check = False
 						if turn == "white":
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
+							for ff in black_pawns:
+								ff.enpas=False
 							figs=[x.type for x in white_pawns]
 							poses=[x.pos for x in white_pawns]
 							resv=[x.figure for x in white_add_buttons]
@@ -1329,6 +1349,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
+							for ff in white_pawns:
+								ff.enpas=False
 							figs=[x.type for x in black_pawns]
 							poses=[x.pos for x in black_pawns]
 							resv=[x.figure for x in black_add_buttons]

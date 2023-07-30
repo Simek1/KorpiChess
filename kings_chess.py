@@ -1427,6 +1427,8 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
+							for ff in black_pawns:
+								ff.enpas=False
 							for i in range(len(white_opp)):
 								if white_opp[i].figure==temp.type:
 									if white_opp[i].figure not in ["king", "pawn"]:
@@ -1443,6 +1445,8 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
+							for ff in white_pawns:
+								ff.enpas=False
 							for i in range(len(black_opp)):
 								if black_opp[i].figure==temp.type:
 									if black_opp[i].figure not in ["king", "pawn"]:
@@ -1745,6 +1749,8 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
+							for ff in black_pawns:
+								ff.enpas=False
 							if timers:
 								black_watch.resume()
 								white_watch.pause_timer()
@@ -1761,6 +1767,8 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
+							for ff in white_pawns:
+								ff.enpas=False
 							if timers:
 								white_watch.resume()
 								black_watch.pause_timer()
