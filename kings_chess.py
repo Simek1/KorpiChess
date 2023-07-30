@@ -328,6 +328,9 @@ class pawn(object):
 					break
 		if self.type == "pawn":
 			if self.color == "w":
+				if self.pos[1]==6:
+					if board.pawns_matrix[self.pos[1]-2][self.pos[0]]==0 and board.pawns_matrix[self.pos[1]-1][self.pos[0]]==0:
+						possible_positions.append([self.pos[0],self.pos[1]-2])
 				if self.pos[1]-1 > -1:
 					if board.pawns_matrix[self.pos[1]-1][self.pos[0]] == 0:
 						if self.pos[1]-1==0:
@@ -356,6 +359,9 @@ class pawn(object):
 							else:
 								possible_attack.append([self.pos[0]+1, self.pos[1]-1])
 			if self.color == "b":
+				if self.pos[1]==1:
+					if board.pawns_matrix[self.pos[1]+2][self.pos[0]]==0 and board.pawns_matrix[self.pos[1]+1][self.pos[0]]==0:
+						possible_positions.append([self.pos[0],self.pos[1]+2])
 				if self.pos[1]+1 < 8:
 					if board.pawns_matrix[self.pos[1]+1][self.pos[0]] == 0:
 						if self.pos[1]+1==7:
