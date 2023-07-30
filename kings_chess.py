@@ -95,7 +95,7 @@ class ch_board(object):
 		for x in pos_temp:
 			pawn.pos=x
 			self.pawns_matrix[x[1]][x[0]]=pawn.color
-			if list(king_pos) in pawn.possible_moves(game_window, self, w_destroyed, b_destroyed)[1]:
+			if list(king_pos) in pawn.possible_moves(game_window, self, w_destroyed, b_destroyed, white_pawns, black_pawns)[1]:
 				positions.remove(x)
 			self.pawns_matrix[x[1]][x[0]]=0
 			pawn.pos=(-1,-1)
@@ -130,8 +130,9 @@ class pawn(object):
 		self.color = color
 		self.att = []
 		self.mv = []
+		self.enpas=False
 
-	def possible_moves(self, win, board, w_destroyed, b_destroyed):
+	def possible_moves(self, win, board, w_destroyed, b_destroyed, white_pawns, black_pawns):
 		possible_attack = []
 		possible_positions = []
 		if self.type == "king":
@@ -349,6 +350,12 @@ class pawn(object):
 										break
 							else:
 								possible_attack.append([self.pos[0]-1, self.pos[1]-1])
+						if board.pawns_matrix[self.pos[1]][self.pos[0]-1] != 0 and board.pawns_matrix[self.pos[1]][self.pos[0]-1] != self.color:
+							for enm in black_pawns:
+								if enm.pos==(self.pos[0]-1, self.pos[1]):
+									if enm.type=="pawn" and enm.enpas==True:
+										possible_attack.append([self.pos[0]-1, self.pos[1]-1])
+									break
 					if self.pos[0]+1 < 8:
 						if board.pawns_matrix[self.pos[1]-1][self.pos[0]+1] != 0 and board.pawns_matrix[self.pos[1]-1][self.pos[0]+1] != self.color:
 							if self.pos[1]-1==0:
@@ -358,6 +365,12 @@ class pawn(object):
 										break
 							else:
 								possible_attack.append([self.pos[0]+1, self.pos[1]-1])
+						if board.pawns_matrix[self.pos[1]][self.pos[0]+1] != 0 and board.pawns_matrix[self.pos[1]][self.pos[0]+1] != self.color:
+							for enm in black_pawns:
+								if enm.pos==(self.pos[0]+1, self.pos[1]):
+									if enm.type=="pawn" and enm.enpas==True:
+										possible_attack.append([self.pos[0]+1, self.pos[1]-1])
+									break
 			if self.color == "b":
 				if self.pos[1]==1:
 					if board.pawns_matrix[self.pos[1]+2][self.pos[0]]==0 and board.pawns_matrix[self.pos[1]+1][self.pos[0]]==0:
@@ -380,6 +393,12 @@ class pawn(object):
 										break
 							else:
 								possible_attack.append([self.pos[0]-1, self.pos[1]+1])
+						if board.pawns_matrix[self.pos[1]][self.pos[0]-1] != 0 and board.pawns_matrix[self.pos[1]][self.pos[0]-1] != self.color:
+							for enm in white_pawns:
+								if enm.pos==(self.pos[0]-1, self.pos[1]):
+									if enm.type=="pawn" and enm.enpas==True:
+										possible_attack.append([self.pos[0]-1, self.pos[1]+1])
+									break
 					if self.pos[0]+1 < 8:
 						if board.pawns_matrix[self.pos[1]+1][self.pos[0]+1] != 0 and board.pawns_matrix[self.pos[1]+1][self.pos[0]+1] != self.color:
 							if self.pos[1]+1==7:
@@ -389,6 +408,12 @@ class pawn(object):
 										break
 							else:
 								possible_attack.append([self.pos[0]+1, self.pos[1]+1])
+						if board.pawns_matrix[self.pos[1]][self.pos[0]+1] != 0 and board.pawns_matrix[self.pos[1]][self.pos[0]+1] != self.color:
+							for enm in white_pawns:
+								if enm.pos==(self.pos[0]+1, self.pos[1]):
+									if enm.type=="pawn" and enm.enpas==True:
+										possible_attack.append([self.pos[0]+1, self.pos[1]+1])
+									break
 
 		return(possible_positions, possible_attack)
 
@@ -542,20 +567,39 @@ def end_turn(turn, turn_pawns, white_pawns, black_pawns, turn_txt, white_watch, 
 
 def destroy_enemy(pos, turn, white_pawns, black_pawns, w_destroyed, b_destroyed):
 	i = 0
+	enpas=True
 	if turn == "white":
 		for pawn in black_pawns:
 			if pawn.pos == pos:
 				b_destroyed[pawn.type]+=1
 				del(black_pawns[i])
+				enpas=False
 				break
 			i += 1
+		if enpas:
+			i = 0
+			for pawn in black_pawns:
+				if pawn.pos==(pos[0], pos[1]+1):
+					b_destroyed[pawn.type]+=1
+					del(black_pawns[i])
+					break
+				i+=1
 	else:
 		for pawn in white_pawns:
 			if pawn.pos == pos:
 				w_destroyed[pawn.type]+=1
 				del(white_pawns[i])
+				enpas=False
 				break
 			i += 1
+		if enpas:
+			i = 0
+			for pawn in white_pawns:
+				if pawn.pos==(pos[0], pos[1]-1):
+					w_destroyed[pawn.type]+=1
+					del(white_pawns[i])
+					break
+				i+=1
 
 
 def is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed):
@@ -567,18 +611,18 @@ def is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 					king_in_danger = p
 					break
 			for pawn in black_pawns:
-				att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed)[1]
+				att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)[1]
 				if list(king_in_danger.pos) in att:
-					pawn.mv, pawn.att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed)
+					pawn.mv, pawn.att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
 					enemies.append(pawn)
 		else:
 			for p in black_pawns:
 				if p.type == "king":
 					king_in_danger = p
 			for pawn in white_pawns:
-				att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed)[1]
+				att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)[1]
 				if list(king_in_danger.pos) in att:
-					pawn.mv, pawn.att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed)
+					pawn.mv, pawn.att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
 					enemies.append(pawn)
 
 	return(enemies)
@@ -590,7 +634,7 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 		for pawn in white_pawns:
 			new_mv = []
 			new_att = []
-			pawn.mv, pawn.att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed)
+			pawn.mv, pawn.att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
 			for enemy in enemies:
 				if pawn.type == "king":
 					# sprawdzenie czy krol moze uciec
@@ -660,7 +704,7 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 		for pawn in black_pawns:
 			new_mv = []
 			new_att = []
-			pawn.mv, pawn.att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed)
+			pawn.mv, pawn.att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
 			for enemy in enemies:
 				if pawn.type == "king":
 					# sprawdzenie czy krol moze uciec
@@ -1517,7 +1561,7 @@ def kings_chess(game_window, res, timers, max_time):
 					if x != -1 and y != -1:
 						for pa in turn_pawns:
 							if en == []:  # jesli nie ma szacha
-								pa.mv, pa.att = pa.possible_moves(game_window, board, w_destroyed, b_destroyed)
+								pa.mv, pa.att = pa.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
 								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, pa)
 							p = board.pos_matrix[pa.pos[0]][pa.pos[1]]
 							if (x, y) == pa.pos:
@@ -1765,12 +1809,17 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_white_opp=white_opp.copy()
 						backup_black_opp=black_opp.copy()
 						back_button.status=1
+						if hw.type=="pawn":
+							if [x,y] not in [[hw.pos[0],hw.pos[1]+1], [hw.pos[0]+1, hw.pos[1]+1], [hw.pos[0]-1, hw.pos[0]+1]] or [x,y] not in [[hw.pos[0],hw.pos[1]-1], [hw.pos[0]+1, hw.pos[1]-1], [hw.pos[0]-1, hw.pos[0]-1]]:
+								hw.enpas=True
 						hw.pos = (x, y)
 						check = False
 						if turn == "white":
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
+							for ff in black_pawns:
+								ff.enpas=False
 							backup_rep_fig_w=repeating_figures_w.copy()
 							backup_rep_pos_w=repeating_pos_w.copy()
 							backup_rep_res_w=repeating_reserve_w.copy()
@@ -1799,6 +1848,8 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
+							for ff in white_pawns:
+								ff.enpas=False
 							figs=[x.type for x in black_pawns]
 							poses=[x.pos for x in black_pawns]
 							resv=[x.figure for x in black_add_buttons]
