@@ -894,8 +894,38 @@ def def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 				break
 	fig.mv=new_mv
 	fig.att=new_att
-	
 
+def is_mat_power(white_pawns, black_pawns, turn, count_w, count_b):
+	mat_power=True
+	pos_figs={"pawn":0, "king":0, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 0}
+	op_pos_figs={"pawn":0, "king":0, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 0}
+	if turn=="white":
+		for f in white_pawns:
+			pos_figs[f.type]+=1
+		for f in count_w:
+			pos_figs[f]+=count_w[f]
+		for f in black_pawns:
+			op_pos_figs[f.type]+=1
+		for f in count_b:
+			op_pos_figs[f]+=count_b[f]
+	else:
+		for f in black_pawns:
+			pos_figs[f.type]+=1
+		for f in count_b:
+			pos_figs[f]+=count_b[f]
+		for f in white_pawns:
+			op_pos_figs[f.type]+=1
+		for f in count_w:
+			op_pos_figs[f]+=count_w[f]
+	if pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 0} and op_pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 0}:
+		mat_power=False
+	if pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 1} and op_pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 1}:
+		mat_power=False
+	if (pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 1} and op_pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 0}) or (pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 0} and op_pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 1}):
+		mat_power=False
+	if (pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":1, "rook":0, "bishop": 0} and op_pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 0}) or (pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 0} and op_pos_figs=={"pawn":0, "king":1, "queen":0, "pawn": 0, "knight":1, "rook":0, "bishop": 0}):
+		mat_power=False
+	return mat_power
 def kings_chess(game_window, res, timers, max_time):
 	res_b = (res[1]-res[1]/5-res[1]/50, res[1]-res[1]/5-res[1]/50)
 	bg_color = (185, 182, 183)
@@ -1183,7 +1213,7 @@ def kings_chess(game_window, res, timers, max_time):
 	black_reserve=[]
 	white_reserve_backup=[]
 	black_reserve_backup=[]
-	
+	mat_power=True
 	while playing:
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
 			transform_w.draw(game_window)
@@ -1298,6 +1328,7 @@ def kings_chess(game_window, res, timers, max_time):
 					for black_pawn in black_pawns:
 						black_pawn.draw(game_window, board)
 					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+				mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
 				if tr.color=="w":
 					backup_tr_w=1
 					repeating_figures_w=[]
@@ -1492,6 +1523,7 @@ def kings_chess(game_window, res, timers, max_time):
 					for black_pawn in black_pawns:
 						black_pawn.draw(game_window, board)
 					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+				mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
 			pygame.display.update()
 		# if black_watch.remaining_time==0 or white_watch.remaining_time==0 or check_txt=="Mat." or ("king" not in [p.type for p in white_pawns]) or ("king" not in [p.type for p in black_pawns]):
 		if timers:
@@ -1522,6 +1554,9 @@ def kings_chess(game_window, res, timers, max_time):
 					turn_txt="Białe wygrały."
 		if repeated==True:
 			turn_txt="Remis, potrójne powtórzenie"
+			ending=True
+		if mat_power==False:
+			turn_txt="Remis, brak siły matującej"
 			ending=True
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
@@ -1681,6 +1716,7 @@ def kings_chess(game_window, res, timers, max_time):
 						check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 					else:
 						check_txt=""
+					mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
 			if click != 0 and pygame.mouse.get_pressed()[0] == False:
 				click = 0
 				if hold == 1:  # jesli trzymalem figure
@@ -1795,6 +1831,7 @@ def kings_chess(game_window, res, timers, max_time):
 								for black_pawn in black_pawns:
 									black_pawn.draw(game_window, board)
 								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+							mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
 					elif [x, y] in hw.mv:
 						backup_tr_w=0
 						backup_tr_b=0
@@ -1888,6 +1925,7 @@ def kings_chess(game_window, res, timers, max_time):
 								for black_pawn in black_pawns:
 									black_pawn.draw(game_window, board)
 								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+							mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
 				hold = 0
 				hw = 0
 		# kiedy trzymam figure
@@ -1995,6 +2033,7 @@ def kings_chess(game_window, res, timers, max_time):
 						repeating_pos_b=backup_rep_pos_b
 						repeating_reserve_b=backup_rep_res_b
 						repeated=False
+						mat_power=True
 						print(board.pawns_matrix)
 						if turn == "white":
 							turn = "black"
