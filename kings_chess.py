@@ -1480,11 +1480,6 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							for ff in black_pawns:
-								ff.enpas=False
-								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
-								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
-								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							for i in range(len(white_opp)):
 								if white_opp[i].figure==temp.type:
 									if white_opp[i].figure not in ["king", "pawn"]:
@@ -1500,11 +1495,6 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							for ff in white_pawns:
-								ff.enpas=False
-								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
-								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
-								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							for i in range(len(black_opp)):
 								if black_opp[i].figure==temp.type:
 									if black_opp[i].figure not in ["king", "pawn"]:
@@ -1516,6 +1506,22 @@ def kings_chess(game_window, res, timers, max_time):
 							if timers:
 								white_watch.resume()
 								black_watch.pause_timer()
+						for white_pawn in white_pawns:
+							white_pawn.draw(game_window, board)
+						for black_pawn in black_pawns:
+							black_pawn.draw(game_window, board)
+						if turn=="white":
+							for ff in white_pawns:
+								ff.enpas=False
+								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
+						else:
+							for ff in black_pawns:
+								ff.enpas=False
+								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 						check_txt=""
 					else:
 						adding=0
@@ -1718,13 +1724,18 @@ def kings_chess(game_window, res, timers, max_time):
 					repeating_figures_b=backup_rep_fig_b
 					repeating_pos_b=backup_rep_pos_b
 					repeating_reserve_b=backup_rep_res_b
+					for white_pawn in white_pawns: # aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szach
+						white_pawn.draw(game_window, board)
+					for black_pawn in black_pawns:
+						black_pawn.draw(game_window, board)
 					if turn == "white":
 						turn = "black"
 						turn_pawns = black_pawns
 						turn_txt = "Ruch czarnych"
 						for ff in black_pawns:
+							ff.enpas=False
 							ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
-							def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)						
+							def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
 						if timers:
 							black_watch.resume()
 							white_watch.pause_timer()
@@ -1733,6 +1744,7 @@ def kings_chess(game_window, res, timers, max_time):
 						turn_pawns = white_pawns
 						turn_txt = "Ruch białych"
 						for ff in white_pawns:
+							ff.enpas=False
 							ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
 							def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
 						if timers:
@@ -1740,11 +1752,6 @@ def kings_chess(game_window, res, timers, max_time):
 							black_watch.pause_timer()
 					en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 					if en != []:  # blokowanie ruchow gdy jest szach
-						# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
-						for white_pawn in white_pawns:
-							white_pawn.draw(game_window, board)
-						for black_pawn in black_pawns:
-							black_pawn.draw(game_window, board)
 						check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 					else:
 						check_txt=""
@@ -1813,11 +1820,6 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							for ff in black_pawns:
-								ff.enpas=False
-								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
-								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
-								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							if timers:
 								black_watch.resume()
 								white_watch.pause_timer()
@@ -1834,11 +1836,6 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							for ff in white_pawns:
-								ff.enpas=False
-								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
-								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
-								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							if timers:
 								white_watch.resume()
 								black_watch.pause_timer()
@@ -1862,12 +1859,24 @@ def kings_chess(game_window, res, timers, max_time):
 							back_button.status=1				
 						if transform == False:
 							en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+							# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
+							for white_pawn in white_pawns:
+								white_pawn.draw(game_window, board)
+							for black_pawn in black_pawns:
+								black_pawn.draw(game_window, board)
+							if turn=="white":
+								for ff in white_pawns:
+									ff.enpas=False
+									ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+									def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+									pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
+							else:
+								for ff in black_pawns:
+									ff.enpas=False
+									ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+									def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+									pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							if en != []:  # blokowanie ruchow gdy jest szach
-								# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
-								for white_pawn in white_pawns:
-									white_pawn.draw(game_window, board)
-								for black_pawn in black_pawns:
-									black_pawn.draw(game_window, board)
 								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 							mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
 					elif [x, y] in hw.mv:
@@ -1896,11 +1905,6 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
-							for ff in black_pawns:
-								ff.enpas=False
-								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
-								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
-								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							backup_rep_fig_w=repeating_figures_w.copy()
 							backup_rep_pos_w=repeating_pos_w.copy()
 							backup_rep_res_w=repeating_reserve_w.copy()
@@ -1929,11 +1933,6 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
-							for ff in white_pawns:
-								ff.enpas=False
-								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
-								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
-								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							figs=[x.type for x in black_pawns]
 							poses=[x.pos for x in black_pawns]
 							resv=[x.figure for x in black_add_buttons]
@@ -1961,13 +1960,25 @@ def kings_chess(game_window, res, timers, max_time):
 							transform = True
 							tr = hw
 						if transform == False:
+							# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
+							for white_pawn in white_pawns:
+								white_pawn.draw(game_window, board)
+							for black_pawn in black_pawns:
+								black_pawn.draw(game_window, board)
+							if turn=="white":
+								for ff in white_pawns:
+									ff.enpas=False
+									ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+									def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+									pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
+							else:
+								for ff in black_pawns:
+									ff.enpas=False
+									ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+									def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+									pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 							if en != []:  # blokowanie ruchow gdy jest szach
-								# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
-								for white_pawn in white_pawns:
-									white_pawn.draw(game_window, board)
-								for black_pawn in black_pawns:
-									black_pawn.draw(game_window, board)
 								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 							mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
 				hold = 0
@@ -2079,7 +2090,10 @@ def kings_chess(game_window, res, timers, max_time):
 						repeated=False
 						mat_power=True
 						pat=False
-						print(board.pawns_matrix)
+						for white_pawn in white_pawns: # aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szach
+							white_pawn.draw(game_window, board)
+						for black_pawn in black_pawns:
+							black_pawn.draw(game_window, board)
 						if turn == "white":
 							turn = "black"
 							turn_pawns = black_pawns
@@ -2103,11 +2117,6 @@ def kings_chess(game_window, res, timers, max_time):
 						en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 						[print(enm.pos) for enm in en]
 						if en != []:  # blokowanie ruchow gdy jest szach
-							# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
-							for white_pawn in white_pawns:
-								white_pawn.draw(game_window, board)
-							for black_pawn in black_pawns:
-								black_pawn.draw(game_window, board)
 							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 						else:
 							check_txt=""
