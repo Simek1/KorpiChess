@@ -895,6 +895,30 @@ def def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 	fig.mv=new_mv
 	fig.att=new_att
 
+def is_pat(white_pawns, black_pawns, turn, count_w, count_b):
+	pat=False
+	if turn=="white":
+		reserve=False
+		for x in count_w:
+			if count_w[x]!=0:
+				reserve=True
+		if reserve==False:
+			pat=True
+			for x in white_pawns:
+				if x.att!=[] or x.mv!=[]:
+					pat=False
+	else:
+		reserve=False
+		for x in count_w:
+			if count_b[x]!=0:
+				reserve=True
+		if reserve==False:
+			pat=True
+			for x in black_pawns:
+				if x.att!=[] or x.mv!=[]:
+					pat=False
+	return pat
+
 def is_mat_power(white_pawns, black_pawns, turn, count_w, count_b):
 	mat_power=True
 	pos_figs={"pawn":0, "king":0, "queen":0, "pawn": 0, "knight":0, "rook":0, "bishop": 0}
@@ -1214,6 +1238,7 @@ def kings_chess(game_window, res, timers, max_time):
 	white_reserve_backup=[]
 	black_reserve_backup=[]
 	mat_power=True
+	pat=False
 	while playing:
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
 			transform_w.draw(game_window)
@@ -1380,11 +1405,6 @@ def kings_chess(game_window, res, timers, max_time):
 					possible_pos=check_add
 					position_rects=[move_rect(x, board.area) for x in possible_pos]
 				add_first_frame=0
-			''' jakas pozostalosc po straej funkcji, zobaczymy czy potrzebna dalej
-			if not add_w.rect.collidepoint(event.pos) and temp==0:
-				adding=0
-				check_add=[]
-			'''
 			#Postawienie wybranej figury na szachownicty
 			for event in pygame.event.get():
 				if event.type == pygame.KEYDOWN:
@@ -1462,6 +1482,9 @@ def kings_chess(game_window, res, timers, max_time):
 							turn_txt = "Ruch czarnych"
 							for ff in black_pawns:
 								ff.enpas=False
+								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							for i in range(len(white_opp)):
 								if white_opp[i].figure==temp.type:
 									if white_opp[i].figure not in ["king", "pawn"]:
@@ -1479,6 +1502,9 @@ def kings_chess(game_window, res, timers, max_time):
 							turn_txt = "Ruch białych"
 							for ff in white_pawns:
 								ff.enpas=False
+								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							for i in range(len(black_opp)):
 								if black_opp[i].figure==temp.type:
 									if black_opp[i].figure not in ["king", "pawn"]:
@@ -1558,6 +1584,9 @@ def kings_chess(game_window, res, timers, max_time):
 		if mat_power==False:
 			turn_txt="Remis, brak siły matującej"
 			ending=True
+		if pat:
+			turn_txt="Pat."
+			ending=True
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
 		board.draw(game_window)
@@ -1596,9 +1625,6 @@ def kings_chess(game_window, res, timers, max_time):
 						i += 1
 					if x != -1 and y != -1:
 						for pa in turn_pawns:
-							if en == []:  # jesli nie ma szacha
-								pa.mv, pa.att = pa.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
-								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, pa)
 							p = board.pos_matrix[pa.pos[0]][pa.pos[1]]
 							if (x, y) == pa.pos:
 								hold = 1
@@ -1696,6 +1722,9 @@ def kings_chess(game_window, res, timers, max_time):
 						turn = "black"
 						turn_pawns = black_pawns
 						turn_txt = "Ruch czarnych"
+						for ff in black_pawns:
+							ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+							def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)						
 						if timers:
 							black_watch.resume()
 							white_watch.pause_timer()
@@ -1703,6 +1732,9 @@ def kings_chess(game_window, res, timers, max_time):
 						turn = "white"
 						turn_pawns = white_pawns
 						turn_txt = "Ruch białych"
+						for ff in white_pawns:
+							ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+							def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
 						if timers:
 							white_watch.resume()
 							black_watch.pause_timer()
@@ -1783,6 +1815,9 @@ def kings_chess(game_window, res, timers, max_time):
 							turn_txt = "Ruch czarnych"
 							for ff in black_pawns:
 								ff.enpas=False
+								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							if timers:
 								black_watch.resume()
 								white_watch.pause_timer()
@@ -1801,6 +1836,9 @@ def kings_chess(game_window, res, timers, max_time):
 							turn_txt = "Ruch białych"
 							for ff in white_pawns:
 								ff.enpas=False
+								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							if timers:
 								white_watch.resume()
 								black_watch.pause_timer()
@@ -1860,6 +1898,9 @@ def kings_chess(game_window, res, timers, max_time):
 							turn_txt = "Ruch czarnych"
 							for ff in black_pawns:
 								ff.enpas=False
+								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							backup_rep_fig_w=repeating_figures_w.copy()
 							backup_rep_pos_w=repeating_pos_w.copy()
 							backup_rep_res_w=repeating_reserve_w.copy()
@@ -1890,6 +1931,9 @@ def kings_chess(game_window, res, timers, max_time):
 							turn_txt = "Ruch białych"
 							for ff in white_pawns:
 								ff.enpas=False
+								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
+								pat=is_pat(white_pawns, black_pawns, turn, count_w, count_b)
 							figs=[x.type for x in black_pawns]
 							poses=[x.pos for x in black_pawns]
 							resv=[x.figure for x in black_add_buttons]
@@ -2034,11 +2078,15 @@ def kings_chess(game_window, res, timers, max_time):
 						repeating_reserve_b=backup_rep_res_b
 						repeated=False
 						mat_power=True
+						pat=False
 						print(board.pawns_matrix)
 						if turn == "white":
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
+							for ff in black_pawns:
+								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
 							if timers:
 								black_watch.resume()
 								white_watch.pause_timer()
@@ -2046,6 +2094,9 @@ def kings_chess(game_window, res, timers, max_time):
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
+							for ff in white_pawns:
+								ff.mv,ff.att=ff.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
+								def_king(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, ff)
 							if timers:
 								white_watch.resume()
 								black_watch.pause_timer()
