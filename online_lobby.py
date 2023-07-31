@@ -476,6 +476,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	white_reserve=[]
 	black_reserve=[]
 	nx_enpas=False
+	mat_power=True
 	while playing:
 		pygame.time.Clock().tick(30)
 		while transform: #Kiedy pionek zmieniany jest na inną figurę
@@ -613,6 +614,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					for black_pawn in black_pawns:
 						black_pawn.draw(game_window, board)
 					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+				mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
+				if mat_power==False:
+					send("@no_power")
 				if player_color=="white":
 					repeating_figures_w=[]
 					repeating_pos_w=[]
@@ -794,6 +798,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					for black_pawn in black_pawns:
 						black_pawn.draw(game_window, board)
 					check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+				mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
+				if mat_power==False:
+					send("@no_power")
 			pygame.display.update()
 		# if black_watch.remaining_time==0 or white_watch.remaining_time==0 or check_txt=="Mat." or ("king" not in [p.type for p in white_pawns]) or ("king" not in [p.type for p in black_pawns]):
 		if timers:
@@ -833,6 +840,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					turn_txt="Białe wygrały."
 				playing = False
 				send(f"@win {win}")
+			if mat_power==False:
+				turn_txt="Remis, brak siły matującej"
+				ending=True
 		if msgs!=[]: #dorobic filtrowanie wiadomoscie ze wzgledu na \ i sprawdzic czy ta lista bedzie sie akutalizowac, jesli nie to sprobowac zrobic z niej zmienna globalna
 			chat.update_chat(msgs)
 			for x in msgs: #dorobic dzialania typu transformacja i sprawdzanie szacha uwzględnienie aby nie wykonywało się to dla osoby która wysłąła wiadomosc
@@ -879,6 +889,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							for black_pawn in black_pawns:
 								black_pawn.draw(game_window, board)
 							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+						mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
+						if mat_power==False:
+							send("@no_power")
 						#endturn
 					if "@attack" in x:
 						x=x.split()
@@ -931,6 +944,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							for black_pawn in black_pawns:
 								black_pawn.draw(game_window, board)
 							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+						mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
+						if mat_power==False:
+							send("@no_power")
 					if "@transformattack" in x:
 						x=x.split()
 						apos=eval(x[2]+x[3])
@@ -1001,6 +1017,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							for black_pawn in black_pawns:
 								black_pawn.draw(game_window, board)
 							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+						mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
+						if mat_power==False:
+							send("@no_power")
 					if "@transformmove" in x:
 						x=x.split()
 						print(x)
@@ -1055,6 +1074,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							for black_pawn in black_pawns:
 								black_pawn.draw(game_window, board)
 							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+						mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
+						if mat_power==False:
+							send("@no_power")
 					if "@add" in x:
 						x=x.split()
 						apos=eval(x[2]+x[3])
@@ -1072,6 +1094,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								afig=pawn(rook_b_png, apos, pawn_res, "rook", "b")
 							if fig=="knight":
 								afig=pawn(knight_b_png, apos, pawn_res, "knight", "b")
+							count_b[fig]-=1
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
@@ -1095,6 +1118,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								afig=pawn(rook_w_png, apos, pawn_res, "rook", "w")
 							if fig=="knight":
 								afig=pawn(knight_w_png, apos, pawn_res, "knight", "w")
+							count_w[fig]-=1
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
@@ -1125,6 +1149,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						ending=True
 					if "@repeated" in x:
 						repeated=True
+					if "@no_power" in x:
+						mat_power=False
 			msgs.clear()
 		game_window.fill(bg_color)
 		for x in cords:
