@@ -629,6 +629,7 @@ def is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 
 
 def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns):
+	print(board.pawns_matrix)
 	check_txt = "Szach!"
 	if turn == "white":
 		for pawn in white_pawns:
@@ -698,6 +699,7 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 		add_d=add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
 		for pawn in white_pawns:
 			if pawn.mv != [] or pawn.att != [] or add_d!=[]:
+				print(pawn.mv, pawn.att, add_d)
 				mat = False
 				break
 	else:
@@ -768,6 +770,7 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 		add_d=add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
 		for pawn in black_pawns:
 			if pawn.mv != [] or pawn.att != [] or add_d!=[]:
+				print(pawn.mv, pawn.att, add_d)
 				mat = False
 				break
 	if mat:
@@ -776,6 +779,7 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 
 def add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed): #Sprawdzenie czy mozna wybronic mata dodaniem nowego pionka
 	add_mv=[]
+	print(count_w, count_b)
 	for x in turn_pawns:
 		if x.type=="king":
 			king=x
@@ -799,8 +803,8 @@ def add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window,
 							add_mv.append(mv)
 	else:
 		count=0
-		for x in count_w:
-			if count_w[x]!=0:
+		for x in count_b:
+			if count_b[x]!=0:
 				count=1
 				break
 		if count==0: #nie mozna postawic nowych pionkow
@@ -1122,7 +1126,6 @@ def kings_chess(game_window, res, timers, max_time):
 	first_frame = True
 	if timers:
 		black_watch.pause_timer()
-	print(board.pawns_matrix, ":)")
 	backup_tr_w=0
 	backup_tr_b=0
 	backup_white=white_pawns.copy()
@@ -1411,7 +1414,6 @@ def kings_chess(game_window, res, timers, max_time):
 						else:
 							count_b[temp.type]-=1
 							del(black_add_buttons[black_add_buttons.index(add_fig_but)])
-
 							backup_rep_fig_b=repeating_figures_b.copy()
 							backup_rep_pos_b=repeating_pos_b.copy()
 							backup_rep_res_b=repeating_reserve_b.copy()
@@ -1434,7 +1436,6 @@ def kings_chess(game_window, res, timers, max_time):
 									if white_opp[i].figure not in ["king", "pawn"]:
 										white_reserve.append([white_opp.pop(white_opp.index(white_opp[i])), 0])
 										white_reserve[-1][0].pos=(board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve)-mini_pawn_res[0],res[1]/10*3)
-										print([x[0].figure for x in white_reserve])
 									else:
 										del(white_opp[i])
 									break
@@ -1452,7 +1453,6 @@ def kings_chess(game_window, res, timers, max_time):
 									if black_opp[i].figure not in ["king", "pawn"]:
 										black_reserve.append([black_opp.pop(black_opp.index(black_opp[i])), 0])
 										black_reserve[-1][0].pos=(board.res[0]+board.pos[0]+mini_pawn_res[0]*len(black_reserve)-mini_pawn_res[0],res[1]/10*3)
-										print([x[0].figure for x in black_reserve])
 									else:
 										del(black_opp[i])
 									break
@@ -1509,7 +1509,6 @@ def kings_chess(game_window, res, timers, max_time):
 					turn_txt="Czarne wygrały."
 				elif b_destroyed["king"]==1:
 					turn_txt="Białe wygrały."
-				playing=False
 		else:
 			if check_txt == "Mat." or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
 				ending=1
@@ -1521,11 +1520,9 @@ def kings_chess(game_window, res, timers, max_time):
 					turn_txt="Czarne wygrały."
 				elif b_destroyed["king"]==1:
 					turn_txt="Białe wygrały."
-				playing = False
 		if repeated==True:
 			turn_txt="Remis, potrójne powtórzenie"
 			ending=True
-			playing=False
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
 		board.draw(game_window)
@@ -1585,7 +1582,7 @@ def kings_chess(game_window, res, timers, max_time):
 									add_first_frame=1
 									if en!=[]:
 										check_add=add_defence(count_w, count_b, board, turn, en, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
-										if check_txt=="Szach_Mat!" and check_add!=[]:
+										if check_txt=="Mat." and check_add!=[]:
 											check_txt=""
 									break
 					else:
@@ -1596,7 +1593,7 @@ def kings_chess(game_window, res, timers, max_time):
 								add_first_frame=1
 								if en!=[]:
 									check_add=add_defence(count_w, count_b, board, turn, en, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
-									if check_txt=="Szach_Mat!" and check_add!=[]:
+									if check_txt=="Mat." and check_add!=[]:
 										check_txt=""
 								break
 				else:
@@ -1609,7 +1606,7 @@ def kings_chess(game_window, res, timers, max_time):
 									add_first_frame=1
 									if en!=[]:
 										check_add=add_defence(count_w, count_b, board, turn, en, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
-										if check_txt=="Szach_Mat!" and check_add!=[]:
+										if check_txt=="Mat." and check_add!=[]:
 											check_txt=""
 									break
 					else:
@@ -1620,7 +1617,7 @@ def kings_chess(game_window, res, timers, max_time):
 								add_first_frame=1
 								if en!=[]:
 									check_add=add_defence(count_w, count_b, board, turn, en, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
-									if check_txt=="Szach_Mat!" and check_add!=[]:
+									if check_txt=="Mat." and check_add!=[]:
 										check_txt=""
 								break
 				if back_button.rect.collidepoint(event.pos) and back_button.status==1:
@@ -1660,7 +1657,6 @@ def kings_chess(game_window, res, timers, max_time):
 					repeating_figures_b=backup_rep_fig_b
 					repeating_pos_b=backup_rep_pos_b
 					repeating_reserve_b=backup_rep_res_b
-					print(repeating_figures_w, repeating_pos_w)
 					if turn == "white":
 						turn = "black"
 						turn_pawns = black_pawns
@@ -1683,6 +1679,8 @@ def kings_chess(game_window, res, timers, max_time):
 						for black_pawn in black_pawns:
 							black_pawn.draw(game_window, board)
 						check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+					else:
+						check_txt=""
 			if click != 0 and pygame.mouse.get_pressed()[0] == False:
 				click = 0
 				if hold == 1:  # jesli trzymalem figure
@@ -1730,8 +1728,6 @@ def kings_chess(game_window, res, timers, max_time):
 									for rsv in black_reserve:
 										if rsv[0].figure==op.type and rsv[1]==0:
 											rsv[1]=1
-											print(black_reserve)
-											print(black_reserve_backup)
 											break										
 									break
 						destroy_enemy((x, y), turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
@@ -1800,7 +1796,6 @@ def kings_chess(game_window, res, timers, max_time):
 									black_pawn.draw(game_window, board)
 								check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
 					elif [x, y] in hw.mv:
-						print(board.pawns_matrix, ":)")
 						backup_tr_w=0
 						backup_tr_b=0
 						backup_white=white_pawns.copy()
@@ -1947,68 +1942,119 @@ def kings_chess(game_window, res, timers, max_time):
 			for opp in white_opp:
 				opp.draw(game_window)
 		pygame.display.update()
-	'''
-	while deciding:
-		end_game_w.draw(game_window)
-		again_button.draw(game_window)
-		quit_button.draw(game_window)
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				deciding = False
-				running = False
-			elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-				if again_button.rect.collidepoint(event.pos):
-					deciding = False
-				if quit_button.rect.collidepoint(event.pos):
-					deciding = False
-					running = False
-		pygame.display.update()
-	'''
-	while ending:
-		pygame.time.Clock().tick(30)
-		game_window.fill(bg_color)
-		board.draw(game_window)
-		game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15+board.pos[0], 15))
-		game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15+board.pos[0], board.res[1]/2+board.pos[1]))
-		for event in pygame.event.get():
-			if event.type == pygame.KEYDOWN:
-				if event.key==27:
+		while ending:
+			pygame.time.Clock().tick(30)
+			game_window.fill(bg_color)
+			board.draw(game_window)
+			game_window.blit(font.render(turn_txt, True, (0, 0, 0)), (board.res[0]+15+board.pos[0], 15))
+			game_window.blit(font.render(check_txt, True, (0, 0, 0)), (board.res[0]+15+board.pos[0], board.res[1]/2+board.pos[1]))
+			for event in pygame.event.get():
+				if event.type == pygame.KEYDOWN:
+					if event.key==27:
+						ending=False
+						playing=False
+				if event.type == pygame.QUIT:
 					ending=False
-			if event.type == pygame.QUIT:
-				ending=False
-		if turn=="white":
-			if "king" in [x.figure for x in white_add_buttons]:
-				for but in white_add_buttons:
-					if but.figure=="king":
+					playing=False
+				if event.type==pygame.MOUSEBUTTONDOWN and event.button==1:
+					if back_button.rect.collidepoint(event.pos) and back_button.status==1:
+						back_button.status=0
+						white_pawns=backup_white
+						black_pawns=backup_black
+						for i in range(len(backup_white_pos)):
+							white_pawns[i].pos=backup_white_pos[i]
+						for i in range(len(backup_black_pos)):
+							black_pawns[i].pos=backup_black_pos[i]
+						if backup_tr_w:
+							for i in range(len(white_pawns)):
+								if white_pawns[i].type!=backup_figures_w[i]:
+									white_pawns[i].transform("pawn", pawn_w_png)
+									backup_tr_w=0
+									break
+						if backup_tr_b:
+							for i in range(len(black_pawns)):
+								if black_pawns[i].type!=backup_figures_b[i]:
+									black_pawns[i].transform("pawn", pawn_b_png)
+									backup_tr_b=0
+									break
+						white_reserve=white_reserve_backup
+						black_reserve=black_reserve_backup
+						board.pawns_matrix=backup_board
+						white_add_buttons=backup_white_add
+						black_add_buttons=backup_black_add
+						w_destroyed=backup_w_destroyed
+						b_destroyed=backup_b_destroyed
+						count_w=backup_count_w
+						count_b=backup_count_b
+						white_opp=backup_white_opp
+						black_opp=backup_black_opp
+						repeating_figures_w=backup_rep_fig_w
+						repeating_pos_w=backup_rep_pos_w
+						repeating_reserve_w=backup_rep_res_w
+						repeating_figures_b=backup_rep_fig_b
+						repeating_pos_b=backup_rep_pos_b
+						repeating_reserve_b=backup_rep_res_b
+						repeated=False
+						print(board.pawns_matrix)
+						if turn == "white":
+							turn = "black"
+							turn_pawns = black_pawns
+							turn_txt = "Ruch czarnych"
+							if timers:
+								black_watch.resume()
+								white_watch.pause_timer()
+						else:
+							turn = "white"
+							turn_pawns = white_pawns
+							turn_txt = "Ruch białych"
+							if timers:
+								white_watch.resume()
+								black_watch.pause_timer()
+						en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+						[print(enm.pos) for enm in en]
+						if en != []:  # blokowanie ruchow gdy jest szach
+							# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
+							for white_pawn in white_pawns:
+								white_pawn.draw(game_window, board)
+							for black_pawn in black_pawns:
+								black_pawn.draw(game_window, board)
+							check_txt=is_mat(en, turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed, count_w, count_b, turn_pawns)
+						else:
+							check_txt=""
+						ending=False
+			if turn=="white":
+				if "king" in [x.figure for x in white_add_buttons]:
+					for but in white_add_buttons:
+						if but.figure=="king":
+							but.draw(game_window)
+							break
+				else:
+					for but in white_add_buttons:
 						but.draw(game_window)
-						break
 			else:
-				for but in white_add_buttons:
-					but.draw(game_window)
-		else:
-			if "king" in [x.figure for x in black_add_buttons]:
-				for but in black_add_buttons:
-					if but.figure=="king":
+				if "king" in [x.figure for x in black_add_buttons]:
+					for but in black_add_buttons:
+						if but.figure=="king":
+							but.draw(game_window)
+							break
+				else:
+					for but in black_add_buttons:
 						but.draw(game_window)
-						break
+			
+			back_button.draw(game_window)
+			for x in cords:
+				game_window.blit(x[0], x[1])
+			if turn=="white":
+				for opp in black_opp:
+					opp.draw(game_window)
 			else:
-				for but in black_add_buttons:
-					but.draw(game_window)
-		
-		back_button.draw(game_window)
-		for x in cords:
-			game_window.blit(x[0], x[1])
-		if turn=="white":
-			for opp in black_opp:
-				opp.draw(game_window)
-		else:
-			for opp in white_opp:
-				opp.draw(game_window)
-		for white_pawn in white_pawns:
-			white_pawn.draw(game_window, board)
-		for black_pawn in black_pawns:
-			black_pawn.draw(game_window, board)
-		pygame.display.update()
+				for opp in white_opp:
+					opp.draw(game_window)
+			for white_pawn in white_pawns:
+				white_pawn.draw(game_window, board)
+			for black_pawn in black_pawns:
+				black_pawn.draw(game_window, board)
+			pygame.display.update()
 #kings_chess(game_window, res)
 
 
