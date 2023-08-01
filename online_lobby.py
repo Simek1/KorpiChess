@@ -186,7 +186,7 @@ class color_rects(object):
 		pygame.draw.rect(win, color, self.rect)		
 
 def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_history, timers, max_time):
-	res_b = (res[1]-res[1]/5-res[1]/50, res[1]-res[1]/5-res[1]/50)
+	res_b = (res[1]-res[1]/4-res[1]/50, res[1]-res[1]/4-res[1]/50)
 	bg_color = (185, 182, 183)
 	
 	font_size = int(game_window.get_size()[0]/45)
@@ -240,7 +240,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	rook_w_png = pygame.transform.scale(org_rook_w_png, pawn_res)
 
 	break_font=font.render("Z", True, (0, 0, 0))
-	board=ch_board(board_png,(break_font.get_rect().width,0), res_b)
+	board=ch_board(board_png,(break_font.get_rect().width,break_font.get_rect().height), res_b)
 	
 	again_button = button((res[0]/4-res[0]/20, res[1]/4-res[1]/20), [res[0]/10, res[1]/10], (139, 139, 139), "Zagraj ponownie")
 	quit_button = button(((res[0]/4-res[0]/20)*3, res[1]/4-res[1]/20), [res[0]/10, res[1]/10], (139, 139, 139), "Wyjdź z gry")

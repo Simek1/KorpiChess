@@ -982,7 +982,7 @@ def is_mat_power(white_pawns, black_pawns, turn, count_w, count_b):
 		mat_power=False
 	return mat_power
 def kings_chess(game_window, res, timers, max_time):
-	res_b = (res[1]-res[1]/5-res[1]/50, res[1]-res[1]/5-res[1]/50)
+	res_b = (res[1]-res[1]/4-res[1]/50, res[1]-res[1]/4-res[1]/50)
 	bg_color = (185, 182, 183)
 	
 	font_size = int(game_window.get_size()[0]/45)
@@ -1021,7 +1021,7 @@ def kings_chess(game_window, res, timers, max_time):
 	rook_w_png = pygame.transform.scale(org_rook_w_png, pawn_res)
 	
 	break_font=font.render("Z", True, (0, 0, 0))
-	board=ch_board(board_png,(break_font.get_rect().width,0), res_b)
+	board=ch_board(board_png,(break_font.get_rect().width,break_font.get_rect().height), res_b)
 		
 	
 	# tworzenie okna zmiany pionka
