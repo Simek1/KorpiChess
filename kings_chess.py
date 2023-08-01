@@ -1598,28 +1598,30 @@ def kings_chess(game_window, res, timers, max_time):
 			if black_watch.remaining_time == 0 or white_watch.remaining_time == 0 or check_txt == "Mat." or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
 				ending=1
 				if black_watch.remaining_time==0:
-					turn_txt="Czarne wygrały."
+					check_txt="Koniec czasu. Czarne wygrały."
 				elif white_watch.remaining_time==0:
-					turn_txt="Białe wygrały."
+					check_txt="Koniec czasu. Białe wygrały."
 				elif check_txt == "Mat." and turn=="white":
-					turn_txt="Czarne wygrały."
+					check_txt="Mat. Czarne wygrały."
 				elif check_txt == "Mat." and turn=="black":
-					turn_txt="Białe wygrały."
+					check_txt="Mat. Białe wygrały."
 				elif w_destroyed["king"]==1:
-					turn_txt="Czarne wygrały."
+					check_txt="Mat. Czarne wygrały."
 				elif b_destroyed["king"]==1:
-					turn_txt="Białe wygrały."
+					check_txt="Mat. Białe wygrały."
+				turn_txt=""
 		else:
 			if check_txt == "Mat." or (w_destroyed["king"]==1 or b_destroyed["king"]==1):
 				ending=1
 				if check_txt == "Mat." and turn=="white":
-					turn_txt="Czarne wygrały."
+					check_txt="Mat. Czarne wygrały."
 				elif check_txt == "Mat." and turn=="black":
-					turn_txt="Białe wygrały."
+					check_txt="Mat. Białe wygrały."
 				elif w_destroyed["king"]==1:
-					turn_txt="Czarne wygrały."
+					check_txt="Mat. Czarne wygrały."
 				elif b_destroyed["king"]==1:
-					turn_txt="Białe wygrały."
+					check_txt="Mat. Białe wygrały."
+				turn_txt=""
 		if repeated==True:
 			turn_txt="Remis, potrójne powtórzenie"
 			ending=True
@@ -1627,7 +1629,7 @@ def kings_chess(game_window, res, timers, max_time):
 			turn_txt="Remis, brak siły matującej"
 			ending=True
 		if pat:
-			turn_txt="Pat."
+			turn_txt="Pat. Remis."
 			ending=True
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)
