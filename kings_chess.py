@@ -104,6 +104,12 @@ class ch_board(object):
 			for x in pos_temp:
 				if x[1]==0 or x[1]==7:
 					positions.remove(x)
+				if pawn.color=="w":
+					if (x[0]==king_pos[0]+1 and x[1]==king_pos[1]+1) or (x[0]==king_pos[0]-1 and x[1]==king_pos[1]+1):
+						positions.remove(x)
+				else:
+					if (x[0]==king_pos[0]+1 and x[1]==king_pos[1]-1) or (x[0]==king_pos[0]-1 and x[1]==king_pos[1]-1):
+						positions.remove(x)
 			
 		return positions
 	def append_figure(self, pawn, pos, w_pawns, b_pawns):
@@ -615,6 +621,10 @@ def is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 				if list(king_in_danger.pos) in att:
 					pawn.mv, pawn.att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
 					enemies.append(pawn)
+				if pawn.type=="pawn":
+					if pawn.pos==(king_in_danger.pos[0]+1, king_in_danger.pos[1]-1) or pawn.pos==(king_in_danger.pos[0]-1, king_in_danger.pos[1]-1):
+						if pawn not in enemies:
+							enemies.append(pawn)
 		else:
 			for p in black_pawns:
 				if p.type == "king":
@@ -624,6 +634,10 @@ def is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_
 				if list(king_in_danger.pos) in att:
 					pawn.mv, pawn.att = pawn.possible_moves(game_window, board, w_destroyed, b_destroyed, white_pawns, black_pawns)
 					enemies.append(pawn)
+				if pawn.type=="pawn":
+					if pawn.pos==(king_in_danger.pos[0]+1, king_in_danger.pos[1]+1) or pawn.pos==(king_in_danger.pos[0]-1, king_in_danger.pos[1]+1):
+						if pawn not in enemies:
+							enemies.append(pawn)
 
 	return(enemies)
 
@@ -697,6 +711,15 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 			pawn.att = new_att
 		mat = True
 		add_d=add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
+		only_pawns=True
+		for x in count_w:
+			if x!="pawn" and count_w[x]!=0:
+				only_pawns=False
+		if only_pawns:
+			temp_add_d=add_d.copy()
+			for x in temp_add_d:
+				if x[1]==7 or x[1]==0:
+					add_d.remove(x)
 		for pawn in white_pawns:
 			if pawn.mv != [] or pawn.att != [] or add_d!=[]:
 				print(pawn.mv, pawn.att, add_d)
@@ -768,6 +791,15 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 			pawn.att = new_att
 		mat = True
 		add_d=add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed)
+		only_pawns=True
+		for x in count_b:
+			if x!="pawn" and count_b[x]!=0:
+				only_pawns=False
+		if only_pawns:
+			temp_add_d=add_d.copy()
+			for x in temp_add_d:
+				if x[1]==7 or x[1]==0:
+					add_d.remove(x)
 		for pawn in black_pawns:
 			if pawn.mv != [] or pawn.att != [] or add_d!=[]:
 				print(pawn.mv, pawn.att, add_d)
@@ -779,7 +811,6 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 
 def add_defence(count_w, count_b, board, turn, enemies, turn_pawns, game_window, white_pawns, black_pawns, w_destroyed, b_destroyed): #Sprawdzenie czy mozna wybronic mata dodaniem nowego pionka
 	add_mv=[]
-	print(count_w, count_b)
 	for x in turn_pawns:
 		if x.type=="king":
 			king=x
@@ -1403,6 +1434,11 @@ def kings_chess(game_window, res, timers, max_time):
 				position_rects=[move_rect(x, board.area) for x in possible_pos]
 				if check_txt!="":
 					possible_pos=check_add
+					possible_pos_temp=possible_pos.copy()
+					if add_fig_but.figure=="pawn":
+						for x in possible_pos_temp:
+							if x[1]==7 or x[1]==0:
+								possible_pos.remove(x)
 					position_rects=[move_rect(x, board.area) for x in possible_pos]
 				add_first_frame=0
 			#Postawienie wybranej figury na szachownicty

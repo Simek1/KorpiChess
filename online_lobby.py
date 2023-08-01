@@ -666,6 +666,11 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 				position_rects=[move_rect(x, board.area) for x in possible_pos]
 				if check_txt!="":
 					possible_pos=check_add
+					possible_pos_temp=possible_pos.copy()
+					if add_fig_but.figure=="pawn":
+						for x in possible_pos_temp:
+							if x[1]==7 or x[1]==0:
+								possible_pos.remove(x)
 					position_rects=[move_rect(x, board.area) for x in possible_pos]
 				add_first_frame=0
 				
