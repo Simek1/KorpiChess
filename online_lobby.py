@@ -1289,9 +1289,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					y = -1
 					i = 0
 					for area in board.pos_areas():
-						if area[0] < mouse_pos[0] and area[1] > mouse_pos[0]:
+						if area[0]+board.pos[0] < mouse_pos[0] and area[1]+board.pos[0] > mouse_pos[0]:
 							x = i
-						if area[0] < mouse_pos[1] and area[1] > mouse_pos[1]:
+						if area[0]+board.pos[1] < mouse_pos[1] and area[1]+board.pos[1] > mouse_pos[1]:
 							y = i
 						i += 1
 					if x != -1 and y != -1:
@@ -1385,9 +1385,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					y = 0
 					i = 0
 					for area in board.pos_areas():
-						if area[0] < mouse_pos[0] and area[1] > mouse_pos[0]:
+						if area[0]+board.pos[0] < mouse_pos[0] and area[1]+board.pos[0] > mouse_pos[0]:
 							x = i
-						if area[0] < mouse_pos[1] and area[1] > mouse_pos[1]:
+						if area[0]+board.pos[1] < mouse_pos[1] and area[1]+board.pos[1] > mouse_pos[1]:
 							y = i
 						i += 1
 					if [x, y] in hw.att:
