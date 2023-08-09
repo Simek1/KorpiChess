@@ -849,7 +849,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 				playing = False
 				send(f"@win {win}")
 			if mat_power==False:
-				turn_txt="Remis, brak siły matującej"
+				turn_txt="Remis, brak siły matującej."
 				ending=True
 				playing=False
 			if pat:
@@ -1562,7 +1562,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					if x[1]==1:
 						x[0].draw(game_window)	
 		if repeated==True:
-			turn_txt="Remis, potrójne powtórzenie"
+			turn_txt="Remis, potrójne powtórzenie."
 			ending=True
 			playing=False
 		pygame.display.update()		
