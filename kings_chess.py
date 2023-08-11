@@ -1638,8 +1638,8 @@ def kings_chess(game_window, res, timers, max_time):
 		if mat_power==False:
 			turn_txt="Remis, brak siły matującej."
 			ending=True
-		if pat:
-			turn_txt="Pat. Remis."
+		if pat and "Mat." not in check_txt:
+			check_txt="Pat. Remis."
 			ending=True
 		pygame.time.Clock().tick(30)
 		game_window.fill(bg_color)

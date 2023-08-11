@@ -865,8 +865,8 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 				turn_txt="Remis, brak siły matującej."
 				ending=True
 				playing=False
-			if pat:
-				turn_txt="Pat. Remis."
+			if pat and "Mat." not in check_txt:
+				check_txt="Pat. Remis."
 				ending=True
 				playing=False
 		if msgs!=[]: #dorobic filtrowanie wiadomoscie ze wzgledu na \ i sprawdzic czy ta lista bedzie sie akutalizowac, jesli nie to sprobowac zrobic z niej zmienna globalna
