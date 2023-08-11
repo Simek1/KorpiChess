@@ -1529,8 +1529,8 @@ def kings_chess(game_window, res, timers, max_time):
 							for i in range(len(white_opp)):
 								if white_opp[i].figure==temp.type:
 									if white_opp[i].figure not in ["king", "pawn"]:
-										white_reserve.append([white_opp.pop(white_opp.index(white_opp[i])), 0])
-										white_reserve[-1][0].pos=(board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve)-mini_pawn_res[0],res[1]/10*3)
+										white_reserve.append([white_opp.pop(white_opp.index(white_opp[i])), 0, (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve ),res[1]/10*3), (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve ),res[1]/10*4)])
+										white_reserve[-1][0].pos=white_reserve[-1][2]
 									else:
 										del(white_opp[i])
 									break
@@ -1544,8 +1544,8 @@ def kings_chess(game_window, res, timers, max_time):
 							for i in range(len(black_opp)):
 								if black_opp[i].figure==temp.type:
 									if black_opp[i].figure not in ["king", "pawn"]:
-										black_reserve.append([black_opp.pop(black_opp.index(black_opp[i])), 0])
-										black_reserve[-1][0].pos=(board.res[0]+board.pos[0]+mini_pawn_res[0]*len(black_reserve)-mini_pawn_res[0],res[1]/10*3)
+										black_reserve.append([black_opp.pop(black_opp.index(black_opp[i])), 0, (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(black_reserve),res[1]/10*3), (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(black_reserve),res[1]/10*4)])
+										black_reserve[-1][0].pos=black_reserve[-1][2]
 									else:
 										del(black_opp[i])
 									break
@@ -2061,7 +2061,14 @@ def kings_chess(game_window, res, timers, max_time):
 			for x in white_reserve:
 				if "pawn" in [p.type for p in white_pawns] or "pawn" in [p.figure for p in white_add_buttons]:
 					if x[1]==1:
+						x[0].pos=x[2]
 						x[0].draw(game_window)
+			if "pawn" in [p.type for p in black_pawns] or "pawn" in [p.figure for p in black_add_buttons]:
+				for x in black_reserve:
+					if x[1]==1:
+						x[0].pos=x[3]
+						x[0].draw(game_window)
+
 		else:
 			if "king" in [x.figure for x in black_add_buttons]:
 				for but in black_add_buttons:
@@ -2074,7 +2081,13 @@ def kings_chess(game_window, res, timers, max_time):
 			for x in black_reserve:
 				if "pawn" in [p.type for p in black_pawns] or "pawn" in [p.figure for p in black_add_buttons]:
 					if x[1]==1:
-						x[0].draw(game_window)		
+						x[0].pos=x[2]
+						x[0].draw(game_window)
+			if "pawn" in [p.type for p in white_pawns] or "pawn" in [p.figure for p in white_add_buttons]:
+				for x in white_reserve:
+					if x[1]==1:
+						x[0].pos=x[3]
+						x[0].draw(game_window)
 		back_button.draw(game_window)
 		if turn=="white":
 			for opp in black_opp:
