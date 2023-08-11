@@ -1575,7 +1575,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					if x[1]==1:
 						x[0].draw(game_window)	
 		if repeated==True:
-			turn_txt="Remis, potrójne powtórzenie."
+			turn_txt="Remis, trzeci raz ta sama pozycja."
 			ending=True
 			playing=False
 		pygame.display.update()		

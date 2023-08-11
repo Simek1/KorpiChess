@@ -1633,7 +1633,7 @@ def kings_chess(game_window, res, timers, max_time):
 					check_txt="Mat. Białe wygrały."
 				turn_txt=""
 		if repeated==True:
-			turn_txt="Remis, potrójne powtórzenie."
+			turn_txt="Remis, trzeci raz ta sama pozycja."
 			ending=True
 		if mat_power==False:
 			turn_txt="Remis, brak siły matującej."
