@@ -1905,31 +1905,33 @@ def kings_chess(game_window, res, timers, max_time):
 						backup_white_opp=white_opp.copy()
 						backup_black_opp=black_opp.copy()
 						back_button.status=1
+						genpas=False
 						if hw.type=="pawn":
 							if [x,y] not in [[hw.pos[0],hw.pos[1]+1], [hw.pos[0]+1, hw.pos[1]+1], [hw.pos[0]-1, hw.pos[0]+1]] or [x,y] not in [[hw.pos[0],hw.pos[1]-1], [hw.pos[0]+1, hw.pos[1]-1], [hw.pos[0]-1, hw.pos[0]-1]]:
 								hw.enpas=True
+								genpas=True
 						hw.pos = (x, y)
 						check = False
-						backup_rep_fig=repeating_figures.copy()
-						backup_rep_pos=repeating_pos.copy()
-						backup_rep_res=repeating_reserve.copy()
-						figs=[x.type for x in white_pawns+black_pawns]
-						poses=[x.pos for x in white_pawns+black_pawns]
-						resv=[x.figure for x in white_add_buttons+black_add_buttons]
-						if poses in repeating_pos:
-							ind=repeating_pos.index(poses)
-							if figs==repeating_figures[ind] and resv==repeating_reserve[ind]:
-								rep=0
-								for i in range(len(repeating_pos)):
-									if repeating_pos[i]==poses and repeating_figures[i]==figs and repeating_reserve[i]==resv:
-										rep+=1
-										if rep==2:
-											repeated=True
-											break
-									
-						repeating_pos.append(poses)
-						repeating_figures.append(figs)
-						repeating_reserve.append(resv)
+						if genpas==False:
+							backup_rep_fig=repeating_figures.copy()
+							backup_rep_pos=repeating_pos.copy()
+							backup_rep_res=repeating_reserve.copy()
+							figs=[x.type for x in white_pawns+black_pawns]
+							poses=[x.pos for x in white_pawns+black_pawns]
+							resv=[x.figure for x in white_add_buttons+black_add_buttons]
+							if poses in repeating_pos:
+								ind=repeating_pos.index(poses)
+								if figs==repeating_figures[ind] and resv==repeating_reserve[ind]:
+									rep=0
+									for i in range(len(repeating_pos)):
+										if repeating_pos[i]==poses and repeating_figures[i]==figs and repeating_reserve[i]==resv:
+											rep+=1
+											if rep==2:
+												repeated=True
+												break									
+							repeating_pos.append(poses)
+							repeating_figures.append(figs)
+							repeating_reserve.append(resv)
 						if turn == "white":
 							turn = "black"
 							turn_pawns = black_pawns
