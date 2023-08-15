@@ -758,7 +758,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								if white_opp[i].figure==temp.type:
 									if white_opp[i].figure not in ["king", "pawn"]:
 										white_reserve.append([white_opp.pop(white_opp.index(white_opp[i])), 0])
-										white_reserve[-1][0].pos=(board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve)-mini_pawn_res[0],res[1]/10*3)
+										white_reserve[-1][0].pos=(board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve)-mini_pawn_res[0],res[1]/10*2)
 										print([x[0].figure for x in white_reserve])
 									else:
 										del(white_opp[i])
@@ -1034,6 +1034,10 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 								if f.pos==apos:
 									f.pos=mve
 									break
+							for rsv in black_reserve:
+								if rsv[0].figure==fig and rsv[1]==1:
+									rsv[1]=0
+									break
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
@@ -1055,6 +1059,10 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							for f in white_pawns:
 								if f.pos==apos:
 									f.pos=mve
+									break
+							for rsv in white_reserve:
+								if rsv[0].figure==fig and rsv[1]==1:
+									rsv[1]=0
 									break
 							turn = "black"
 							turn_pawns = black_pawns
@@ -1103,11 +1111,15 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						print(x)
 						apos=eval(x[2]+x[3])
 						mve=eval(x[4]+x[5])
-						fig=x[6]
+						fig=x[6]							
 						if player_color=="white":
 							for f in black_pawns:
 								if f.pos==apos:
 									f.pos=mve
+									break
+							for rsv in black_reserve:
+								if rsv[0].figure==fig and rsv[1]==1:
+									rsv[1]=0
 									break
 							turn = "white"
 							turn_pawns = white_pawns
@@ -1130,6 +1142,10 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							for f in white_pawns:
 								if f.pos==apos:
 									f.pos=mve
+									break
+							for rsv in white_reserve:
+								if rsv[0].figure==fig and rsv[1]==1:
+									rsv[1]=0
 									break
 							turn = "black"
 							turn_pawns = black_pawns
@@ -1196,7 +1212,12 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							# aktualizacja pozycji na pawn_matrix aby poprawnie sprwadzić możliwe ruchy przy szachu
 							for i in range(len(black_opp)):
 								if black_opp[i].figure==fig:
-									del(black_opp[i])
+									if black_opp[i].figure not in ["king", "pawn"]:
+										black_reserve.append([black_opp.pop(black_opp.index(black_opp[i])), 0])
+										black_reserve[-1][0].pos=(board.res[0]+board.pos[0]+mini_pawn_res[0]*len(black_reserve)-mini_pawn_res[0],res[1]/10*3)
+										print([x[0].figure for x in black_reserve])
+									else:
+										del(black_opp[i])
 									break
 							if timers:
 								white_watch.resume()
@@ -1220,7 +1241,12 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn_txt = "Ruch czarnych"
 							for i in range(len(white_opp)):
 								if white_opp[i].figure==fig:
-									del(white_opp[i])
+									if white_opp[i].figure not in ["king", "pawn"]:
+										white_reserve.append([white_opp.pop(white_opp.index(white_opp[i])), 0])
+										white_reserve[-1][0].pos=(board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve)-mini_pawn_res[0],res[1]/10*2)
+										print([x[0].figure for x in white_reserve])
+									else:
+										del(white_opp[i])
 									break
 							if timers:
 								black_watch.resume()
@@ -1406,6 +1432,24 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 					if [x, y] in hw.att:
 						old_pos=hw.pos
 						hw.pos = (x, y)
+						if player_color=="black":
+							for ops in white_pawns:
+								if ops.pos==hw.pos:
+									fg=ops.type
+									break
+							for rsv in white_reserve:
+								if rsv[0].figure==fg and rsv[1]==0:
+									rsv[1]=1
+									break
+						else:
+							for ops in black_pawns:
+								if ops.pos==hw.pos:
+									fg=ops.type
+									break
+							for rsv in black_reserve:
+								if rsv[0].figure==fg and rsv[1]==0:
+									rsv[1]=1
+									break
 						destroy_enemy((x, y), turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						check = False
 						if turn == "white":
@@ -1562,18 +1606,17 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 		if player_color=="white":
 			for opp in black_opp:
 				opp.draw(game_window)
-			for x in white_reserve:
-				print(x[0].figure, x[1])
-				if "pawn" in [p.type for p in white_pawns] or "pawn" in [p.figure for p in white_add_buttons]:
-					if x[1]==1:
-						x[0].draw(game_window)
 		else:
 			for opp in white_opp:
-				opp.draw(game_window)
-			for x in black_reserve:
-				if "pawn" in [p.type for p in black_pawns] or "pawn" in [p.figure for p in black_add_buttons]:
-					if x[1]==1:
-						x[0].draw(game_window)	
+				opp.draw(game_window)	
+		for x in white_reserve:
+			if "pawn" in [p.type for p in white_pawns] or "pawn" in [p.figure for p in white_add_buttons]:
+				if x[1]==1:
+					x[0].draw(game_window)
+		for x in black_reserve:
+			if "pawn" in [p.type for p in black_pawns] or "pawn" in [p.figure for p in black_add_buttons]:
+				if x[1]==1:
+					x[0].draw(game_window)
 		if repeated==True:
 			turn_txt="Remis, trzeci raz ta sama pozycja."
 			ending=True

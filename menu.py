@@ -3,7 +3,6 @@ import pygame_menu
 from pygame_menu import themes
 from kings_chess import *
 from online_lobby import *
-from kings_chess_online import *
 
 class inactive_button(object):
 	def __init__(self, pos, size, color, text=""):
