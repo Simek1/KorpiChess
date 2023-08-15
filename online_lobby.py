@@ -432,21 +432,15 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 	adding = False
 	check_add=[]
 	figure=0
+	repeating_figures=[]
+	repeating_pos=[]
+	repeating_reserve=[]
+	repeating_figures.append([x.type for x in white_pawns+black_pawns])
+	repeating_pos.append([x.pos for x in white_pawns+black_pawns])
+	repeating_reserve.append([x.figure for x in white_add_buttons+black_add_buttons])
 	if player_color=="white":
-		repeating_figures_w=[]
-		repeating_pos_w=[]
-		repeating_reserve_w=[]
-		repeating_figures_w.append([x.type for x in white_pawns])
-		repeating_pos_w.append([x.pos for x in white_pawns])
-		repeating_reserve_w.append([x.figure for x in white_add_buttons])
 		opponent_color="black"
 	else:
-		repeating_figures_b=[]
-		repeating_pos_b=[]
-		repeating_reserve_b=[]
-		repeating_figures_b.append([x.type for x in black_pawns])
-		repeating_pos_b.append([x.pos for x in black_pawns])
-		repeating_reserve_b.append([x.figure for x in black_add_buttons])
 		opponent_color="white"
 
 	deciding = True
@@ -631,20 +625,12 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 				mat_power=is_mat_power(white_pawns, black_pawns, turn, count_w, count_b)
 				if mat_power==False:
 					send("@no_power")
-				if player_color=="white":
-					repeating_figures_w=[]
-					repeating_pos_w=[]
-					repeating_reserve_w=[]
-					repeating_figures_w.append([x.type for x in white_pawns])
-					repeating_pos_w.append([x.pos for x in white_pawns])
-					repeating_reserve_w.append([x.figure for x in white_add_buttons])
-				else:
-					repeating_figures_b=[]
-					repeating_pos_b=[]
-					repeating_reserve_b=[]
-					repeating_figures_b.append([x.type for x in black_pawns])
-					repeating_pos_b.append([x.pos for x in black_pawns])
-					repeating_reserve_b.append([x.figure for x in black_add_buttons])
+				repeating_figures=[]
+				repeating_pos=[]
+				repeating_reserve=[]
+				repeating_figures.append([x.type for x in white_pawns+black_pawns])
+				repeating_pos.append([x.pos for x in white_pawns+black_pawns])
+				repeating_reserve.append([x.figure for x in white_add_buttons+black_add_buttons])
 			pygame.display.update()
 		while adding:  # Dodawanie figury na szachownice
 			pygame.time.Clock().tick(30)
@@ -1452,28 +1438,22 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 									break
 						destroy_enemy((x, y), turn, white_pawns, black_pawns, w_destroyed, b_destroyed)
 						check = False
+						repeating_figures=[]
+						repeating_pos=[]
+						repeating_reserve=[]
+						repeating_figures.append([x.type for x in white_pawns+black_pawns])
+						repeating_pos.append([x.pos for x in white_pawns+black_pawns])
+						repeating_reserve.append([x.figure for x in white_add_buttons+black_add_buttons])
 						if turn == "white":
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
 							for ff in black_pawns:
 								ff.enpas=False
-							repeating_figures_w=[]
-							repeating_pos_w=[]
-							repeating_reserve_w=[]
-							repeating_figures_w.append([x.type for x in white_pawns])
-							repeating_pos_w.append([x.pos for x in white_pawns])
-							repeating_reserve_w.append([x.figure for x in white_add_buttons])
 							if timers:
 								black_watch.resume()
 								white_watch.pause_timer()
 						else:
-							repeating_figures_b=[]
-							repeating_pos_b=[]
-							repeating_reserve_b=[]
-							repeating_figures_b.append([x.type for x in black_pawns])
-							repeating_pos_b.append([x.pos for x in black_pawns])
-							repeating_reserve_b.append([x.figure for x in black_add_buttons])
 							turn = "white"
 							turn_pawns = white_pawns
 							turn_txt = "Ruch białych"
@@ -1496,35 +1476,38 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 									send(f"@time {black_watch.remaining_time}")   
 					elif [x, y] in hw.mv:
 						old_pos=hw.pos
+						genpas=False
 						if hw.type=="pawn":
 							if [x,y] not in [[hw.pos[0],hw.pos[1]+1], [hw.pos[0]+1, hw.pos[1]+1], [hw.pos[0]-1, hw.pos[0]+1]] or [x,y] not in [[hw.pos[0],hw.pos[1]-1], [hw.pos[0]+1, hw.pos[1]-1], [hw.pos[0]-1, hw.pos[0]-1]]:
 								hw.enpas=True
+								genpas=True
 								send("@enpas")
 						hw.pos = (x, y)
 						check = False
+						if genpas==False:
+							figs=[x.type for x in white_pawns+black_pawns]
+							poses=[x.pos for x in white_pawns+black_pawns]
+							resv=[x.figure for x in white_add_buttons+black_add_buttons]
+							if poses in repeating_pos:
+								ind=repeating_pos.index(poses)
+								if figs==repeating_figures[ind] and resv==repeating_reserve[ind]:
+									rep=0
+									for i in range(len(repeating_pos)):
+										if repeating_pos[i]==poses and repeating_figures[i]==figs and repeating_reserve[i]==resv:
+											rep+=1
+											if rep==2:
+												send("@repeated")
+												repeated=True
+												break
+							repeating_figures.append(figs)
+							repeating_pos.append(poses)
+							repeating_reserve.append(resv)
 						if turn == "white":
 							turn = "black"
 							turn_pawns = black_pawns
 							turn_txt = "Ruch czarnych"
 							for ff in black_pawns:
 								ff.enpas=False
-							figs=[x.type for x in white_pawns]
-							poses=[x.pos for x in white_pawns]
-							resv=[x.figure for x in white_add_buttons]
-							if poses in repeating_pos_w:
-								ind=repeating_pos_w.index(poses)
-								if figs==repeating_figures_w[ind] and resv==repeating_reserve_w[ind]:
-									rep=0
-									for i in range(len(repeating_pos_w)):
-										if repeating_pos_w[i]==poses and repeating_figures_w[i]==figs and repeating_reserve_w[i]==resv:
-											rep+=1
-											if rep==2:
-												send("@repeated")
-												repeated=True
-												break
-							repeating_figures_w.append(figs)
-							repeating_pos_w.append(poses)
-							repeating_reserve_w.append(resv)
 							if timers:
 								black_watch.resume()
 								white_watch.pause_timer()
@@ -1534,23 +1517,6 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 							turn_txt = "Ruch białych"
 							for ff in white_pawns:
 								ff.enpas=False
-							figs=[x.type for x in black_pawns]
-							poses=[x.pos for x in black_pawns]
-							resv=[x.figure for x in black_add_buttons]
-							if poses in repeating_pos_b:
-								ind=repeating_pos_b.index(poses)
-								if figs==repeating_figures_b[ind] and resv==repeating_reserve_b[ind]:
-									rep=0
-									for i in range(len(repeating_pos_b)):
-										if repeating_pos_b[i]==poses and repeating_figures_b[i]==figs and repeating_reserve_b[i]==resv:
-											rep+=1
-											if rep==2:
-												repeated=True
-												send("@repeated")
-												break
-							repeating_figures_b.append(figs)
-							repeating_pos_b.append(poses)
-							repeating_reserve_b.append(resv)
 							if timers:
 								white_watch.resume()
 								black_watch.pause_timer()
