@@ -84,7 +84,7 @@ class input_box(object):
 				print(e)
 		
 class chat_box(object):
-	def __init__(self, pos, size, font_size):
+	def __init__(self, pos, size, font_size, res):
 		self.size=size
 		self.pos=pos
 		self.font_size=font_size
@@ -101,7 +101,12 @@ class chat_box(object):
 				break
 		self.size=(self.size[0], new_size)
 		self.rect=pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
-		self.chat_input=input_box((self.size[0],test_text_height), (self.pos[0], self.pos[1]+self.size[1]), self.font_size, 70, color=(128,128,128)) #zmienic aby tekst sie przesuwal w trakcie pisania
+		self.chat_input=input_box((self.size[0],test_text_height), (self.pos[0], self.pos[1]+self.size[1]), self.font_size, 70, color=(128,128,128))
+		if self.pos[1]+self.size[1]+self.chat_input.size[1]>res[1]:
+			diff=self.pos[1]+self.size[1]+self.chat_input.size[1]-res[1]
+			self.pos=(self.pos[0], self.pos[1]-diff)
+			self.rect=pygame.Rect(self.pos[0], self.pos[1], self.size[0], self.size[1])
+			self.chat_input=input_box((self.size[0],test_text_height), (self.pos[0], self.pos[1]+self.size[1]), self.font_size, 70, color=(128,128,128))
 		self.not_converted=[]
 		self.converted_msgs=[]
 		self.max_msgs=self.size[1]//(test_text_height+3)
@@ -384,7 +389,7 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 			start_pos[0]+=mini_pawn_res[0]
 	
 	
-	chat=chat_box((res[1]-res[1]/6, res[1]/5*3), (res[0]-res[1]+res[1]/6, res[1]/5*2), font_size)
+	chat=chat_box((res[1]-res[1]/6, res[1]/5*3), (res[0]-res[1]+res[1]/6, res[1]/5*2), font_size, res)
 	chat.converted_msgs=chat_history
 	numpad_keys=[1073741922, 1073741913, 1073741914, 1073741915, 1073741916, 1073741917, 1073741918, 1073741919, 1073741920, 1073741921]
 	#te elementy muszą zostać zrestartowane w każdej grze
@@ -1735,7 +1740,7 @@ def online_menu(win, res, nick, timers, max_time):
 						connected=1
 						menuing=0
 						connect_to_server(int(join_port_box.text), join_ip_box.text, nick_box.text)
-						chat=chat_box((res[1]-100, res[1]/5*3), (res[0]-res[1]+100, res[1]/5*2), font_size)
+						chat=chat_box((res[1]-100, res[1]/5*3), (res[0]-res[1]+100, res[1]/5*2), font_size, res)
 						new_msg=[]
 						downloadThread=threading.Thread(target=download_msg, args=(new_msg,))
 						downloadThread.start()
@@ -1755,7 +1760,7 @@ def online_menu(win, res, nick, timers, max_time):
 						connect_to_server(create_port_box.text, localip, nick_box.text)
 						txt_players=title_font.render("Gracze:", True, (0,0,0))
 						txt_players_width=txt_players.get_rect().width/2
-						chat=chat_box((res[1]-res[1]/6, res[1]/5*3), (res[0]-res[1]+res[1]/6, res[1]/5*2), font_size)
+						chat=chat_box((res[1]-res[1]/6, res[1]/5*3), (res[0]-res[1]+res[1]/6, res[1]/5*2), font_size, res)
 						new_msg=[]
 						downloadThread=threading.Thread(target=download_msg, args=(new_msg,))
 						downloadThread.start()
