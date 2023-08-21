@@ -694,9 +694,19 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 								new_mv.append(mv)
 
 					# sprawdzenie czy pionek moze znisczyc przeciwnika
-					if list(enemy.pos) in pawn.att:
-						for att in pawn.att:
-							if att==list(enemy.pos):
+					for att in pawn.att:
+						if att==list(enemy.pos) or pawn.type=="pawn": #wyjątek dla bicia w przelocie
+							if board.pawns_matrix[att[1]][att[0]]==0:
+								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]=0
+								popped_pawn = black_pawns.pop(black_pawns.index(enemy))
+								board.pawns_matrix[popped_pawn.pos[1]-1][popped_pawn.pos[0]] = "w"
+								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = 0
+								possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+								black_pawns.append(popped_pawn)
+								board.pawns_matrix[popped_pawn.pos[1]-1][popped_pawn.pos[0]] = "0"
+								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = "w"
+								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="b"
+							else:
 								popped_pawn = black_pawns.pop(black_pawns.index(enemy))
 								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "w"
 								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = 0
@@ -704,8 +714,8 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 								black_pawns.append(popped_pawn)
 								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]] = "b"
 								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = "w"
-								if possiblity == []:
-									new_att.append(att)
+							if possiblity == []:
+								new_att.append(att)
 			pawn.mv = new_mv
 			pawn.att = new_att
 		mat = True
@@ -774,16 +784,27 @@ def is_mat(enemies, turn, white_pawns, black_pawns, board, game_window, w_destro
 								new_mv.append(mv)
 
 					# sprawdzenie czy pionek moze znisczyc przeciwnika
-					if list(enemy.pos) in pawn.att:
 						for att in pawn.att: #poprawic ta czesc w oryginalnym trybie
-							if att==list(enemy.pos):
-								popped_pawn=white_pawns.pop(white_pawns.index(enemy))
-								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="b"
-								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]=0
-								possiblity=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
-								white_pawns.append(popped_pawn)
-								board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="w"
-								board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]="b"
+							if att==list(enemy.pos) or pawn.type=="pawn":
+								if board.pawns_matrix[att[1]][att[0]]==0: #wyjątek dla bicia w przelocie
+									print("fsdgsgsdfgsfgsdfgs")
+									popped_pawn = white_pawns.pop(white_pawns.index(enemy))
+									board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]=0
+									board.pawns_matrix[popped_pawn.pos[1]+1][popped_pawn.pos[0]] = "b"
+									board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = 0
+									possiblity = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+									white_pawns.append(popped_pawn)
+									board.pawns_matrix[popped_pawn.pos[1]+1][popped_pawn.pos[0]] = 0
+									board.pawns_matrix[pawn.pos[1]][pawn.pos[0]] = "b"
+									board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="w"
+								else:
+									popped_pawn=white_pawns.pop(white_pawns.index(enemy))
+									board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="b"
+									board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]=0
+									possiblity=is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
+									white_pawns.append(popped_pawn)
+									board.pawns_matrix[popped_pawn.pos[1]][popped_pawn.pos[0]]="w"
+									board.pawns_matrix[pawn.pos[1]][pawn.pos[0]]="b"
 								if possiblity==[]:
 									new_att.append(att)
 			pawn.mv = new_mv
