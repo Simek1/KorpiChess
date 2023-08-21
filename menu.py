@@ -240,7 +240,7 @@ if fscreen:
 pygame.display.set_caption("Korpalski Chess")
 
 mainmenu = pygame_menu.Menu('Korpalski Chess', res[0], res[1], theme=themes.THEME_BLUE)
-nick_input=mainmenu.add.text_input('Nick: ', default='Nick', maxchar=20)
+nick_input=mainmenu.add.text_input('Nazwa gracza: ', default='Nick', maxchar=20)
 mainmenu.add.button('Gra na jednym komputerze', play_local)
 mainmenu.add.button('Gra sieciowa', play_online)
 mainmenu.add.button("Opcje", options)

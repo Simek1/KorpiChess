@@ -1696,7 +1696,7 @@ def online_menu(win, res, nick, timers, max_time):
 	join_port_box=input_box(ip_box_size, ((res[0]/4)-(ip_box_size[0]/2),(res[1]/10)*4), font_size, 8,"", "Port serwera")
 	create_ip_box=input_box(ip_box_size, ((res[0]/4)*3-(ip_box_size[0]/2),(res[1]/10)*3), font_size, 15,"0.0.0.0", "IP serwera")
 	create_port_box=input_box(ip_box_size, ((res[0]/4)*3-(ip_box_size[0]/2),(res[1]/10)*4), font_size, 8,"", "Port serwera")
-	nick_box=input_box(ip_box_size, ((res[0]/4)*2-ip_box_size[0]/2, res[1]/10), font_size, 15, nick, "Nick: ")
+	nick_box=input_box(ip_box_size, ((res[0]/4)*2-ip_box_size[0]/2, res[1]/10), font_size, 15, nick, "Nazwa gracza: ")
 	boxes=[join_ip_box, join_port_box, create_ip_box, create_port_box, nick_box]
 	left_column=pygame.Rect(res[0]/40, 0, (res[0]/2)-((res[0]/40)*2), res[1])
 	right_column=pygame.Rect(res[0]/40+res[0]/2, 0, (res[0]/2)-((res[0]/40)*2), res[1])
@@ -1739,6 +1739,8 @@ def online_menu(win, res, nick, timers, max_time):
 					try:
 						connected=1
 						menuing=0
+						if " " in nick_box.text:
+							nick_box.text=nick_box.text.replace(" ","_")
 						connect_to_server(int(join_port_box.text), join_ip_box.text, nick_box.text)
 						chat=chat_box((res[1]-100, res[1]/5*3), (res[0]-res[1]+100, res[1]/5*2), font_size, res)
 						new_msg=[]
@@ -1754,6 +1756,8 @@ def online_menu(win, res, nick, timers, max_time):
 				if create_button.rect.collidepoint(event.pos):
 					try:
 						old_nicks={}
+						if " " in nick_box.text:
+							nick_box.text=nick_box.text.replace(" ","_")
 						start_server(create_port_box.text, create_ip_box.text)
 						hosting=1
 						menuing=0
@@ -1839,7 +1843,6 @@ def online_menu(win, res, nick, timers, max_time):
 						else:
 							pl_color="black"
 							op_color="white"
-						print(nick_box.text, pl_color, ":)h")
 						send(f"@gamestart {op_color} {timers} {max_time}")
 						kings_chess_online(win, res, nick_box.text, pl_color, new_msg, chat.converted_msgs, timers, max_time)
 					else:
