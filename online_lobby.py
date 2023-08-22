@@ -1273,9 +1273,9 @@ def kings_chess_online(game_window, res, player_name, player_color, msgs, chat_h
 						x=x.split()
 						win_color=x[2]
 						if win_color=="w":
-							turn_txt="Białe wygrały."
+							check_txt="Mat. Białe wygrały."
 						else:
-							turn_txt="Czarne wygrały."
+							check_txt="Mat. Czarne wygrały."
 						playing=False
 						ending=True
 					if "@repeated" in x:

@@ -1391,6 +1391,7 @@ def kings_chess(game_window, res, timers, max_time):
 					white_pawn.draw(game_window, board)
 				for black_pawn in black_pawns:
 					black_pawn.draw(game_window, board)
+				en = is_check(turn, white_pawns, black_pawns, board, game_window, w_destroyed, b_destroyed)
 				if turn=="white":
 					for ff in white_pawns:
 						ff.enpas=False
