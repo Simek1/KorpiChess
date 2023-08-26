@@ -1524,7 +1524,7 @@ def kings_chess(game_window, res, timers, max_time):
 							for i in range(len(white_opp)):
 								if white_opp[i].figure==temp.type:
 									if white_opp[i].figure not in ["king", "pawn"]:
-										white_reserve.append([white_opp.pop(white_opp.index(white_opp[i])), 0, (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve ),res[1]/10*2), (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve ),res[1]/10*3)])
+										white_reserve.append([white_opp.pop(white_opp.index(white_opp[i])), 0, (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve ),res[1]/20*2), (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(white_reserve ),res[1]/20*3)])
 										white_reserve[-1][0].pos=white_reserve[-1][2]
 									else:
 										del(white_opp[i])
@@ -1539,7 +1539,7 @@ def kings_chess(game_window, res, timers, max_time):
 							for i in range(len(black_opp)):
 								if black_opp[i].figure==temp.type:
 									if black_opp[i].figure not in ["king", "pawn"]:
-										black_reserve.append([black_opp.pop(black_opp.index(black_opp[i])), 0, (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(black_reserve),res[1]/10*2), (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(black_reserve),res[1]/10*3)])
+										black_reserve.append([black_opp.pop(black_opp.index(black_opp[i])), 0, (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(black_reserve),res[1]/20*2), (board.res[0]+board.pos[0]+mini_pawn_res[0]*len(black_reserve),res[1]/20*3)])
 										black_reserve[-1][0].pos=black_reserve[-1][2]
 									else:
 										del(black_opp[i])
