@@ -102,9 +102,9 @@ Pełna instrukcja połączenia się przez sieć LAN oraz przez hamachi została 
 
 3- Zbite pionki twojego przeciwnika.
 
-4- Twoje nie użyte jeszcze bierki.
+4- Twoje nieużyte jeszcze bierki.
 
-5- Nie użyte jeszcze bierki twojego przeciwnika.
+5- Nieużyte jeszcze bierki twojego przeciwnika.
 
 6- Okno czatu (tylko w grze sieciowej).
 
