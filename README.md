@@ -82,7 +82,7 @@ Code has been written in Python 3.10. It uses the following libraries:
 
 # Wprowadzenie
 
-Projekt został stworzony jako część mojej pracy magisterskiej. Przenosi zmodyfikowaną wersję szachów do świata cyfrowego, pozwalając graczom cieszyć się grą zarówno poprzez lokalną sieć (LAN), jak i w trybie hotseat. Korpalski Chess wprowadza nowe elementy do klasycznej gry, oferując pasjonatom szachów możliwość eksploracji różnorodnych wariantów tej strategicznej gry. Twórcą fizycznej wersji gry jest Robert Korpalski, którego twórczość możesz poznać [tutaj](https://szachydzieciom.pl/?page_id=67492).
+Projekt został stworzony jako część mojej pracy magisterskiej. Przenosi zmodyfikowaną wersję szachów do świata cyfrowego, pozwalając graczom cieszyć się grą zarówno poprzez lokalną sieć (LAN), jak i w trybie hotseat. Korpalski Chess wprowadza nowe elementy do klasycznej gry, oferując pasjonatom szachów możliwość eksploracji różnorodnych wariantów. Twórcą fizycznej wersji gry jest Robert Korpalski, którego twórczość możesz poznać [tutaj](https://szachydzieciom.pl/?page_id=67492).
 
 # Instrukcja
 
