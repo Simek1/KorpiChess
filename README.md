@@ -118,7 +118,7 @@ Pełna instrukcja połączenia się przez sieć LAN oraz przez hamachi została 
 
 # Wymagania kodu
 
-W zakładce releases jest plik exe, który nie wymaga nawet aby python był zainstalowany na twoim komputerze, jednak musi on znajdować się w tym samym folderze co folder "images".
+W zakładce releases jest plik exe, który nie wymaga aby python był zainstalowany na twoim komputerze, jednak musi on znajdować się w tym samym folderze co folder "images".
 Kod został napisany w Pythonie 3.10. Używane są w nim następujące biblioteki:
 - Pygame, interfejs użytkownika.
 
