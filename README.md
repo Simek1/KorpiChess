@@ -52,7 +52,7 @@ You can find full list of EN game rules [here](https://www.apronus.com/chess/kor
 
 3- Your opponent's captured pieces.
 
-4- Your unused piecies.
+4- Your unused pieces.
 
 5- Your opponent's unused pieces.
 
