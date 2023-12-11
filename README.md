@@ -48,7 +48,7 @@ You can find full list of EN game rules [here](https://www.apronus.com/chess/kor
 
 1- Chessboard.
 
-2- Your captured pieces, which you can exchange for a pawn when it reaches the transformation line.
+2- Your captured pieces, which you can exchange for a pawn when it reaches the promotion line.
 
 3- Your opponent's captured pieces.
 
@@ -98,7 +98,7 @@ Pełna instrukcja połączenia się przez sieć LAN oraz przez hamachi została 
 
 1- Szachownica.
 
-2- Twoje zbite figury, w które może zmienić się pionek po dojściu na linię transformacji.
+2- Twoje zbite figury, w które może zmienić się pionek po dojściu na linię promocji.
 
 3- Zbite pionki twojego przeciwnika.
 
